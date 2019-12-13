@@ -1,5 +1,9 @@
-const GravatarRegistry = artifacts.require('./GravatarRegistry.sol')
+/* global artifacts, error, web3 */
 
-module.exports = async function(deployer) {
-  await deployer.deploy(GravatarRegistry)
+const dependencies = require('@gnosis.pm/dex-contracts/src/migration/dependencies')
+const migrateBatchExchange = require('@gnosis.pm/dex-contracts/src/migration/PoC_dfusion')
+
+module.exports = async function(deployer, network, accounts) {
+  await dependencies({ artifacts, deployer, network })
+  await migrateBatchExchange({ artifacts, deployer, network, accounts, web3 })
 }
