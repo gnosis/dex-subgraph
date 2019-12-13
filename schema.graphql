@@ -1,6 +1,20 @@
-type Gravatar @entity {
+# See Types in: https://thegraph.com/docs/define-a-subgraph
+#   - Bytes: Byte array, represented as a hexadecimal string. Commonly used for Ethereum hashes and addresses
+#   - ID:	Stored as a string
+#   - string: Scalar for string values
+#   - boolean: Scalar for boolean values
+#   - Int	The GraphQL spec defines Int to have size of 32 bytes
+#   - BigInt	Arbitrarily large integers. Used for Ethereum's uint32, int64, uint64, ..., uint256 types. Note: Everything below uint32, such as int32, uint24 or int8 is represented as i32.
+#   - BigDecimal	BigDecimal is used to represent arbitrary precision decimals
+
+type OrderPlacement @entity {
   id: ID!
-  owner: Bytes!
-  displayName: String!
-  imageUrl: String!
+  owner: Bytes! # address
+  index: BigInt! # uint256
+  buyToken: Int! # uint16
+  sellToken: Int! # uint16
+  validFrom: BigInt! # uint32
+  validUntil: BigInt! # uint32
+  priceNumerator: BigInt! # uint128
+  priceDenominator: BigInt! # uint128
 }
