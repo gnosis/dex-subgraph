@@ -1,27 +1,29 @@
 specVersion: 0.0.2
-description: Gravatar for Ethereum
-repository: https://github.com/graphprotocol/example-subgraph
+description: dFusion
+repository: https://github.com/anxolin/dex-subgraph
 schema:
   file: ./schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: Gravity
+    name: BatchExchange
     network: mainnet
     source:
-      address: "0x58e9D4D83B52484984065A0AacABde259A369EDf"
-      abi: Gravity
+      # local
+      address: '0xe6f7fe93E20693F75F3FD59C8431F71b7EDdDc17'
+      # rinkeby
+      # address: '0x4eAfD2b1A2264228B87e35b77e50AA5b9bcC72dc'
+      abi: BatchExchange
+      # startBlock: 5486682
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.3
       language: wasm/assemblyscript
       entities:
-        - Gravatar
+        - OrderPlacement
       abis:
-        - name: Gravity
-          file: ./abis/Gravity.json
+        - name: BatchExchange
+          file: ./abis/BatchExchange.json
       eventHandlers:
-        - event: NewGravatar(uint256,address,string,string)
-          handler: handleNewGravatar
-        - event: UpdatedGravatar(uint256,address,string,string)
-          handler: handleUpdatedGravatar
+        - event: OrderPlacement(address,uint256,uint16,uint16,uint32,uint32,uint128,uint128)
+          handler: handleOrderPlacement
       file: ./src/mapping.ts
