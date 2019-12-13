@@ -1,22 +1,18 @@
-// import { NewGravatar, UpdatedGravatar } from '../generated/Gravity/Gravity'
-// import { Gravatar } from '../generated/schema'
+import { OrderPlacement as OrderPlacementEvent } from '../generated/BatchExchange/BatchExchange'
+import { OrderPlacement } from '../generated/schema'
 
-// export function handleNewGravatar(event: NewGravatar): void {
-//   let gravatar = new Gravatar(event.params.id.toHex())
-//   gravatar.owner = event.params.owner
-//   gravatar.displayName = event.params.displayName
-//   gravatar.imageUrl = event.params.imageUrl
-//   gravatar.save()
-// }
+export function handleOrderPlacement(event: OrderPlacementEvent): void {
+  // const id = event.params.id.toHex()
+  // let id = event.params.owner + '_' + event.params.index
+  let orderPlacement = new OrderPlacement(event.params.index.toHex())
+  orderPlacement.owner = event.params.owner
+  orderPlacement.index = event.params.index
+  orderPlacement.buyToken = event.params.buyToken
+  orderPlacement.sellToken = event.params.sellToken
+  orderPlacement.priceNumerator = event.params.priceNumerator
+  orderPlacement.priceDenominator = event.params.priceDenominator
+  orderPlacement.validFrom = event.params.validFrom
+  orderPlacement.validUntil = event.params.validUntil
 
-// export function handleUpdatedGravatar(event: UpdatedGravatar): void {
-//   let id = event.params.id.toHex()
-//   let gravatar = Gravatar.load(id)
-//   if (gravatar == null) {
-//     gravatar = new Gravatar(id)
-//   }
-//   gravatar.owner = event.params.owner
-//   gravatar.displayName = event.params.displayName
-//   gravatar.imageUrl = event.params.imageUrl
-//   gravatar.save()
-// }
+  orderPlacement.save()
+}
