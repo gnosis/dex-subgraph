@@ -2,6 +2,12 @@ require('babel-register')
 require('babel-polyfill')
 const HDWalletProvider = require('truffle-hdwallet-provider')
 
+require('dotenv').config()
+const assert = require('assert')
+
+const INFURA_API_KEY = process.env.INFURA_API_KEY
+assert(INFURA_API_KEY, 'INFURA_API_KEY is required')
+
 module.exports = {
   networks: {
     development: {
@@ -9,19 +15,16 @@ module.exports = {
       port: 8545,
       network_id: '*',
     },
-    ropsten: {
+    rinkeby: {
       provider: function() {
-        return new HDWalletProvider(
-          process.env.MNEMONIC,
-          `https://ropsten.infura.io/v3/${process.env.ROPSTEN_INFURA_API_KEY}`
-        )
+        return new HDWalletProvider(process.env.MNEMONIC, `https://rinkeby.infura.io/v3/${INFURA_API_KEY}`)
       },
       network_id: '3',
     },
   },
   compilers: {
     solc: {
-      version: '0.4.25'    // Fetch exact version from solc-bin (default: truffle's version)
-    }
-  }
+      version: '<0.5.7',
+    },
+  },
 }
