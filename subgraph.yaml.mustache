@@ -1,0 +1,28 @@
+specVersion: 0.0.2
+description: '{{ description }}'
+repository: https://github.com/anxolin/dex-subgraph
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: BatchExchange
+    network: {{ network }}
+    source:
+      address: '{{ address }}'
+      abi: BatchExchange
+{{#startBlock}}
+      startBlock: {{ startBlock }}
+{{/startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.3
+      language: wasm/assemblyscript
+      entities:
+        - OrderPlacement
+      abis:
+        - name: BatchExchange
+          file: ./abis/BatchExchange.json
+      eventHandlers:
+        - event: OrderPlacement(address,uint256,uint16,uint16,uint32,uint32,uint128,uint128)
+          handler: handleOrderPlacement
+      file: ./src/mapping.ts
