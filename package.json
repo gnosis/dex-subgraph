@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "scripts": {
     "abi": "node src/scripts/fetchAbi",
+    "compile": "truffle compile",
     "create": "graph create anxolin/dex-subgraph --node https://api.thegraph.com/deploy/",
     "create-local": "graph create anxolin/dex-subgraph --node http://127.0.0.1:8020",
     "codegen": "graph codegen",
