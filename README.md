@@ -35,7 +35,15 @@ yarn setup
 npx truffle networks
 ```
 
-2. Update address for the contracts in [subgraph.yml](./subgraph.yaml)
+2. Create a new file `config/ganache.json` using [ganache.example.json](.config/ganache.example.json) as an example. Fill the address for the contracts deployed in ganache:
+
+```bash
+# Create ganche conf
+cp config/ganache.example.json config/ganache.json
+
+# Add the addresses
+vim config/ganache.json
+```
 
 3. Run a local The Graph Node
 
