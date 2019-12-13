@@ -2,7 +2,21 @@
 
 For more information see https://thegraph.com/docs/.
 
+## Setup environment
+
+```bash
+# Install dependencies
+yarn
+
+# Create your own environment file
+cp .env.example .env
+```
+
+Edit `.env` and setup your own config
+
 ## Update to a new version of the contracts
+
+> First setup environment
 
 ```bash
 # Install new version of dex-contracts
