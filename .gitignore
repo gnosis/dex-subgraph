@@ -63,3 +63,4 @@ typings/
 build
 generated
 package.lock
+subgraph.yml
