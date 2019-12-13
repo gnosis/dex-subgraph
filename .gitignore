@@ -62,3 +62,4 @@ typings/
 .history
 build
 generated
+package.lock
