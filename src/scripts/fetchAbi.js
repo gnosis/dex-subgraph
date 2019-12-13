@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 
 const { abi } = require('@gnosis.pm/dex-contracts/build/contracts/BatchExchange.json')
-var ABI_DIR = path.join(__dirname, '../../abi')
+var ABI_DIR = path.join(__dirname, '../../abis')
 const { CONTRACTS } = require('../const')
 
 if (!fs.existsSync(ABI_DIR)) {
