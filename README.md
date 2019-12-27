@@ -15,33 +15,37 @@ cp .env.example .env
 Edit `.env` and setup your own config
 
 ## Setup for local development
-
-> First setup environment
+> First setup environment (see above)
 
 1. Run a local ganache and migrate the dependencies
    > TODO: Initially this step was done in the same project, but there's a dependency issue to solve in dex-contracts. It's better for now cloning dex-contracts and migrating separatelly
 
 ```bash
-# Run a local ganache (requires you to have it globally installed)
-ganache-cli -h 0.0.0.0
+# Clone dex-contracts project
+git clone https://github.com/gnosis/dex-contracts 
 
-# Migrate dependencies
-yarn migrate
+# Run a local ganache in one tab
+npx ganache-cli -h 0.0.0.0
+
+# Migrate dependencies (in another tab)
+npx truffle networks --clean
+npx truffle migrate
 
 # Setup 3 testing account and tokens
-yarn setup
+npx truffle exec scripts/stablex/setup_environment.js
 
 # Check the deployed addresses
+#   write down "BatchExchange" address for the testnet, we'll need it later
 npx truffle networks
 ```
 
-2. Create a new file `config/ganache.json` using [ganache.example.json](.config/ganache.example.json) as an example. Fill the address for the contracts deployed in ganache:
+2. In dex-subgraph. Create a new file `config/ganache.json` using [ganache.example.json](.config/ganache.example.json) as an example. Fill the address for the contracts deployed in ganache:
 
 ```bash
 # Create ganche conf
 cp config/ganache.example.json config/ganache.json
 
-# Add the addresses
+# Add the address of "BatchExchange" contract you wrote down in the step (1)
 vim config/ganache.json
 ```
 
@@ -56,21 +60,23 @@ cd graph-node/docker
 docker-compose up
 ```
 
-4. Create a local subgraph:
+4. In dex-subgraph. Create a local subgraph:
 
 ```bash
 # Create a new subgraph
-yarn create-local
+yarn create-ganache
 
 # Deploy it
-yarn deploy-local
+yarn deploy
 ```
 
 The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/anxolin/dfusion/graphql
 
 ## Local development: Deposit, claim, place orders
 
-> First setup for local development
+> First setup for local development (see above)
+
+In dex-contracts project:
 
 ```bash
 # place order
@@ -88,7 +94,7 @@ npx truffle exec scripts/stablex/claim_withdraw.js --tokenId 0xc778417e063141139
 
 ## Update to a new version of the contracts
 
-> First setup for local development
+> First setup for local development (see above)
 
 1. Update the ABI
 
