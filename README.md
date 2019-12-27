@@ -96,7 +96,13 @@ npx truffle exec scripts/stablex/claim_withdraw.js --tokenId 0xc778417e063141139
 
 > First setup for local development (see above)
 
-1. Update the ABI
+1. Make sure you use the latest version of `dex-contracts`
+```bash
+# See all available versions in: https://www.npmjs.com/package/@gnosis.pm/dex-contracts
+npm ls @gnosis.pm/dex-contracts
+```
+
+2. Update the ABI
 
 ```bash
 # Install new version of dex-contracts
@@ -106,10 +112,35 @@ yarn add @gnosis.pm/dex-contracts@<new-version> --save
 yarn abi
 ```
 
-2. Review the differences between the two version in the contract, and adapt all the handlers.
+3. Make sure the addresses are updated
+```bash
+# Show the addresses for all the networks
+yarn addresses
 
-3. Regenerate the model:
+# Update the addresses
+vim config/rinkeby.json
+vim config/rinkeby.json
+```
+
+
+4. Review the differences between the two version in the contract, and adapt all the handlers.
+
+
+5. Regenerate the model:
 
 ```bash
 yarn codegen
+```
+
+## Deploy to rinkeby or mainnet
+
+> First update the version of dex-contracts if it's not up to date
+
+Deploy to the different networks:
+```bash
+# Deploy to rinkeby
+yarn deploy-rinkeby
+
+# Deploy to mainnet
+yarn deploy-mainnet
 ```
