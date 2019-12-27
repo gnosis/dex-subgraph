@@ -1,4 +1,4 @@
 {
-  "network": "ganache",
+  "network": "mainnet",
   "address": "add-your-ganache-address-here"
 }
