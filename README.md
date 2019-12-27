@@ -117,7 +117,7 @@ yarn abi
 # Show the addresses for all the networks
 yarn addresses
 
-# Update the addresses
+# Update the addresses and the start block
 vim config/rinkeby.json
 vim config/rinkeby.json
 ```
