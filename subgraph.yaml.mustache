@@ -23,6 +23,6 @@ dataSources:
         - name: BatchExchange
           file: ./abis/BatchExchange.json
       eventHandlers:
-        - event: OrderPlacement(address,uint256,uint16,uint16,uint32,uint32,uint128,uint128)
+        - event: OrderPlacement(indexed address,uint16,indexed uint16,indexed uint16,uint32,uint32,uint128,uint128)
           handler: handleOrderPlacement
       file: ./src/mapping.ts

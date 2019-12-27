@@ -28,20 +28,6 @@
     "type": "function"
   },
   {
-    "constant": true,
-    "inputs": [],
-    "name": "feeDenominator",
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint128"
-      }
-    ],
-    "payable": false,
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
     "constant": false,
     "inputs": [
       {
@@ -215,7 +201,7 @@
     "outputs": [
       {
         "name": "",
-        "type": "uint256"
+        "type": "uint32"
       }
     ],
     "payable": false,
@@ -268,7 +254,7 @@
       },
       {
         "name": "",
-        "type": "uint256"
+        "type": "uint32"
       }
     ],
     "payable": false,
@@ -295,7 +281,7 @@
       },
       {
         "name": "",
-        "type": "uint256"
+        "type": "uint32"
       }
     ],
     "payable": false,
@@ -319,6 +305,20 @@
       {
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "FEE_DENOMINATOR",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint128"
       }
     ],
     "payable": false,
@@ -451,10 +451,6 @@
         "type": "uint256"
       },
       {
-        "name": "_feeDenominator",
-        "type": "uint128"
-      },
-      {
         "name": "_feeToken",
         "type": "address"
       }
@@ -467,22 +463,22 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "name": "owner",
         "type": "address"
       },
       {
         "indexed": false,
         "name": "index",
-        "type": "uint256"
+        "type": "uint16"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "name": "buyToken",
         "type": "uint16"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "name": "sellToken",
         "type": "uint16"
       },
@@ -514,7 +510,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "name": "owner",
         "type": "address"
       },
@@ -531,7 +527,7 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "name": "owner",
         "type": "address"
       },
@@ -554,8 +550,8 @@
       },
       {
         "indexed": true,
-        "name": "orderIds",
-        "type": "uint256"
+        "name": "orderId",
+        "type": "uint16"
       },
       {
         "indexed": false,
@@ -581,8 +577,8 @@
       },
       {
         "indexed": true,
-        "name": "orderIds",
-        "type": "uint256"
+        "name": "orderId",
+        "type": "uint16"
       },
       {
         "indexed": false,
@@ -602,12 +598,12 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "name": "user",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "name": "token",
         "type": "address"
       },
@@ -618,8 +614,8 @@
       },
       {
         "indexed": false,
-        "name": "stateIndex",
-        "type": "uint256"
+        "name": "batchId",
+        "type": "uint32"
       }
     ],
     "name": "Deposit",
@@ -629,12 +625,12 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "name": "user",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "name": "token",
         "type": "address"
       },
@@ -645,8 +641,8 @@
       },
       {
         "indexed": false,
-        "name": "stateIndex",
-        "type": "uint256"
+        "name": "batchId",
+        "type": "uint32"
       }
     ],
     "name": "WithdrawRequest",
@@ -656,12 +652,12 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "name": "user",
         "type": "address"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "name": "token",
         "type": "address"
       },
@@ -755,7 +751,7 @@
     "outputs": [
       {
         "name": "orderIds",
-        "type": "uint256[]"
+        "type": "uint16[]"
       }
     ],
     "payable": false,
@@ -766,8 +762,8 @@
     "constant": false,
     "inputs": [
       {
-        "name": "ids",
-        "type": "uint256[]"
+        "name": "orderIds",
+        "type": "uint16[]"
       }
     ],
     "name": "cancelOrders",
@@ -781,7 +777,7 @@
     "inputs": [
       {
         "name": "cancellations",
-        "type": "uint256[]"
+        "type": "uint16[]"
       },
       {
         "name": "buyTokens",
@@ -811,8 +807,8 @@
     "name": "replaceOrders",
     "outputs": [
       {
-        "name": "orderIds",
-        "type": "uint256[]"
+        "name": "",
+        "type": "uint16[]"
       }
     ],
     "payable": false,
@@ -823,7 +819,7 @@
     "constant": false,
     "inputs": [
       {
-        "name": "batchIndex",
+        "name": "batchId",
         "type": "uint32"
       },
       {
@@ -925,6 +921,33 @@
       {
         "name": "user",
         "type": "address"
+      },
+      {
+        "name": "offset",
+        "type": "uint16"
+      },
+      {
+        "name": "pageSize",
+        "type": "uint16"
+      }
+    ],
+    "name": "getEncodedUserOrdersPaginated",
+    "outputs": [
+      {
+        "name": "elements",
+        "type": "bytes"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address"
       }
     ],
     "name": "getEncodedUserOrders",
@@ -956,7 +979,7 @@
     "constant": true,
     "inputs": [
       {
-        "name": "batchIndex",
+        "name": "batchId",
         "type": "uint32"
       }
     ],
