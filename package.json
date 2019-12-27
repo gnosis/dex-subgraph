@@ -6,6 +6,7 @@
     "prepare:rinkeby": "mustache config/rinkeby.json subgraph.yaml.mustache > subgraph.yaml",
     "prepare:ganache": "mustache config/ganache.json subgraph.yaml.mustache > subgraph.yaml",
     "abi": "node src/scripts/fetchAbi",
+    "addresses": "node src/scripts/printAddresses",
     "compile": "truffle compile",
     "codegen": "graph codegen",
     "build": "graph build",
