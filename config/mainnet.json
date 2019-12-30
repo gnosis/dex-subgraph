@@ -1,6 +1,7 @@
 {
-  "descrption": "dFusion subgraph",
+  "description": "dFusion subgraph",
   "network": "mainnet",
   "address": "0x6D210B2089c0B698994D9985Ca2abce314059015",
-  "startBlock": 9136109
+  "startBlock": 9136109,
+  "indexCalls": true
 }

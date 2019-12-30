@@ -1,9 +1,12 @@
 specVersion: 0.0.2
 description: '{{ description }}'
 repository: https://github.com/anxolin/dex-subgraph
+
 schema:
   file: ./schema.graphql
+
 dataSources:
+  # BatchExchange contract
   - kind: ethereum/contract
     name: BatchExchange
     network: {{ network }}
@@ -24,9 +27,13 @@ dataSources:
       abis:
         - name: BatchExchange
           file: ./abis/BatchExchange.json
-      {{! callHandlers:
+{{#indexCalls}}
+      callHandlers:
+        # Tokens
         - function: addToken(address)
-          handler: onAddToken }}
+          handler: onAddToken
+{{/indexCalls}}
       eventHandlers:
+        # Orders
         - event: OrderPlacement(indexed address,uint16,indexed uint16,indexed uint16,uint32,uint32,uint128,uint128)
           handler: onOrderPlacement      
