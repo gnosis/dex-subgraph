@@ -7,14 +7,22 @@
 #   - BigInt	Arbitrarily large integers. Used for Ethereum's uint32, int64, uint64, ..., uint256 types. Note: Everything below uint32, such as int32, uint24 or int8 is represented as i32.
 #   - BigDecimal	BigDecimal is used to represent arbitrary precision decimals
 
-type OrderPlacement @entity {
-  id: ID!
-  owner: Bytes! # address
-  index: BigInt! # uint256
-  buyToken: Int! # uint16
-  sellToken: Int! # uint16
-  validFrom: BigInt! # uint32
-  validUntil: BigInt! # uint32
+type Order @entity {
+  id: ID! # ownerAddress + orderId
+  owner: Bytes! # address - TODO: User
+  orderId: Int! # uint16
+  fromBatchId: BigInt! # uint32
+  fromEpoch: BigInt!
+  untilBatchId: BigInt! # uint32
+  untilEpoch: BigInt!
+  buyToken: Int! # uint16 - TODO: Token
+  sellToken: Int! # uint16 - TODO: Token
   priceNumerator: BigInt! # uint128
   priceDenominator: BigInt! # uint128
+  maxSellAmount: BigInt!
+  soldAmount: BigInt!
+  # TODO: trades
+  createEpoch: BigInt!
+  #cancelEpoch: BigInt!
+  #deleteEpoch: BigInt!
 }
