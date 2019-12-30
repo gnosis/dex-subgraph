@@ -1,4 +1,4 @@
-import { BigInt } from '@graphprotocol/graph-ts'
+import { BigInt, log } from '@graphprotocol/graph-ts'
 import { OrderPlacement as OrderPlacementEvent } from '../../generated/BatchExchange/BatchExchange'
 import { Order } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch } from '../utils'
@@ -6,6 +6,7 @@ import { toOrderId, batchIdToEpoch } from '../utils'
 export function onOrderPlacement(event: OrderPlacementEvent): void {
   // ID: owner + orderId
   let id = toOrderId(event.params.owner, event.params.index)
+  log.info('[onOrderPlacement] Create Order: {}', [id])
   
   // Create order
   let order = new Order(id)
