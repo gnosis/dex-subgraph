@@ -17,8 +17,10 @@ dataSources:
       kind: ethereum/events
       apiVersion: 0.0.3
       language: wasm/assemblyscript
+      file: ./src/mappings/index.ts
       entities:
-        - OrderPlacement
+        - Order
+        - Token
       abis:
         - name: BatchExchange
           file: ./abis/BatchExchange.json
@@ -27,5 +29,4 @@ dataSources:
           handler: onAddToken }}
       eventHandlers:
         - event: OrderPlacement(indexed address,uint16,indexed uint16,indexed uint16,uint32,uint32,uint128,uint128)
-          handler: onOrderPlacement
-      file: ./src/mappings/index.ts
+          handler: onOrderPlacement      
