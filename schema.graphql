@@ -26,3 +26,13 @@ type Order @entity {
   #cancelEpoch: BigInt!
   #deleteEpoch: BigInt!
 }
+
+type Token @entity {
+  id: ID! # tokenId
+  address: Bytes!
+  fromBatchId: BigInt!
+  createEpoch: BigInt!
+  # TODO: symbol
+  # TODO: decimals
+  # TODO: name
+}

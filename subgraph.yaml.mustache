@@ -22,7 +22,10 @@ dataSources:
       abis:
         - name: BatchExchange
           file: ./abis/BatchExchange.json
+      {{! callHandlers:
+        - function: addToken(address)
+          handler: onAddToken }}
       eventHandlers:
         - event: OrderPlacement(indexed address,uint16,indexed uint16,indexed uint16,uint32,uint32,uint128,uint128)
-          handler: handleOrderPlacement
-      file: ./src/mappings/orders.ts
+          handler: onOrderPlacement
+      file: ./src/mappings/index.ts

@@ -1,17 +1,13 @@
-// https://docs.assemblyscript.org/
-// https://docs.assemblyscript.org/basics/types
-
 import { BigInt } from '@graphprotocol/graph-ts'
 import { OrderPlacement as OrderPlacementEvent } from '../../generated/BatchExchange/BatchExchange'
 import { Order } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch } from '../utils'
 
-
-export function handleOrderPlacement(event: OrderPlacementEvent): void {
+export function onOrderPlacement(event: OrderPlacementEvent): void {
   // ID: owner + orderId
+  let id = toOrderId(event.params.owner, event.params.index)
   
   // Create order
-  let id = toOrderId(event.params.owner, event.params.index)
   let order = new Order(id)
   order.owner = event.params.owner
   order.orderId = event.params.index
