@@ -13,6 +13,9 @@ export function onAddToken(call: AddTokenCall): void {
   token.createEpoch = call.block.timestamp
   // cancelEpoch: BigInt!
   // deleteEpoch: BigInt!
+
+  // Transaction
+  token.txHash = call.transaction.hash
   
   token.save()
 }

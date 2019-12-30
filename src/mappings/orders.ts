@@ -34,6 +34,10 @@ export function onOrderPlacement(event: OrderPlacementEvent): void {
   order.createEpoch = event.block.timestamp
   // cancelEpoch: BigInt!
   // deleteEpoch: BigInt!
+
+  // Transaction
+  order.txHash = event.transaction.hash
+  order.txLogIndex = event.transactionLogIndex 
   
   // Trades
   // TODO: trades

@@ -22,9 +22,11 @@ type Order @entity {
   maxSellAmount: BigInt!
   soldAmount: BigInt!
   # TODO: trades
-  createEpoch: BigInt!
+  createEpoch: BigInt!  
   #cancelEpoch: BigInt!
   #deleteEpoch: BigInt!
+  txHash: Bytes!,
+  txLogIndex: BigInt!,
 }
 
 type Token @entity {
@@ -35,4 +37,5 @@ type Token @entity {
   # TODO: symbol
   # TODO: decimals
   # TODO: name
+  txHash: Bytes!
 }
