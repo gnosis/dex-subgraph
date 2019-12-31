@@ -138,6 +138,9 @@ yarn gen
 
 Deploy to the different networks:
 ```bash
+# Make sure you are authenticated
+graph auth https://api.thegraph.com/deploy/ <your-access-token>
+
 # Deploy to rinkeby
 yarn deploy-rinkeby
 
