@@ -4,44 +4,46 @@ import { Order } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch } from '../utils'
 
 export function onOrderPlacement(event: OrderPlacementEvent): void {
+  let params = event.params;
+
   // ID: owner + orderId
-  let id = toOrderId(event.params.owner, event.params.index)
+  let id = toOrderId(params.owner, params.index)
   log.info('[onOrderPlacement] Create Order: {}', [id])
   
   // Create order
   let order = new Order(id)
-  order.owner = event.params.owner
-  order.orderId = event.params.index
+  order.owner = params.owner
+  order.orderId = params.index
 
   // Validity
-  order.fromBatchId = event.params.validFrom
-  order.fromEpoch = batchIdToEpoch(event.params.validFrom)
-  order.untilBatchId = event.params.validUntil
-  order.untilEpoch = batchIdToEpoch(event.params.validUntil)
+  order.fromBatchId = params.validFrom
+  order.fromEpoch = batchIdToEpoch(params.validFrom)
+  order.untilBatchId = params.validUntil
+  order.untilEpoch = batchIdToEpoch(params.validUntil)
 
   // Tokens
-  order.buyToken = event.params.buyToken
-  order.sellToken = event.params.sellToken
+  order.buyToken = params.buyToken
+  order.sellToken = params.sellToken
 
   // Price
-  order.priceNumerator = event.params.priceNumerator
-  order.priceDenominator = event.params.priceDenominator
+  order.priceNumerator = params.priceNumerator
+  order.priceDenominator = params.priceDenominator
 
   // Traded amounts
-  order.maxSellAmount = event.params.priceDenominator
+  order.maxSellAmount = params.priceDenominator
   order.soldAmount = BigInt.fromI32(0)
 
   // Audit dates
   order.createEpoch = event.block.timestamp
-  // cancelEpoch: BigInt!
-  // deleteEpoch: BigInt!
+  order.cancelEpoch = null
+  order.deleteEpoch = null
 
   // Transaction
   order.txHash = event.transaction.hash
   order.txLogIndex = event.transactionLogIndex 
   
   // Trades
-  // TODO: trades
+  order.trades = []
   
   order.save()
 }
