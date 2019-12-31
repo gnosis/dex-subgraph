@@ -1,6 +1,6 @@
-import { log, Address, BigInt, Bytes } from '@graphprotocol/graph-ts'
+import { log, Address, BigInt, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
 import { Token } from '../../generated/schema'
-import { AddTokenCall } from '../../generated/BatchExchange/BatchExchange'
+import { AddTokenCall, BatchExchange } from '../../generated/BatchExchange/BatchExchange'
 import { epochToBatchId } from '../utils'
 
 export function onAddToken(call: AddTokenCall): void {
@@ -10,8 +10,23 @@ export function onAddToken(call: AddTokenCall): void {
   createToken(address, timestamp, txHash)
 }
 
+export function createTokenIfNotCreated(tokenId: number, event: EthereumEvent): Token {
+  let token = Token.load(BigInt.fromI32(tokenId).toString())
+  if (token == null) {  
+    let batchExchange = BatchExchange.bind(event.address);    
 
-export function createToken(address: Address, timestamp: BigInt, txHash: Bytes): void {
+    let address = batchExchange.tokenIdToAddressMap(tokenId)
+    let timestamp = event.block.timestamp
+    let txHash = event.transaction.hash
+    
+    token = createToken(address, timestamp, txHash)
+  }
+
+  return token
+}
+
+
+export function createToken(address: Address, timestamp: BigInt, txHash: Bytes): Token {
   // Create token
   log.info('[onAddToken] Create Token: {}', [address.toHex()])
   let token = new Token(address.toHex())
@@ -25,4 +40,6 @@ export function createToken(address: Address, timestamp: BigInt, txHash: Bytes):
   token.txHash = txHash
 
   token.save()
+
+  return token
 }
