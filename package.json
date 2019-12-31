@@ -8,7 +8,7 @@
     "abi": "node src/scripts/fetchAbi",
     "addresses": "node src/scripts/printAddresses",
     "compile": "truffle compile",
-    "gen": "graph gen",
+    "gen": "graph codegen",
     "build": "graph build",
     "create-ganache": "npm run prepare:ganache && graph create anxolin/dfusion --node http://127.0.0.1:8020",
     "create-rinkeby": "npm run prepare:rinkeby && graph create anxolin/dfusion_rinkeby --node https://api.thegraph.com/deploy/",
