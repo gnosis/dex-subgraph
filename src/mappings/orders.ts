@@ -1,12 +1,21 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import { OrderPlacement as OrderPlacementEvent } from '../../generated/BatchExchange/BatchExchange'
-import { Order } from '../../generated/schema'
+import { Order, Token } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch } from '../utils'
+import { createTokenIfNotCreated } from './tokens';
 
-export function onOrderPlacement(event: OrderPlacementEvent): void {
-  let params = event.params;
+export function onOrderPlacement(event: OrderPlacementEvent): void {  
+  // Crete tokens if they don't exist
+  let sellToken = createTokenIfNotCreated(event.params.sellToken, event)
+  let buyToken = createTokenIfNotCreated(event.params.buyToken, event)
 
+  // Create order
+  _createOrder(event, sellToken, buyToken)
+}
+
+function _createOrder(event: OrderPlacementEvent, sellToken: Token, buyToken: Token): Order {
   // ID: owner + orderId
+  let params = event.params;
   let id = toOrderId(params.owner, params.index)
   log.info('[onOrderPlacement] Create Order: {}', [id])
   
@@ -22,8 +31,8 @@ export function onOrderPlacement(event: OrderPlacementEvent): void {
   order.untilEpoch = batchIdToEpoch(params.validUntil)
 
   // Tokens
-  order.buyToken = params.buyToken
-  order.sellToken = params.sellToken
+  order.sellToken = sellToken.id
+  order.buyToken = buyToken.id
 
   // Price
   order.priceNumerator = params.priceNumerator
@@ -31,7 +40,7 @@ export function onOrderPlacement(event: OrderPlacementEvent): void {
 
   // Traded amounts
   order.maxSellAmount = params.priceDenominator
-  order.soldAmount = BigInt.fromI32(0)
+  order.soldAmount = BigInt.fromI32(1)
 
   // Audit dates
   order.createEpoch = event.block.timestamp
@@ -46,4 +55,5 @@ export function onOrderPlacement(event: OrderPlacementEvent): void {
   order.trades = []
   
   order.save()
+  return order
 }

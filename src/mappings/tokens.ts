@@ -7,29 +7,38 @@ export function onAddToken(call: AddTokenCall): void {
   let address = call.inputs.token
   let timestamp = call.block.timestamp
   let txHash = call.transaction.hash
-  createToken(address, timestamp, txHash)
+  
+  // Get token id
+  let batchExchange = BatchExchange.bind(call.to);    
+  let tokenId = batchExchange.tokenAddressToIdMap(address)
+
+  // Create token
+  createToken(tokenId, address, timestamp, txHash)
 }
 
-export function createTokenIfNotCreated(tokenId: number, event: EthereumEvent): Token {
-  let token = Token.load(BigInt.fromI32(tokenId).toString())
-  if (token == null) {  
+export function createTokenIfNotCreated(tokenId: u32, event: EthereumEvent): Token {
+  let id = BigInt.fromI32(tokenId).toString()
+  let token = Token.load(id)
+  log.info('[createTokenIfNotCreated] Get Token: {}', [id])
+  if (token == null) {    
     let batchExchange = BatchExchange.bind(event.address);    
-
     let address = batchExchange.tokenIdToAddressMap(tokenId)
     let timestamp = event.block.timestamp
     let txHash = event.transaction.hash
     
-    token = createToken(address, timestamp, txHash)
+    token = createToken(tokenId, address, timestamp, txHash)
   }
 
-  return token
+  return token!
 }
 
 
-export function createToken(address: Address, timestamp: BigInt, txHash: Bytes): Token {
-  // Create token
-  log.info('[onAddToken] Create Token: {}', [address.toHex()])
-  let token = new Token(address.toHex())
+export function createToken(tokenId: u32, address: Address, timestamp: BigInt, txHash: Bytes): Token {
+  let id = BigInt.fromI32(tokenId).toString()
+  log.info('[createToken] Create Token {} with address {}', [id, address.toHex()])
+
+  // Create token  
+  let token = new Token(id)
   token.address = address
   token.fromBatchId = epochToBatchId(timestamp)
 

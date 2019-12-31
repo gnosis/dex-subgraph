@@ -22,20 +22,53 @@ type Order @entity {
   id: ID! # ownerAddress + orderId
   owner: Bytes! # address - TODO: User
   orderId: Int! # uint16
+
+  # Validity
   fromBatchId: BigInt! # uint32
   fromEpoch: BigInt!
   untilBatchId: BigInt! # uint32
   untilEpoch: BigInt!
-  buyToken: Int! # uint16 - TODO: Token
-  sellToken: Int! # uint16 - TODO: Token
+
+  # Tokens
+  buyToken: Token!
+  sellToken: Token!
+
+  # Price
   priceNumerator: BigInt! # uint128
   priceDenominator: BigInt! # uint128
+
+  # Traded amounts
   maxSellAmount: BigInt!
   soldAmount: BigInt!
-  # TODO: trades
+  trades: [Trade!]!
+
+  # Audit Dates
   createEpoch: BigInt!  
-  #cancelEpoch: BigInt!
-  #deleteEpoch: BigInt!
+  cancelEpoch: BigInt
+  deleteEpoch: BigInt
+
+  # Transaction
   txHash: Bytes!,
-  txLogIndex: BigInt!,
+  txLogIndex: BigInt!
+}
+
+type Trade @entity {
+  id: ID! # ownerAddress + orderId
+  order: Order
+
+  # Trade details
+  sellVolume: BigInt!
+  buyVolume: BigInt!
+  tradeBatchId: BigInt
+  tradeEpoch: BigInt
+
+  # Audit Dates
+  #   Note that "createEpoch" is different from "tradeEpoch", since "tradeEpoch" is the end of the batch, and the 
+  #   "createEpoch" is the date where the transaction was mined
+  createEpoch: BigInt!
+  revertEpoch: BigInt
+  
+  # Transaction
+  txHash: Bytes!,
+  txLogIndex: BigInt!
 }
