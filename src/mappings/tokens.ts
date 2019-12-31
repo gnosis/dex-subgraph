@@ -37,6 +37,8 @@ export function createToken(tokenId: u32, address: Address, timestamp: BigInt, t
   let id = BigInt.fromI32(tokenId).toString()
   log.info('[createToken] Create Token {} with address {}', [id, address.toHex()])
 
+
+
   // Create token  
   let token = new Token(id)
   token.address = address
