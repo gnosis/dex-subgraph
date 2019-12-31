@@ -144,3 +144,12 @@ yarn deploy-rinkeby
 # Deploy to mainnet
 yarn deploy-mainnet
 ```
+
+## Troubleshooting
+```bash
+# Delete all containers and data
+docker-compose down && rm -rf data
+
+# Run the graph
+docker-compose up
+```
