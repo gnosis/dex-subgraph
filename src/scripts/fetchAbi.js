@@ -6,7 +6,7 @@ const path = require('path')
 // Contracts to extract the ABI from
 const TRUFFLE_CONTRACTS = {
   BatchExchange: '@gnosis.pm/dex-contracts/build/contracts/BatchExchange.json',
-  ERC20: 'openzeppelin-solidity/build/contracts/ERC20Detailed.json'
+  Erc20: 'openzeppelin-solidity/build/contracts/ERC20Detailed.json'
 }
 var ABI_DIR = path.join(__dirname, '../../abis')
 
