@@ -8,7 +8,7 @@
     "abi": "node src/scripts/fetchAbi",
     "addresses": "node src/scripts/printAddresses",
     "compile": "truffle compile",
-    "codegen": "graph codegen",
+    "gen": "graph gen",
     "build": "graph build",
     "create-ganache": "npm run prepare:ganache && graph create anxolin/dfusion --node http://127.0.0.1:8020",
     "create-rinkeby": "npm run prepare:rinkeby && graph create anxolin/dfusion_rinkeby --node https://api.thegraph.com/deploy/",
@@ -31,6 +31,7 @@
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.9.0",
     "mustache": "^3.2.0",
+    "openzeppelin-solidity": "^2.4.0",
     "truffle": "^5.1.6",
     "truffle-contract": "^4.0.31",
     "truffle-hdwallet-provider": "^1.0.17"

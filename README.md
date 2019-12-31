@@ -129,7 +129,7 @@ vim config/rinkeby.json
 5. Regenerate the model:
 
 ```bash
-yarn codegen
+yarn gen
 ```
 
 ## Deploy to rinkeby or mainnet
