@@ -17,6 +17,10 @@ type Token @entity {
   decimals: Int
   name: String
 
+  # Balances and Deposits
+  balances: [Balance!]! @derivedFrom(field: "token")
+  deposits: [Deposit!]! @derivedFrom(field: "token")
+
   # Audit Dates
   createEpoch: BigInt!
 
@@ -28,8 +32,8 @@ type User @entity {
   id: ID! # address
 
   # Balances and Deposits
-  balances: [Balance!]! @derivedFrom(field: user)
-  deposits: [Deposit!]! @derivedFrom(field: user)
+  balances: [Balance!]! @derivedFrom(field: "user")
+  deposits: [Deposit!]! @derivedFrom(field: "user")
 
   # Audit Dates
   createEpoch: BigInt!
