@@ -1,6 +1,6 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import { OrderPlacement as OrderPlacementEvent } from '../../generated/BatchExchange/BatchExchange'
-import { Order, Token } from '../../generated/schema'
+import { Order, Token, Trade } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch } from '../utils'
 import { createTokenIfNotCreated } from './tokens';
 
@@ -11,6 +11,17 @@ export function onOrderPlacement(event: OrderPlacementEvent): void {
 
   // Create order
   _createOrder(event, sellToken, buyToken)
+}
+
+export function updateOrderOnNewTrade(orderId: string, trade: Trade) {
+  let orderOpt = Order.load(orderId)
+  if (!orderOpt) {
+    throw new Error("Order doesn't exist: " + orderId)
+  }
+  let order = orderOpt!
+  order.soldVolume = order.soldVolume.plus(trade.sellVolume)
+  order.boughtVolume = order.boughtVolume.plus(trade.sellVolume)
+  order.save()
 }
 
 function _createOrder(event: OrderPlacementEvent, sellToken: Token, buyToken: Token): Order {

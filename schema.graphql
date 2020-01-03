@@ -83,7 +83,8 @@ type Order @entity {
 
   # Traded amounts
   maxSellAmount: BigInt!
-  soldAmount: BigInt!
+  soldVolume: BigInt!
+  boughtVolume: BigInt!
   trades: [Trade!]! @derivedFrom(field: "order")
 
   # Audit Dates
@@ -98,7 +99,7 @@ type Order @entity {
 
 type Trade @entity {
   id: ID! # ownerAddress + orderId
-  order: Order
+  order: Order!
 
   # Trade details
   sellVolume: BigInt!

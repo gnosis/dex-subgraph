@@ -1,11 +1,22 @@
 import { log } from '@graphprotocol/graph-ts'
 import { Trade as TradeEvent } from '../../generated/BatchExchange/BatchExchange'
-import { Trade, Order } from '../../generated/schema'
+import { Trade } from '../../generated/schema'
 import { toOrderId, epochToBatchId, toTradeId, batchIdToEpoch } from '../utils'
+import { updateOrderOnNewTrade } from './orders';
 
-export function onTrade(event: TradeEvent): void { 
+export function onTrade(event: TradeEvent): void {   
+  let orderId = toOrderId(event.params.owner, event.params.orderId)  
+
+  // Create trade
+  let trade = _createTrade(orderId, event)
+
+  // Update order
+  updateOrderOnNewTrade(orderId, trade)
+}
+
+function _createTrade(orderId: string, event: TradeEvent): Trade {
   let params = event.params;
-
+  
   // Calculate batchId
   let createEpoch = event.block.timestamp
   let batchId = epochToBatchId(createEpoch)
@@ -16,23 +27,11 @@ export function onTrade(event: TradeEvent): void {
   let trade = new Trade(tradeId)
 
   // Set relationship with order
-  let orderId = toOrderId(params.owner, params.orderId)  
   trade.order = orderId
-
-  // Update order soldAmount
-  let orderOpt = Order.load(orderId)
-  if (!orderOpt) {
-    throw new Error("Order doesn't exist: " + orderId)
-  }
-  let order = orderOpt!
-  let sellVolume = params.executedSellAmount
-  let buyVolume = params.executedBuyAmount
-  order.soldAmount = order.soldAmount.plus(sellVolume)
-  order.save()
   
   // Trade details
-  trade.sellVolume = sellVolume
-  trade.buyVolume = buyVolume
+  trade.sellVolume = params.executedSellAmount
+  trade.buyVolume = params.executedBuyAmount
   trade.tradeBatchId = batchId
   trade.tradeEpoch = batchIdToEpoch(batchId)
 
@@ -45,4 +44,5 @@ export function onTrade(event: TradeEvent): void {
   trade.txLogIndex = event.transactionLogIndex 
   
   trade.save()
+  return trade
 }
