@@ -12,7 +12,7 @@ export function onTrade(event: TradeEvent): void {
 
   // Create order
   let tradeId = toTradeId(params.owner, params.orderId, batchId)
-  log.info('[onOrderPlacement] Create Trade: {}', [tradeId])
+  log.info('[onTrade] Create Trade: {}', [tradeId])
   let trade = new Trade(tradeId)
 
   // Set relationship with order

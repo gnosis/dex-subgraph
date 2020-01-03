@@ -42,3 +42,5 @@ dataSources:
         # Orders
         - event: OrderPlacement(indexed address,uint16,indexed uint16,indexed uint16,uint32,uint32,uint128,uint128)
           handler: onOrderPlacement      
+        - event: Trade(indexed address,indexed uint16,uint256,uint256)
+          handler: onTrade
