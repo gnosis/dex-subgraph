@@ -3,7 +3,7 @@ import { User } from '../../generated/schema'
 import { epochToBatchId } from '../utils'
 
 export function createUserIfNotCreated(address: Address, event: EthereumEvent): User {
-  const id = address.toHex()
+  let id = address.toHex()
   let user = User.load(id)
   log.info('[createUserIfNotCreated] Get User: {}', [id])
   if (user == null) {

@@ -32,9 +32,10 @@ type User @entity {
   id: ID! # address
   fromBatchId: BigInt!
 
-  # Balances and Deposits
+  # Balances, deposits, orders
   balances: [Balance!]! @derivedFrom(field: "user")
   deposits: [Deposit!]! @derivedFrom(field: "user")
+  orders: [Order!]! @derivedFrom(field: "owner")
 
   # Audit Dates
   createEpoch: BigInt!
@@ -69,7 +70,7 @@ type Deposit @entity {
 
 type Order @entity {
   id: ID! # ownerAddress + orderId
-  owner: Bytes! # address - TODO: User
+  owner: User! # address - TODO: User
   orderId: Int! # uint16
 
   # Validity

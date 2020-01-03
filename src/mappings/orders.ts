@@ -1,30 +1,36 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import { OrderPlacement as OrderPlacementEvent } from '../../generated/BatchExchange/BatchExchange'
-import { Order, Token, Trade } from '../../generated/schema'
+import { Order, Token, Trade, User } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch } from '../utils'
 import { createTokenIfNotCreated } from './tokens';
+import { createUserIfNotCreated } from './users'
 
 export function onOrderPlacement(event: OrderPlacementEvent): void {  
+  let params = event.params;
+
+  // Crete user if doesn't exist
+  let owner = createUserIfNotCreated(params.owner, event)
+
   // Crete tokens if they don't exist
-  let sellToken = createTokenIfNotCreated(event.params.sellToken, event)
-  let buyToken = createTokenIfNotCreated(event.params.buyToken, event)
+  let sellToken = createTokenIfNotCreated(params.sellToken, event)
+  let buyToken = createTokenIfNotCreated(params.buyToken, event)
 
   // Create order
-  _createOrder(event, sellToken, buyToken)
+  _createOrder(event, owner, sellToken, buyToken)
 }
 
-export function updateOrderOnNewTrade(orderId: string, trade: Trade) {
+export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
   let orderOpt = Order.load(orderId)
   if (!orderOpt) {
     throw new Error("Order doesn't exist: " + orderId)
   }
   let order = orderOpt!
   order.soldVolume = order.soldVolume.plus(trade.sellVolume)
-  order.boughtVolume = order.boughtVolume.plus(trade.sellVolume)
+  order.boughtVolume = order.boughtVolume.plus(trade.buyVolume)
   order.save()
 }
 
-function _createOrder(event: OrderPlacementEvent, sellToken: Token, buyToken: Token): Order {
+function _createOrder(event: OrderPlacementEvent, owner: User, sellToken: Token, buyToken: Token): Order {
   // ID: owner + orderId
   let params = event.params;
   let id = toOrderId(params.owner, params.index)
@@ -32,7 +38,7 @@ function _createOrder(event: OrderPlacementEvent, sellToken: Token, buyToken: To
   
   // Create order
   let order = new Order(id)
-  order.owner = params.owner
+  order.owner = owner.id
   order.orderId = params.index
 
   // Validity
