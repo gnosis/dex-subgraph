@@ -3,10 +3,11 @@ import {
   OrderPlacement as OrderPlacementEvent,
   OrderCancelation as OrderCancelationEvent,
   OrderDeletion as OrderDeletionEvent,
-  OrderCancelation
+  OrderCancelation,
+  BatchExchange
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
-import { toOrderId, batchIdToEpoch } from '../utils'
+import { toOrderId, toOrderIdLegacy, batchIdToEpoch, epochToBatchId } from '../utils'
 import { createTokenIfNotCreated } from './tokens';
 import { createUserIfNotCreated } from './users'
 
@@ -25,25 +26,52 @@ export function onOrderPlacement(event: OrderPlacementEvent): void {
 }
 
 export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
-  let orderOpt = Order.load(orderId)
-  if (!orderOpt) {
-    throw new Error("Order doesn't exist: " + orderId)
-  }
-  let order = orderOpt!
+  let order = _getById(orderId)
   order.soldVolume = order.soldVolume.plus(trade.sellVolume)
   order.boughtVolume = order.boughtVolume.plus(trade.buyVolume)
   order.save()
 }
 
 export function onOrderCancelation(event: OrderCancelationEvent): void {
-  log.info('[onWithdrawRequest] New Order Cancellation: {} - TODO', [event.transaction.hash.toHex()])
+  let params = event.params;
+  
+  let orderId = toOrderIdLegacy(params.owner, params.id)
+  log.info('[onOrderCancelation] Order Cancellation: {}', [orderId])
+  let order = _getById(orderId)
+
+  if (order.cancelEpoch == null) {
+    order.untilBatchId = epochToBatchId(event.block.timestamp).minus(new BigInt(1))
+    order.untilEpoch = batchIdToEpoch(order.untilBatchId)
+    order.cancelEpoch = event.block.timestamp
+  } else {
+    log.warning("The order {} was already canceled", [orderId])
+  }
 }
 
 
 export function onOrderDeletion(event: OrderDeletionEvent): void {
-  log.info('[onOrderDeletion] New Order Deletion: {} - TODO', [event.transaction.hash.toHex()])
+  let params = event.params;
+  
+  let orderId = toOrderIdLegacy(params.owner, params.id)
+  log.info('[onOrderDeletion] Order Deletion: {}', [orderId])
+  let order = _getById(orderId)
+
+  if (order.deleteEpoch == null) {
+    order.untilBatchId = epochToBatchId(event.block.timestamp).minus(new BigInt(1))
+    order.untilEpoch = batchIdToEpoch(order.untilBatchId)
+    order.deleteEpoch = event.block.timestamp
+  } else {
+    log.warning("The order {} was already deleted", [orderId])
+  }
 }
 
+function _getById(orderId: string): Order {
+  let orderOpt = Order.load(orderId)
+  if (!orderOpt) {
+    throw new Error("Order doesn't exist: " + orderId)
+  }
+  return orderOpt!
+}
 
 function _createOrder(event: OrderPlacementEvent, owner: User, sellToken: Token, buyToken: Token): Order {
   // ID: owner + orderId

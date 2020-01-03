@@ -10,7 +10,7 @@ export function onAddToken(call: AddTokenCall): void {
   let txHash = call.transaction.hash
   
   // Get token id
-  let batchExchange = BatchExchange.bind(call.to);    
+  let batchExchange = BatchExchange.bind(call.to);
   let tokenId = batchExchange.tokenAddressToIdMap(address)
 
   // Create token
@@ -22,7 +22,7 @@ export function createTokenIfNotCreated(tokenId: u32, event: EthereumEvent): Tok
   let token = Token.load(id)
   log.info('[createTokenIfNotCreated] Get Token: {}', [id])
   if (token == null) {
-    let batchExchange = BatchExchange.bind(event.address);    
+    let batchExchange = BatchExchange.bind(event.address);
     let address = batchExchange.tokenIdToAddressMap(tokenId)
     let timestamp = event.block.timestamp
     let txHash = event.transaction.hash

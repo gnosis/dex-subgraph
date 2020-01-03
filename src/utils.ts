@@ -5,6 +5,11 @@ export function toOrderId(ownerAddress: Address, orderId: u32): string {
   return ownerAddress.toHex() + '-' + BigInt.fromI32(orderId).toString();
 }
 
+// TODO: Delete after the type is fixed
+export function toOrderIdLegacy(ownerAddress: Address, orderId: BigInt): string {
+  return ownerAddress.toHex() + '-' + orderId.toString();
+}
+
 export function toTradeId(ownerAddress: Address, orderId: u32, batchId: BigInt): string {
   return ownerAddress.toHex() + '-' + BigInt.fromI32(orderId).toString() + '-' + batchId.toString();
 }
