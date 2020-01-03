@@ -49,10 +49,7 @@ function _createOrder(event: OrderPlacementEvent, sellToken: Token, buyToken: To
 
   // Transaction
   order.txHash = event.transaction.hash
-  order.txLogIndex = event.transactionLogIndex 
-  
-  // Trades
-  order.trades = []
+  order.txLogIndex = event.transactionLogIndex
   
   order.save()
   return order

@@ -17,8 +17,9 @@ export function onTrade(event: TradeEvent): void {
 
   // Set relationship with order
   let orderId = toOrderId(params.owner, params.orderId)  
-  trade.buyVolume = params.executedBuyAmount
   trade.order = orderId
+
+  // Update order soldAmount
   let orderOpt = Order.load(orderId)
   if (!orderOpt) {
     throw new Error("Order doesn't exist: " + orderId)
@@ -27,7 +28,7 @@ export function onTrade(event: TradeEvent): void {
   let sellVolume = params.executedSellAmount
   let buyVolume = params.executedBuyAmount
   order.soldAmount = order.soldAmount.plus(sellVolume)
-  order.trades.push(tradeId)
+  order.save()
   
   // Trade details
   trade.sellVolume = sellVolume
