@@ -24,6 +24,44 @@ type Token @entity {
   txHash: Bytes!
 }
 
+type User @entity {
+  id: ID! # address
+
+  # Balances and Deposits
+  balances: [Balance!]! @derivedFrom(field: user)
+  deposits: [Deposit!]! @derivedFrom(field: user)
+
+  # Audit Dates
+  createEpoch: BigInt!
+
+  # Transaction
+  txHash: Bytes!
+}
+
+type Balance @entity {
+  id: ID! # user-token
+  user: User!
+  token: Token!
+
+  # Audit Dates
+  createEpoch: BigInt!
+  updateEpoch: BigInt!
+}
+
+type Deposit @entity {
+  id: ID! # user-token
+  user: User!
+  token: Token!
+  amount: BigInt!
+  batchId: BigInt!
+
+  # Audit Dates
+  createEpoch: BigInt!
+
+  # Transaction
+  txHash: Bytes!
+}
+
 type Order @entity {
   id: ID! # ownerAddress + orderId
   owner: Bytes! # address - TODO: User
