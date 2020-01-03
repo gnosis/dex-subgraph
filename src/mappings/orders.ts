@@ -1,5 +1,10 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
-import { OrderPlacement as OrderPlacementEvent } from '../../generated/BatchExchange/BatchExchange'
+import {
+  OrderPlacement as OrderPlacementEvent,
+  OrderCancelation as OrderCancelationEvent,
+  OrderDeletion as OrderDeletionEvent,
+  OrderCancelation
+} from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch } from '../utils'
 import { createTokenIfNotCreated } from './tokens';
@@ -29,6 +34,16 @@ export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
   order.boughtVolume = order.boughtVolume.plus(trade.buyVolume)
   order.save()
 }
+
+export function onOrderCancelation(event: OrderCancelationEvent): void {
+  log.info('[onWithdrawRequest] New Order Cancellation: {} - TODO', [event.transaction.hash.toHex()])
+}
+
+
+export function onOrderDeletion(event: OrderDeletionEvent): void {
+  log.info('[onOrderDeletion] New Order Deletion: {} - TODO', [event.transaction.hash.toHex()])
+}
+
 
 function _createOrder(event: OrderPlacementEvent, owner: User, sellToken: Token, buyToken: Token): Order {
   // ID: owner + orderId

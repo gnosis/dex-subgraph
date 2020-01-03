@@ -1,5 +1,5 @@
 import { log } from '@graphprotocol/graph-ts'
-import { Trade as TradeEvent } from '../../generated/BatchExchange/BatchExchange'
+import { Trade as TradeEvent, TradeReversion as TradeReversionEvent } from '../../generated/BatchExchange/BatchExchange'
 import { Trade } from '../../generated/schema'
 import { toOrderId, epochToBatchId, toTradeId, batchIdToEpoch } from '../utils'
 import { updateOrderOnNewTrade } from './orders';
@@ -12,6 +12,10 @@ export function onTrade(event: TradeEvent): void {
 
   // Update order
   updateOrderOnNewTrade(orderId, trade)
+}
+
+export function onTradeReversion(event: TradeReversionEvent): void {
+  log.info('[onTradeReversion] New Trade Reversion: {} - TODO', [event.transaction.hash.toHex()])
 }
 
 function _createTrade(orderId: string, event: TradeEvent): Trade {

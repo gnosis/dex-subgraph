@@ -39,8 +39,26 @@ dataSources:
           handler: onAddToken
 {{/indexCalls}}
       eventHandlers:
+        # Deposits
+        - event: Deposit(indexed address,indexed address,uint256,uint32)
+          handler: onDeposit
+
+        # Withdrawals
+        - event: Withdraw(indexed address,indexed address,uint256)
+          handler: onWithdraw
+        - event: WithdrawRequest(indexed address,indexed address,uint256,uint32)
+          handler: onWithdrawRequest
+
         # Orders
         - event: OrderPlacement(indexed address,uint16,indexed uint16,indexed uint16,uint32,uint32,uint128,uint128)
-          handler: onOrderPlacement      
+          handler: onOrderPlacement
+        - event: OrderCancelation(indexed address,uint256)
+          handler: onOrderCancelation
+        - event: OrderDeletion(indexed address,uint256)
+          handler: onOrderDeletion
+        
+        # Trades
         - event: Trade(indexed address,indexed uint16,uint256,uint256)
           handler: onTrade
+        - event: TradeReversion(indexed address,indexed uint16,uint256,uint256)
+          handler: onTradeReversion
