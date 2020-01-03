@@ -51,7 +51,8 @@ function _createOrder(event: OrderPlacementEvent, sellToken: Token, buyToken: To
 
   // Traded amounts
   order.maxSellAmount = params.priceDenominator
-  order.soldAmount = BigInt.fromI32(0)
+  order.soldVolume = BigInt.fromI32(0)
+  order.boughtVolume = BigInt.fromI32(0)
 
   // Audit dates
   order.createEpoch = event.block.timestamp
