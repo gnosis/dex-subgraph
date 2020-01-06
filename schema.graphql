@@ -8,6 +8,7 @@
 #   - BigDecimal	BigDecimal is used to represent arbitrary precision decimals
 
 type Token @entity {
+  "Token listed in dFusion"
   id: ID! # tokenId
   address: Bytes!
   fromBatchId: BigInt!
@@ -29,6 +30,8 @@ type Token @entity {
 }
 
 type User @entity {
+  "User in dFusion. Any ethereum account that deposited tokens or traded with dFusion"
+
   id: ID! # address
   fromBatchId: BigInt!
 
@@ -45,9 +48,11 @@ type User @entity {
 }
 
 type Balance @entity {
+  "User's balance for a token"
   id: ID! # user-token
   user: User!
   token: Token!
+  balance: BigInt!
 
   # Audit Dates
   createEpoch: BigInt!
@@ -55,6 +60,7 @@ type Balance @entity {
 }
 
 type Deposit @entity {
+  "Deposit of an user into dFusion"
   id: ID! # user-token
   user: User!
   token: Token!
@@ -69,6 +75,7 @@ type Deposit @entity {
 }
 
 type Order @entity {
+  "Order submitted by an user to dFusion. It has a validity (dates) so they can only be executed from/until some given batches. Partial executions of this trades must respect the limit price."
   id: ID! # ownerAddress + orderId
   owner: User! # address - TODO: User
   orderId: Int! # uint16
@@ -104,6 +111,7 @@ type Order @entity {
 }
 
 type Trade @entity {
+  "Trade executed in dFusion. It's part of the solution submitted by a solver for a given batch"
   id: ID! # ownerAddress + orderId
   order: Order!
 
