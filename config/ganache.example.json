@@ -1,5 +1,4 @@
 {
-  "description": "dFusion for local Ganache",
   "network": "mainnet",
   "address": "add-your-ganache-address-here",
   "indexCalls": false

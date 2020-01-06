@@ -1,5 +1,4 @@
 {
-  "description": "dFusion for Rinkeby",
   "network": "rinkeby",
   "address": "0x66B41D8177D6f7Cd7316d9a06eCFf5302249EE7C",
   "startBlock": 5646884,
