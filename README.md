@@ -70,7 +70,7 @@ yarn create-ganache
 yarn deploy
 ```
 
-The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/anxolin/dfusion/graphql
+The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/gnosis/dfusion/graphql
 
 ## Local development: Deposit, claim, place orders
 
