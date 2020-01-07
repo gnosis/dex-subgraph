@@ -7,7 +7,7 @@ import {
   BatchExchange
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
-import { toOrderId, toOrderIdLegacy, batchIdToEpoch, epochToBatchId } from '../utils'
+import { toOrderId, toOrderIdLegacy, batchIdToEpoch, getBatchId } from '../utils'
 import { createTokenIfNotCreated } from './tokens';
 import { createUserIfNotCreated } from './users'
 
@@ -26,7 +26,7 @@ export function onOrderPlacement(event: OrderPlacementEvent): void {
 }
 
 export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
-  let order = _getById(orderId)
+  let order = getOrderById(orderId)
   order.soldVolume = order.soldVolume.plus(trade.sellVolume)
   order.boughtVolume = order.boughtVolume.plus(trade.buyVolume)
   order.save()
@@ -37,10 +37,11 @@ export function onOrderCancelation(event: OrderCancelationEvent): void {
   
   let orderId = toOrderIdLegacy(params.owner, params.id)
   log.info('[onOrderCancelation] Order Cancellation: {}', [orderId])
-  let order = _getById(orderId)
+  let order = getOrderById(orderId)
 
   if (order.cancelEpoch == null) {
-    order.untilBatchId = epochToBatchId(event.block.timestamp).minus(new BigInt(1))
+    let batchId = getBatchId(event)
+    order.untilBatchId = batchId.minus(new BigInt(1))
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.cancelEpoch = event.block.timestamp
   } else {
@@ -54,10 +55,11 @@ export function onOrderDeletion(event: OrderDeletionEvent): void {
   
   let orderId = toOrderIdLegacy(params.owner, params.id)
   log.info('[onOrderDeletion] Order Deletion: {}', [orderId])
-  let order = _getById(orderId)
+  let order = getOrderById(orderId)
 
   if (order.deleteEpoch == null) {
-    order.untilBatchId = epochToBatchId(event.block.timestamp).minus(new BigInt(1))
+    let batchId = getBatchId(event)
+    order.untilBatchId = batchId.minus(new BigInt(1))
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.deleteEpoch = event.block.timestamp
   } else {
@@ -65,7 +67,7 @@ export function onOrderDeletion(event: OrderDeletionEvent): void {
   }
 }
 
-function _getById(orderId: string): Order {
+export function getOrderById(orderId: string): Order {
   let orderOpt = Order.load(orderId)
   if (!orderOpt) {
     throw new Error("Order doesn't exist: " + orderId)

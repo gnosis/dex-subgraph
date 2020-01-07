@@ -112,7 +112,7 @@ type Order @entity {
 
 type Trade @entity {
   "Trade executed in dFusion. It's part of the solution submitted by a solver for a given batch"
-  id: ID! # ownerAddress + orderId
+  id: ID! # txHash + logIndex
   order: Order!
 
   # Trade details

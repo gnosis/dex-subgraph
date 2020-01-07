@@ -1,4 +1,4 @@
-import { Address, BigInt } from "@graphprotocol/graph-ts";
+import { Address, BigInt, EthereumEvent } from "@graphprotocol/graph-ts";
 let BATCH_TIME = BigInt.fromI32(300)
 
 export function toOrderId(ownerAddress: Address, orderId: u32): string {
@@ -10,8 +10,8 @@ export function toOrderIdLegacy(ownerAddress: Address, orderId: BigInt): string 
   return ownerAddress.toHex() + '-' + orderId.toString();
 }
 
-export function toTradeId(ownerAddress: Address, orderId: u32, batchId: BigInt): string {
-  return ownerAddress.toHex() + '-' + BigInt.fromI32(orderId).toString() + '-' + batchId.toString();
+export function toEventId(event: EthereumEvent): string {
+  return event.transaction.hash.toHex() + '-' + event.logIndex.toString();
 }
 
 export function batchIdToEpoch(batchId: BigInt): BigInt {
@@ -20,4 +20,8 @@ export function batchIdToEpoch(batchId: BigInt): BigInt {
 
 export function epochToBatchId(epoch: BigInt): BigInt {
   return epoch.div(BATCH_TIME)
+}
+
+export function getBatchId(event: EthereumEvent): BigInt {
+  return epochToBatchId(event.block.timestamp)
 }
