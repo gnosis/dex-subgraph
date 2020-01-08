@@ -1,12 +1,15 @@
 # dFusion subgraph
 <img align="right" width="350" src="./docs/subgraph.png">
-Implements a subgraph for the [dFusion protocol](https://github.com/gnosis/dex-react).
-* https://thegraph.com/explorer/subgraph/gnosis/dfusion
 
-There's also a subgraph for Rinkeby test net:
-* https://thegraph.com/explorer/subgraph/gnosis/dfusion-rinkeby
+Implements a subgraph for the [dFusion protocol](https://github.com/gnosis/dex-contracts)
+
+* [Subgraph in Mainnet](https://thegraph.com/explorer/subgraph/gnosis/dfusion)
+* [Subgraph in Rinkeby](https://thegraph.com/explorer/subgraph/gnosis/dfusion-rinkeby)
+
 
 For more information see https://thegraph.com/docs/.
+
+---
 
 ## Setup environment
 
