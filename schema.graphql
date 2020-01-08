@@ -36,9 +36,11 @@ type User @entity {
   fromBatchId: BigInt!
 
   # Balances, deposits, orders
-  # balances: [Balance!]! @derivedFrom(field: "user") # TODO: Pending implementation
-  deposits: [Deposit!]! @derivedFrom(field: "user")
   orders: [Order!]! @derivedFrom(field: "owner")
+  deposits: [Deposit!]! @derivedFrom(field: "user")
+  withdrawRequests: [WithdrawRequest!]! @derivedFrom(field: "user")
+  withdrawals: [Withdraw!]! @derivedFrom(field: "user")
+  # balances: [Balance!]! @derivedFrom(field: "user") # TODO: Pending implementation
 
   # Audit Dates
   createEpoch: BigInt!
@@ -48,6 +50,7 @@ type User @entity {
 }
 
 # TODO: Pending implementation
+# 
 # type Balance @entity {
 #   "User's balance for a token"
 #   id: ID! # user-token
@@ -72,6 +75,42 @@ type Deposit @entity {
 
   # Audit Dates
   createEpoch: BigInt!
+
+  # Transaction
+  txHash: Bytes!
+}
+
+type WithdrawRequest @entity {
+  "WithdrawRequest of an user into dFusion"
+  id: ID! # txHash + id
+  user: User!
+  tokenAddress: Bytes!
+  # token: Token # TODO: Review how can I add the token relationship here considering
+
+  amount: BigInt!
+  withdrawableFromBatchId: BigInt!
+  withdrawnBatchId: BigInt!
+
+  # Audit Dates
+  createEpoch: BigInt!
+  createBatchId: BigInt!
+
+  # Transaction
+  txHash: Bytes!
+}
+
+type Withdraw @entity {
+  "Withdraw of an user into dFusion"
+  id: ID! # txHash + id
+  user: User!
+  tokenAddress: Bytes!
+  # token: Token # TODO: Review how can I add the token relationship here considering
+
+  amount: BigInt!
+
+  # Audit Dates
+  createEpoch: BigInt!
+  createBatchId: BigInt!
 
   # Transaction
   txHash: Bytes!
