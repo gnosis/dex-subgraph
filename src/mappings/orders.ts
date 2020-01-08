@@ -3,8 +3,6 @@ import {
   OrderPlacement as OrderPlacementEvent,
   OrderCancelation as OrderCancelationEvent,
   OrderDeletion as OrderDeletionEvent,
-  OrderCancelation,
-  BatchExchange
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
 import { toOrderId, toOrderIdLegacy, batchIdToEpoch, getBatchId } from '../utils'
@@ -76,7 +74,6 @@ export function getOrderById(orderId: string): Order {
 }
 
 function _createOrder(event: OrderPlacementEvent, owner: User, sellToken: Token, buyToken: Token): Order {
-  // ID: owner + orderId
   let params = event.params;
   let id = toOrderId(params.owner, params.index)
   log.info('[onOrderPlacement] Create Order: {}', [id])

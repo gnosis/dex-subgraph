@@ -1,4 +1,5 @@
-import { Address, BigInt, EthereumEvent } from "@graphprotocol/graph-ts";
+import { Address, BigInt, EthereumEvent, EthereumCall } from "@graphprotocol/graph-ts";
+
 let BATCH_TIME = BigInt.fromI32(300)
 
 export function toOrderId(ownerAddress: Address, orderId: u32): string {

@@ -15,12 +15,12 @@ type Token @entity {
 
   # token details (optional)
   symbol: String
-  decimals: Int
+  decimals: BigInt # Used BigInt instead of Int because it doesn't allow an optional u32
   name: String
 
   # Balances and Deposits
-  balances: [Balance!]! @derivedFrom(field: "token")
-  deposits: [Deposit!]! @derivedFrom(field: "token")
+  # balances: [Balance!]! @derivedFrom(field: "token") // TODO: Pending mapping
+  # deposits: [Deposit!]! @derivedFrom(field: "token") // TODO: Disabled for now, until we sort out how to relate it better
 
   # Audit Dates
   createEpoch: BigInt!
@@ -36,7 +36,7 @@ type User @entity {
   fromBatchId: BigInt!
 
   # Balances, deposits, orders
-  balances: [Balance!]! @derivedFrom(field: "user")
+  # balances: [Balance!]! @derivedFrom(field: "user") # TODO: Pending implementation
   deposits: [Deposit!]! @derivedFrom(field: "user")
   orders: [Order!]! @derivedFrom(field: "owner")
 
@@ -47,23 +47,26 @@ type User @entity {
   txHash: Bytes!
 }
 
-type Balance @entity {
-  "User's balance for a token"
-  id: ID! # user-token
-  user: User!
-  token: Token!
-  balance: BigInt!
+# TODO: Pending implementation
+# type Balance @entity {
+#   "User's balance for a token"
+#   id: ID! # user-token
+#   user: User!
+#   token: Token!
+#   balance: BigInt! # TODO: Model also the Fluxs
 
-  # Audit Dates
-  createEpoch: BigInt!
-  updateEpoch: BigInt!
-}
+#   # Audit Dates
+#   createEpoch: BigInt!
+#   updateEpoch: BigInt!
+# }
 
 type Deposit @entity {
   "Deposit of an user into dFusion"
   id: ID! # user-token
   user: User!
-  token: Token!
+  tokenAddress: Bytes!
+  # token: Token # TODO: Review how can I add the token relationship here considering
+
   amount: BigInt!
   batchId: BigInt!
 
