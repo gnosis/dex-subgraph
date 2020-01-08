@@ -1,4 +1,5 @@
 # dFusion subgraph
+<img align="right" width="350" src="./docs/subgraph.png">
 Implements a subgraph for the [dFusion protocol](https://github.com/gnosis/dex-react).
 * https://thegraph.com/explorer/subgraph/gnosis/dfusion
 
