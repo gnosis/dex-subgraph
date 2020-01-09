@@ -102,6 +102,7 @@ function _createTrade(orderId: string, event: TradeEvent): Trade {
   // Transaction
   trade.txHash = event.transaction.hash
   trade.txLogIndex = event.transactionLogIndex 
+  trade.save()
   
   return trade
 }
