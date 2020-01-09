@@ -26,18 +26,23 @@ Edit `.env` and setup your own config
 ## Setup for local development
 > First setup environment (see above)
 
-1. Run a local ganache and migrate the dependencies
+1. Run a local ganache-cli and migrate the dependencies
    > TODO: Initially this step was done in the same project, but there's a dependency issue to solve in dex-contracts. It's better for now cloning dex-contracts and migrating separatelly
 
 ```bash
-# Clone dex-contracts project
-git clone https://github.com/gnosis/dex-contracts 
-
 # Run a local ganache in one tab
 npx ganache-cli -h 0.0.0.0
 
+# Clone dex-contracts project (in another tab)
+#   It doesn't matter where you clone the project, this project is independent from dex-subgraph
+git clone https://github.com/gnosis/dex-contracts 
+
+# Install dependencies 
+cd dex-contracts
+yarn
+
 # Migrate dependencies (in another tab)
-npx truffle networks --clean
+npx truffle networks --clean || true
 npx truffle migrate
 
 # Setup 3 testing account and tokens
