@@ -1,22 +1,24 @@
 import { log } from '@graphprotocol/graph-ts'
 import { Withdraw as WithdrawEvent, WithdrawRequest as WithdrawRequestEvent } from '../../generated/BatchExchange/BatchExchange'
-import { Withdraw } from '../../generated/schema'
+import { Withdraw, WithdrawRequest } from '../../generated/schema'
 import { epochToBatchId, toEventId } from '../utils'
 import { createUserIfNotCreated } from './users'
 
 export function onWithdraw(event: WithdrawEvent): void {
+  log.info('[onWithdraw] New Withdraw. Tx: {}', [event.transaction.hash.toHex()])
+
   // Create withdraw
   _createWithdraw(event)
 }
 
 export function onWithdrawRequest(event: WithdrawRequestEvent): void {
-  log.info('[onWithdrawRequest] New Withdraw Request: {} - TODO', [event.transaction.hash.toHex()])
+  log.info('[onWithdrawRequest] New Withdraw Request. Tx: {}', [event.transaction.hash.toHex()])
 
   // Make sure user is created
   createUserIfNotCreated(event.params.user, event)
 
   // Create request event
-  // TODO:
+  _createWithdrawRequest(event)
 }
 
 export function _createWithdraw(event: WithdrawEvent): Withdraw {
@@ -41,5 +43,31 @@ export function _createWithdraw(event: WithdrawEvent): Withdraw {
 
   withdraw.save()
   return withdraw
+}
+
+export function _createWithdrawRequest(event: WithdrawRequestEvent): WithdrawRequest {
+  let params = event.params;
+  let id = toEventId(event)
+  log.info('[createWithdrawRequest] Create Withdraw Request {}', [id])
+  
+  // Create withdraw / withdrawRequest
+  let timestamp = event.block.timestamp
+  let withdrawRequest = new WithdrawRequest(id)
+  
+  // Params
+  withdrawRequest.user = params.user.toHex()
+  withdrawRequest.tokenAddress = params.token
+  withdrawRequest.amount = params.amount
+  withdrawRequest.withdrawableFromBatchId = params.batchId
+
+  // Audit dates
+  withdrawRequest.createEpoch = timestamp
+  withdrawRequest.createEpoch = epochToBatchId(timestamp)
+
+  // Transaction
+  withdrawRequest.txHash = event.transaction.hash
+
+  withdrawRequest.save()
+  return withdrawRequest
 }
 

@@ -89,7 +89,6 @@ type WithdrawRequest @entity {
 
   amount: BigInt!
   withdrawableFromBatchId: BigInt!
-  withdrawnBatchId: BigInt!
 
   # Audit Dates
   createEpoch: BigInt!
