@@ -172,3 +172,46 @@ type Trade @entity {
   txHash: Bytes!,
   txLogIndex: BigInt!
 }
+
+
+type Batch @entity {
+  "Batch executed in dFusion. Every batch will contain at least solution with the a set of trades that are executed in it"
+  id: ID! # batchId
+ 
+  # Trade details
+  startEpoch: BigInt!
+  endEpoch: BigInt
+
+  # Solutions
+  solution: Solution!
+  solutions: [Solution]!
+
+  # Audit Dates
+  firstSolutionEpoch: BigInt!
+  lastRevertEpoch: BigInt!
+  
+  # Transaction
+  txHash: Bytes!,
+  txLogIndex: BigInt!
+}
+
+type Solution @entity {
+  id: ID! # txHash + id
+  batch: Batch!
+
+  # Optional for 2 reasons:
+  #   - Events are handled before calls, so the Trade event will be indexed before the submitSolution
+  solver: User
+  feeReward: BigInt
+
+  # Trades
+  trades: [Trade!]!
+
+  # Audit Dates
+  createEpoch: BigInt!
+  revertEpoch: BigInt!
+  
+  # Transaction
+  txHash: Bytes!,
+  txLogIndex: BigInt!
+}
