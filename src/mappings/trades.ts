@@ -3,6 +3,7 @@ import { Trade as TradeEvent, TradeReversion as TradeReversionEvent } from '../.
 import { Trade } from '../../generated/schema'
 import { toOrderId, toEventId, batchIdToEndOfBatchEpoch, getBatchId } from '../utils'
 import { updateOrderOnNewTrade, getOrderById } from './orders';
+import { createSolutionOrAddTrade } from './solution';
 
 export function getTradeById(tradeId: string): Trade {
   let tradeOpt = Trade.load(tradeId)
@@ -48,8 +49,11 @@ export function onTrade(event: TradeEvent): void {
   // Create trade
   let trade = _createTrade(orderId, event)
 
-  // Update order
+  // Update order (traded amounts totals)
   updateOrderOnNewTrade(orderId, trade)
+
+  // Create solution, or add the trade to the current solution
+  createSolutionOrAddTrade(trade, event)
 }
 
 export function onTradeReversion(event: TradeReversionEvent): void {  

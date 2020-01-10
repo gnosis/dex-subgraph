@@ -29,7 +29,7 @@ export function createTokenIfNotCreated(tokenId: u32, event: EthereumEvent): Tok
   
   if (token == null) {
     let batchExchange = BatchExchange.bind(event.address);
-    let address = batchExchange.tokenIdToAddressMap(tokenId)
+    let address = batchExchange.tokenIdToAddressMap(tokenId)    
 
     let timestamp = event.block.timestamp
     let txHash = event.transaction.hash

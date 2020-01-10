@@ -159,8 +159,8 @@ type Trade @entity {
   # Trade details
   sellVolume: BigInt!
   buyVolume: BigInt!
-  tradeBatchId: BigInt
-  tradeEpoch: BigInt
+  tradeBatchId: BigInt!
+  tradeEpoch: BigInt!
 
   # Audit Dates
   #   Note that "createEpoch" is different from "tradeEpoch", since "tradeEpoch" is the end of the batch, and the 
@@ -186,11 +186,10 @@ type Batch @entity {
 
   # Audit Dates
   firstSolutionEpoch: BigInt!
-  lastRevertEpoch: BigInt!
+  lastRevertEpoch: BigInt
   
   # Transaction
-  txHash: Bytes!,
-  txLogIndex: BigInt!
+  txHash: Bytes!
 }
 
 type Solution @entity {
@@ -201,13 +200,14 @@ type Solution @entity {
   #   - Events are handled before calls, so the Trade event will be indexed before the submitSolution
   solver: User
   feeReward: BigInt
+  objectiveValue: BigInt
 
   # Trades
   trades: [Trade!]!
 
   # Audit Dates
   createEpoch: BigInt!
-  revertEpoch: BigInt!
+  revertEpoch: BigInt
   
   # Transaction
   txHash: Bytes!,
