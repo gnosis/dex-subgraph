@@ -36,7 +36,7 @@ export function _createWithdraw(event: WithdrawEvent): Withdraw {
 
   // Audit dates
   withdraw.createEpoch = timestamp
-  withdraw.createEpoch = epochToBatchId(timestamp)
+  withdraw.createBatchId = epochToBatchId(timestamp)
 
   // Transaction
   withdraw.txHash = event.transaction.hash
@@ -62,7 +62,7 @@ export function _createWithdrawRequest(event: WithdrawRequestEvent): WithdrawReq
 
   // Audit dates
   withdrawRequest.createEpoch = timestamp
-  withdrawRequest.createEpoch = epochToBatchId(timestamp)
+  withdrawRequest.createBatchId = epochToBatchId(timestamp)
 
   // Transaction
   withdrawRequest.txHash = event.transaction.hash
