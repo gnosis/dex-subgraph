@@ -178,13 +178,11 @@ type Batch @entity {
   "Batch executed in dFusion. Every batch will contain at least solution with the a set of trades that are executed in it"
   id: ID! # batchId
  
-  # Trade details
+  # batch details
   startEpoch: BigInt!
   endEpoch: BigInt
-
-  # Solutions
   solution: Solution!
-  solutions: [Solution]!
+  solutions: [Solution!]! @derivedFrom(field: "batch")
 
   # Audit Dates
   firstSolutionEpoch: BigInt!
