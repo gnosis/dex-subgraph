@@ -69,7 +69,10 @@ vim config/ganache.json
 git clone https://github.com/graphprotocol/graph-node/
 cd graph-node/docker
 
-# Run it
+# On Linux you may have to run
+./setup.sh
+
+# Start a local Graph Node
 docker-compose up
 ```
 
