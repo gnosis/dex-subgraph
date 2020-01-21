@@ -101,6 +101,9 @@ npx truffle exec scripts/stablex/place_order.js --accountId=0 --buyToken=1 --sel
 # Deposit
 npx truffle exec scripts/stablex/deposit.js --accountId=0 --tokenId=0 --amount=3000
 
+# Request Withdraw
+npx truffle exec scripts/stablex/request_withdraw.js --tokenId=0 --accountId=0 --amount=3000
+
 # Wait 300s
 npx truffle exec scripts/wait_seconds.js 300
 
