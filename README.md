@@ -31,7 +31,7 @@ Edit `.env` and setup your own config
 
 ```bash
 # Run a local ganache in one tab
-npx ganache-cli -h 0.0.0.0 --gasLimit 8e6
+npx ganache-cli -h 0.0.0.0 --gasLimit 8e6 --deterministic
 
 # Clone dex-contracts project (in another tab)
 #   It doesn't matter where you clone the project, this project is independent from dex-subgraph
