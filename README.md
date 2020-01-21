@@ -42,7 +42,6 @@ cd dex-contracts
 yarn
 
 # Migrate dependencies (in another tab)
-npx truffle networks --clean || true
 npx truffle migrate
 
 # Setup 3 testing account and tokens
