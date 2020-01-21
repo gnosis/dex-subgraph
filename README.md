@@ -46,23 +46,9 @@ npx truffle migrate
 
 # Setup 3 testing account and tokens
 npx truffle exec scripts/stablex/setup_environment.js
-
-# Check the deployed addresses
-#   write down "BatchExchange" address for the testnet, we'll need it later
-npx truffle networks
 ```
 
-2. In dex-subgraph. Create a new file `config/ganache.json` using [ganache.example.json](.config/ganache.example.json) as an example. Fill the address for the contracts deployed in ganache:
-
-```bash
-# Create ganche conf
-cp config/ganache.example.json config/ganache.json
-
-# Add the address of "BatchExchange" contract you wrote down in the step (1)
-vim config/ganache.json
-```
-
-3. Run a local The Graph Node
+2. Run a local The Graph Node
 
 ```bash
 # Clone The Graph node
@@ -76,7 +62,7 @@ cd graph-node/docker
 docker-compose up
 ```
 
-4. In dex-subgraph. Create a local subgraph:
+3. In dex-subgraph. Create a local subgraph:
 
 ```bash
 # Create a new subgraph
