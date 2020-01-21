@@ -9,6 +9,7 @@
     "addresses": "node src/scripts/printAddresses",
     "compile": "truffle compile",
     "gen": "graph codegen",
+    "postinstall": "npm run gen",
     "build": "graph build",
     "create-ganache": "npm run prepare:ganache && graph create gnosis/dfusion --node http://127.0.0.1:8020",
     "create-rinkeby": "npm run prepare:rinkeby && graph create gnosis/dfusion-rinkeby --node https://api.thegraph.com/deploy/",
