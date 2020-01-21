@@ -105,7 +105,7 @@ npx truffle exec scripts/stablex/deposit.js --accountId=0 --tokenId=0 --amount=3
 npx truffle exec scripts/wait_seconds.js 300
 
 # Claim
-npx truffle exec scripts/stablex/claim_withdraw.js --tokenId 0xc778417e063141139fce010982780140aa0cd5ab
+npx truffle exec scripts/stablex/claim_withdraw.js --accountId=0 --tokenId=0
 ```
 
 ## Update to a new version of the contracts
