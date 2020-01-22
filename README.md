@@ -88,7 +88,7 @@ yarn deploy
 
 The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/gnosis/dfusion/graphql
 
-Example of GraphQL subscription to try:
+<details><summary>Example of GraphQL subscription to try:</summary>
 
 ```graphql
 subscription UserData {
@@ -134,6 +134,7 @@ subscription UserData {
   }
 }
 ```
+</details>
 
 ## Local development: Deposit, claim, place orders
 
