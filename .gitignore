@@ -64,5 +64,4 @@ build
 generated
 package.lock
 subgraph.yml
-config/ganache.json
 subgraph.yaml

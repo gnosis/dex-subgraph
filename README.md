@@ -31,7 +31,7 @@ Edit `.env` and setup your own config
 
 ```bash
 # Run a local ganache in one tab
-npx ganache-cli -h 0.0.0.0
+yarn run-ganache
 
 # Clone dex-contracts project (in another tab)
 #   It doesn't matter where you clone the project, this project is independent from dex-subgraph
@@ -42,39 +42,27 @@ cd dex-contracts
 yarn
 
 # Migrate dependencies (in another tab)
-npx truffle networks --clean || true
 npx truffle migrate
 
 # Setup 3 testing account and tokens
 npx truffle exec scripts/stablex/setup_environment.js
-
-# Check the deployed addresses
-#   write down "BatchExchange" address for the testnet, we'll need it later
-npx truffle networks
 ```
 
-2. In dex-subgraph. Create a new file `config/ganache.json` using [ganache.example.json](.config/ganache.example.json) as an example. Fill the address for the contracts deployed in ganache:
-
-```bash
-# Create ganche conf
-cp config/ganache.example.json config/ganache.json
-
-# Add the address of "BatchExchange" contract you wrote down in the step (1)
-vim config/ganache.json
-```
-
-3. Run a local The Graph Node
+2. Run a local The Graph Node
 
 ```bash
 # Clone The Graph node
 git clone https://github.com/graphprotocol/graph-node/
 cd graph-node/docker
 
-# Run it
+# [only Linux] Inject host IP in docker-compose.yml
+./setup.sh
+
+# Start a local Graph Node
 docker-compose up
 ```
 
-4. In dex-subgraph. Create a local subgraph:
+3. In dex-subgraph. Create a local subgraph:
 
 ```bash
 # Create a new subgraph
@@ -85,6 +73,54 @@ yarn deploy
 ```
 
 The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/gnosis/dfusion/graphql
+
+<details><summary>Example of GraphQL subscription to try:</summary>
+
+```graphql
+subscription UserData {
+  users {
+    id
+    
+    orders {
+      id
+      orderId
+      owner { id }
+      buyToken {
+        id
+        address
+        name
+        symbol
+      }
+      sellToken {
+        id
+        address
+        name
+        symbol
+      }
+      txHash
+      txLogIndex
+  	}
+    
+    deposits {
+      id
+      tokenAddress
+      amount
+      txHash
+    }
+  
+  	withdrawals {
+      tokenAddress
+    	txHash
+    }
+    
+    withdrawRequests {
+      tokenAddress
+      txHash
+    }
+  }
+}
+```
+</details>
 
 ## Local development: Deposit, claim, place orders
 
@@ -99,11 +135,14 @@ npx truffle exec scripts/stablex/place_order.js --accountId=0 --buyToken=1 --sel
 # Deposit
 npx truffle exec scripts/stablex/deposit.js --accountId=0 --tokenId=0 --amount=3000
 
+# Request Withdraw
+npx truffle exec scripts/stablex/request_withdraw.js --tokenId=0 --accountId=0 --amount=3000
+
 # Wait 300s
 npx truffle exec scripts/wait_seconds.js 300
 
 # Claim
-npx truffle exec scripts/stablex/claim_withdraw.js --tokenId 0xc778417e063141139fce010982780140aa0cd5ab
+npx truffle exec scripts/stablex/claim_withdraw.js --accountId=0 --tokenId=0
 ```
 
 ## Update to a new version of the contracts
