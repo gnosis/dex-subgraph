@@ -1,9 +1,10 @@
 import { log, BigInt } from '@graphprotocol/graph-ts'
 import { Trade as TradeEvent, TradeReversion as TradeReversionEvent } from '../../generated/BatchExchange/BatchExchange'
-import { Trade } from '../../generated/schema'
+import { Trade, Token } from '../../generated/schema'
 import { toOrderId, toEventId, batchIdToEndOfBatchEpoch, getBatchId } from '../utils'
 import { updateOrderOnNewTrade, getOrderById } from './orders';
 import { createSolutionOrAddTrade } from './solution';
+import { createTokenIfNotCreated } from './tokens';
 
 export function getTradeById(tradeId: string): Trade {
   let tradeOpt = Trade.load(tradeId)
@@ -46,8 +47,12 @@ export function getActiveTradeInBatch(orderId: string, batchId: BigInt): Trade |
 export function onTrade(event: TradeEvent): void {   
   let orderId = toOrderId(event.params.owner, event.params.orderId)  
 
+  // Crete tokens if they don't exist
+  let sellToken = createTokenIfNotCreated(event.params.sellToken, event)
+  let buyToken = createTokenIfNotCreated(event.params.buyToken, event)
+
   // Create trade
-  let trade = _createTrade(orderId, event)
+  let trade = _createTrade(orderId, event, sellToken, buyToken)
 
   // Update order (traded amounts totals)
   updateOrderOnNewTrade(orderId, trade)
@@ -77,7 +82,7 @@ export function onTradeReversion(event: TradeReversionEvent): void {
   // log.info('[onTradeReversion] Reverted trade {}', [trade.id])
 }
 
-function _createTrade(orderId: string, event: TradeEvent): Trade {
+function _createTrade(orderId: string, event: TradeEvent, sellToken: Token, buyToken: Token): Trade {
   let params = event.params;
   
   // Calculate batchId
@@ -101,6 +106,10 @@ function _createTrade(orderId: string, event: TradeEvent): Trade {
   trade.buyVolume = params.executedBuyAmount
   trade.tradeBatchId = batchId
   trade.tradeEpoch = batchIdToEndOfBatchEpoch(batchId)
+
+  // Tokens
+  trade.sellToken = sellToken.id
+  trade.buyToken = buyToken.id
 
   // Audit dates
   trade.createEpoch = event.block.timestamp
