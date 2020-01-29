@@ -1,5 +1,5 @@
 export { onAddToken } from './tokens'
-export { onOrderPlacement, onOrderCancelation, onOrderDeletion } from './orders'
+export { onOrderPlacement, onOrderCancellation, onOrderDeletion } from './orders'
 export { onTrade, onTradeReversion } from './trades'
 export { onDeposit } from './deposits'
 export { onWithdraw, onWithdrawRequest } from './withdraw'

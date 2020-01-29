@@ -1,7 +1,7 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import {
   OrderPlacement as OrderPlacementEvent,
-  OrderCancelation as OrderCancelationEvent,
+  OrderCancellation as OrderCancellationEvent,
   OrderDeletion as OrderDeletionEvent,
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
@@ -30,11 +30,10 @@ export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
   order.save()
 }
 
-export function onOrderCancelation(event: OrderCancelationEvent): void {
+export function onOrderCancellation(event: OrderCancellationEvent): void {
   let params = event.params;
   
-  let orderId = toOrderIdLegacy(params.owner, params.id)
-  log.info('[onOrderCancelation] Order Cancellation: {}', [orderId])
+  log.info('[onOrderCancellation] Order Cancellation: {}', [orderId])
   let order = getOrderById(orderId)
 
   if (order.cancelEpoch == null) {
