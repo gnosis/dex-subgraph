@@ -84,7 +84,7 @@
     "outputs": [
       {
         "name": "",
-        "type": "uint256"
+        "type": "uint128"
       }
     ],
     "payable": false,
@@ -164,6 +164,20 @@
       },
       {
         "name": "usedAmount",
+        "type": "uint128"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "UNLIMITED_ORDER_AMOUNT",
+    "outputs": [
+      {
+        "name": "",
         "type": "uint128"
       }
     ],
@@ -315,6 +329,20 @@
     "constant": true,
     "inputs": [],
     "name": "FEE_DENOMINATOR",
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint128"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [],
+    "name": "ENCODED_AUCTION_ELEMENT_WIDTH",
     "outputs": [
       {
         "name": "",
@@ -510,17 +538,17 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": true,
-        "name": "owner",
+        "indexed": false,
+        "name": "token",
         "type": "address"
       },
       {
         "indexed": false,
         "name": "id",
-        "type": "uint256"
+        "type": "uint16"
       }
     ],
-    "name": "OrderCancelation",
+    "name": "TokenListing",
     "type": "event"
   },
   {
@@ -534,7 +562,24 @@
       {
         "indexed": false,
         "name": "id",
-        "type": "uint256"
+        "type": "uint16"
+      }
+    ],
+    "name": "OrderCancellation",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "id",
+        "type": "uint16"
       }
     ],
     "name": "OrderDeletion",
@@ -554,14 +599,24 @@
         "type": "uint16"
       },
       {
+        "indexed": true,
+        "name": "sellToken",
+        "type": "uint16"
+      },
+      {
+        "indexed": false,
+        "name": "buyToken",
+        "type": "uint16"
+      },
+      {
         "indexed": false,
         "name": "executedSellAmount",
-        "type": "uint256"
+        "type": "uint128"
       },
       {
         "indexed": false,
         "name": "executedBuyAmount",
-        "type": "uint256"
+        "type": "uint128"
       }
     ],
     "name": "Trade",
@@ -581,17 +636,69 @@
         "type": "uint16"
       },
       {
+        "indexed": true,
+        "name": "sellToken",
+        "type": "uint16"
+      },
+      {
+        "indexed": false,
+        "name": "buyToken",
+        "type": "uint16"
+      },
+      {
         "indexed": false,
         "name": "executedSellAmount",
-        "type": "uint256"
+        "type": "uint128"
       },
       {
         "indexed": false,
         "name": "executedBuyAmount",
-        "type": "uint256"
+        "type": "uint128"
       }
     ],
     "name": "TradeReversion",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "name": "submitter",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "name": "utility",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "disregardedUtility",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "burntFees",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "lastAuctionBurntFees",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "name": "prices",
+        "type": "uint128[]"
+      },
+      {
+        "indexed": false,
+        "name": "tokenIdsForPrice",
+        "type": "uint16[]"
+      }
+    ],
+    "name": "SolutionSubmission",
     "type": "event"
   },
   {
@@ -946,11 +1053,61 @@
     "constant": true,
     "inputs": [
       {
+        "name": "previousPageUser",
+        "type": "address"
+      },
+      {
+        "name": "pageSize",
+        "type": "uint16"
+      }
+    ],
+    "name": "getUsersPaginated",
+    "outputs": [
+      {
+        "name": "users",
+        "type": "bytes"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
         "name": "user",
         "type": "address"
       }
     ],
     "name": "getEncodedUserOrders",
+    "outputs": [
+      {
+        "name": "elements",
+        "type": "bytes"
+      }
+    ],
+    "payable": false,
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "constant": true,
+    "inputs": [
+      {
+        "name": "previousPageUser",
+        "type": "address"
+      },
+      {
+        "name": "previousPageUserOffset",
+        "type": "uint16"
+      },
+      {
+        "name": "pageSize",
+        "type": "uint16"
+      }
+    ],
+    "name": "getEncodedUsersPaginated",
     "outputs": [
       {
         "name": "elements",
