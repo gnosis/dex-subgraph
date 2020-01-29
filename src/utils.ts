@@ -2,13 +2,8 @@ import { Address, BigInt, EthereumEvent, EthereumCall } from "@graphprotocol/gra
 
 let BATCH_TIME = BigInt.fromI32(300)
 
-export function toOrderId(ownerAddress: Address, orderId: u32): string {
+export function toOrderId(ownerAddress: Address, orderId: i32): string {
   return ownerAddress.toHex() + '-' + BigInt.fromI32(orderId).toString();
-}
-
-// TODO: Delete after the type is fixed
-export function toOrderIdLegacy(ownerAddress: Address, orderId: BigInt): string {
-  return ownerAddress.toHex() + '-' + orderId.toString();
 }
 
 export function toEventId(event: EthereumEvent): string {

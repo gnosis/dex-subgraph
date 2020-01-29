@@ -5,7 +5,7 @@ import {
   OrderDeletion as OrderDeletionEvent,
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
-import { toOrderId, toOrderIdLegacy, batchIdToEpoch, getBatchId } from '../utils'
+import { toOrderId, batchIdToEpoch, getBatchId } from '../utils'
 import { createTokenIfNotCreated } from './tokens';
 import { createUserIfNotCreated } from './users'
 
@@ -33,6 +33,7 @@ export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
 export function onOrderCancellation(event: OrderCancellationEvent): void {
   let params = event.params;
   
+  let orderId = toOrderId(params.owner, params.id)
   log.info('[onOrderCancellation] Order Cancellation: {}', [orderId])
   let order = getOrderById(orderId)
 
@@ -50,7 +51,7 @@ export function onOrderCancellation(event: OrderCancellationEvent): void {
 export function onOrderDeletion(event: OrderDeletionEvent): void {
   let params = event.params;
   
-  let orderId = toOrderIdLegacy(params.owner, params.id)
+  let orderId = toOrderId(params.owner, params.id)
   log.info('[onOrderDeletion] Order Deletion: {}', [orderId])
   let order = getOrderById(orderId)
 
