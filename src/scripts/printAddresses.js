@@ -1,7 +1,7 @@
 'use strict'
 
 const networksJson = require('@gnosis.pm/dex-contracts/networks.json')
-const { CONTRACTS } = require('../const')
+const CONTRACTS = ["BatchExchange"];
 CONTRACTS.forEach(contractName => {
   const networks = networksJson[contractName]
 

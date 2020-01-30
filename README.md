@@ -171,8 +171,9 @@ yarn abi
 yarn addresses
 
 # Update the addresses and the start block
+vim config/ganache.json
 vim config/rinkeby.json
-vim config/rinkeby.json
+vim config/mainnet.json
 ```
 
 

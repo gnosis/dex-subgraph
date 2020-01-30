@@ -1,11 +1,11 @@
 import { BigInt, log } from '@graphprotocol/graph-ts'
 import {
   OrderPlacement as OrderPlacementEvent,
-  OrderCancelation as OrderCancelationEvent,
+  OrderCancellation as OrderCancellationEvent,
   OrderDeletion as OrderDeletionEvent,
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
-import { toOrderId, toOrderIdLegacy, batchIdToEpoch, getBatchId } from '../utils'
+import { toOrderId, batchIdToEpoch, getBatchId } from '../utils'
 import { createTokenIfNotCreated } from './tokens';
 import { createUserIfNotCreated } from './users'
 
@@ -30,11 +30,11 @@ export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
   order.save()
 }
 
-export function onOrderCancelation(event: OrderCancelationEvent): void {
+export function onOrderCancellation(event: OrderCancellationEvent): void {
   let params = event.params;
   
-  let orderId = toOrderIdLegacy(params.owner, params.id)
-  log.info('[onOrderCancelation] Order Cancellation: {}', [orderId])
+  let orderId = toOrderId(params.owner, params.id)
+  log.info('[onOrderCancellation] Order Cancellation: {}', [orderId])
   let order = getOrderById(orderId)
 
   if (order.cancelEpoch == null) {
@@ -51,7 +51,7 @@ export function onOrderCancelation(event: OrderCancelationEvent): void {
 export function onOrderDeletion(event: OrderDeletionEvent): void {
   let params = event.params;
   
-  let orderId = toOrderIdLegacy(params.owner, params.id)
+  let orderId = toOrderId(params.owner, params.id)
   log.info('[onOrderDeletion] Order Deletion: {}', [orderId])
   let order = getOrderById(orderId)
 
