@@ -1,6 +1,6 @@
 import { log, BigInt } from '@graphprotocol/graph-ts'
 import { Trade as TradeEvent, TradeReversion as TradeReversionEvent } from '../../generated/BatchExchange/BatchExchange'
-import { Trade } from '../../generated/schema'
+import { Trade, User } from '../../generated/schema'
 import { toOrderId, toEventId, batchIdToEndOfBatchEpoch, getBatchId } from '../utils'
 import { updateOrderOnNewTrade, getOrderById } from './orders';
 import { createSolutionOrAddTrade } from './solution';
@@ -97,6 +97,7 @@ function _createTrade(orderId: string, event: TradeEvent): Trade {
   trade.order = orderId
   
   // Trade details
+  trade.owner = params.owner.toHex()
   trade.sellVolume = params.executedSellAmount
   trade.buyVolume = params.executedBuyAmount
   trade.tradeBatchId = batchId
