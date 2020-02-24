@@ -25,10 +25,10 @@
   dependencies:
     regenerator-runtime "^0.13.2"
 
-"@gnosis.pm/dex-contracts@^0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/dex-contracts/-/dex-contracts-0.2.0.tgz#1649e2efdb818158db79569e9375d6bf9405c63f"
-  integrity sha512-9zMT7XaveDJ5L52o0RNRcFL0Vf2nOpX1lGsWimIZCZBnCL1HyvKHvX4W4mfcItkScNVNgvJ9EWSNVXQjS+pK5g==
+"@gnosis.pm/dex-contracts@^0.2.2":
+  version "0.2.2"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/dex-contracts/-/dex-contracts-0.2.2.tgz#4772cec839756f47354de64249a683d35b51e8bc"
+  integrity sha512-uyMCCyOGeEiH5SOThQpr6WApFF6RzD/c1wNNf6CLe4kLSh9GkjtMYqxb4prTbuuAdYuxMJVtqK9Le/JMiDt2OA==
   dependencies:
     bn.js "^5.1.1"
 
