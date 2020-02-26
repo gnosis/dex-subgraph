@@ -157,6 +157,7 @@ type Trade @entity {
   order: Order!
 
   # Trade details
+  owner: User!
   sellVolume: BigInt!
   buyVolume: BigInt!
   tradeBatchId: BigInt!
