@@ -9,18 +9,17 @@ export function createUserIfNotCreated(address: Address, event: EthereumEvent): 
   if (user == null) {
     let timestamp = event.block.timestamp
     let txHash = event.transaction.hash
-    
+
     user = _createUser(id, timestamp, txHash)
   }
 
   return user!
 }
 
-
 function _createUser(id: string, timestamp: BigInt, txHash: Bytes): User {
   log.info('[createUser] Create User {}', [id])
 
-  // Create token  
+  // Create token
   let user = new User(id)
   user.fromBatchId = epochToBatchId(timestamp)
 

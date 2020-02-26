@@ -1,11 +1,11 @@
 # dFusion subgraph
+
 <img align="right" width="350" src="./docs/subgraph.png">
 
 Implements a subgraph for the [dFusion protocol](https://github.com/gnosis/dex-contracts)
 
-* [Subgraph in Mainnet](https://thegraph.com/explorer/subgraph/gnosis/dfusion)
-* [Subgraph in Rinkeby](https://thegraph.com/explorer/subgraph/gnosis/dfusion-rinkeby)
-
+- [Subgraph in Mainnet](https://thegraph.com/explorer/subgraph/gnosis/dfusion)
+- [Subgraph in Rinkeby](https://thegraph.com/explorer/subgraph/gnosis/dfusion-rinkeby)
 
 For more information see https://thegraph.com/docs/.
 
@@ -24,6 +24,7 @@ cp .env.example .env
 Edit `.env` and setup your own config
 
 ## Setup for local development
+
 > First setup environment (see above)
 
 1. Run a local ganache-cli and migrate the dependencies
@@ -35,9 +36,9 @@ yarn run-ganache
 
 # Clone dex-contracts project (in another tab)
 #   It doesn't matter where you clone the project, this project is independent from dex-subgraph
-git clone https://github.com/gnosis/dex-contracts 
+git clone https://github.com/gnosis/dex-contracts
 
-# Install dependencies 
+# Install dependencies
 cd dex-contracts
 yarn
 
@@ -80,11 +81,13 @@ The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/gnosis
 subscription UserData {
   users {
     id
-    
+
     orders {
       id
       orderId
-      owner { id }
+      owner {
+        id
+      }
       buyToken {
         id
         address
@@ -99,20 +102,20 @@ subscription UserData {
       }
       txHash
       txLogIndex
-  	}
-    
+    }
+
     deposits {
       id
       tokenAddress
       amount
       txHash
     }
-  
-  	withdrawals {
+
+    withdrawals {
       tokenAddress
-    	txHash
+      txHash
     }
-    
+
     withdrawRequests {
       tokenAddress
       txHash
@@ -120,6 +123,7 @@ subscription UserData {
   }
 }
 ```
+
 </details>
 
 ## Local development: Deposit, claim, place orders
@@ -150,6 +154,7 @@ npx truffle exec scripts/stablex/claim_withdraw.js --accountId=0 --tokenId=0
 > First setup for local development (see above)
 
 1. Make sure you use the latest version of `dex-contracts`
+
 ```bash
 # See all available versions in: https://www.npmjs.com/package/@gnosis.pm/dex-contracts
 npm ls @gnosis.pm/dex-contracts
@@ -166,6 +171,7 @@ yarn abi
 ```
 
 3. Make sure the addresses are updated
+
 ```bash
 # Show the addresses for all the networks
 yarn addresses
@@ -176,11 +182,9 @@ vim config/rinkeby.json
 vim config/mainnet.json
 ```
 
-
 4. Review the differences between the two version in the contract, and adapt all the handlers.
 
-
-5. Regenerate the model:
+5) Regenerate the model:
 
 ```bash
 yarn gen
@@ -191,6 +195,7 @@ yarn gen
 > First update the version of dex-contracts if it's not up to date
 
 Deploy to the different networks:
+
 ```bash
 # Make sure you are authenticated
 graph auth https://api.thegraph.com/deploy/ <your-access-token>
@@ -203,6 +208,7 @@ yarn deploy-mainnet
 ```
 
 ## Troubleshooting
+
 ```bash
 # Delete all containers and data
 docker-compose down && rm -rf data

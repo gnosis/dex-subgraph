@@ -6,11 +6,11 @@ import { createUserIfNotCreated } from './users'
 
 export function createSolutionOrAddTrade(trade: Trade, event: EthereumEvent): Solution {
   let batchId = trade.tradeBatchId
-  
+
   // Make sure the batch is created
   let batch = createBatchIfNotCreated(batchId, event)
-  
-  // Make sure solution is created  
+
+  // Make sure solution is created
   let solution = createSolutionIfNotCreated(batch, trade, event)
 
   // Add trade to current solution
@@ -22,7 +22,7 @@ export function createSolutionOrAddTrade(trade: Trade, event: EthereumEvent): So
 function createSolutionIfNotCreated(batch: Batch, trade: Trade, event: EthereumEvent): Solution {
   let solutionId = batch.solution
   let solution = Solution.load(solutionId)
-  
+
   if (solution == null) {
     // Create solution
     solution = _createSolution(solutionId, trade, batch, event)
@@ -35,7 +35,7 @@ function _createSolution(solutionId: string, trade: Trade, batch: Batch, event: 
   log.info('[createSolution] Create Solution {} for batch {}', [solutionId, batch.id])
 
   // Get latest solution
-  let batchExchange = BatchExchange.bind(event.address);
+  let batchExchange = BatchExchange.bind(event.address)
   let latestSolution = batchExchange.latestSolution()
   let solver = latestSolution.value1
   let feeReward = latestSolution.value2
@@ -50,21 +50,21 @@ function _createSolution(solutionId: string, trade: Trade, batch: Batch, event: 
   // Relation with the batch and the trades
   solution.batch = batch.id
   solution.trades = []
-  
+
   // Solution details
   solution.solver = solver.toHex()
   solution.feeReward = feeReward
   solution.objectiveValue = objectiveValue
-  
+
   // Audit dates
   solution.createEpoch = event.block.timestamp
   solution.revertEpoch = null
 
   // Transaction
   solution.txHash = event.transaction.hash
-  solution.txLogIndex = event.transactionLogIndex 
+  solution.txLogIndex = event.transactionLogIndex
   solution.save()
-  
+
   return solution
 }
 
