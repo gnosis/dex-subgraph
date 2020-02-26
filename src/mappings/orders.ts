@@ -42,6 +42,7 @@ export function onOrderCancellation(event: OrderCancellationEvent): void {
     order.untilBatchId = batchId.minus(new BigInt(1))
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.cancelEpoch = event.block.timestamp
+    order.save()
   } else {
     log.warning('The order {} was already canceled', [orderId])
   }
@@ -59,6 +60,7 @@ export function onOrderDeletion(event: OrderDeletionEvent): void {
     order.untilBatchId = batchId.minus(new BigInt(1))
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.deleteEpoch = event.block.timestamp
+    order.save()
   } else {
     log.warning('The order {} was already deleted', [orderId])
   }
