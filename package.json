@@ -34,7 +34,7 @@
     "eslint-config-prettier": "^6.10.0",
     "ganache-cli": "^6.8.2",
     "mustache": "^4.0.0",
-    "openzeppelin-solidity": "^2.4.0",
+    "openzeppelin-solidity": "^2.5.0",
     "truffle": "^5.1.14",
     "truffle-contract": "^4.0.31",
     "truffle-hdwallet-provider": "^1.0.17"
