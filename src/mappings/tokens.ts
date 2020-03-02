@@ -8,16 +8,16 @@ export function onAddToken(call: AddTokenCall): void {
   let address = call.inputs.token
   let timestamp = call.block.timestamp
   let txHash = call.transaction.hash
-  
+
   // Get token id
-  let batchExchange = BatchExchange.bind(call.to);
+  let batchExchange = BatchExchange.bind(call.to)
   let tokenId = batchExchange.tokenAddressToIdMap(address)
   log.info('[onAddToken] Add token {} with address', [BigInt.fromI32(tokenId).toString(), address.toHex()])
 
   // Create token
   let id = BigInt.fromI32(tokenId).toString()
   _createToken(id, address, timestamp, txHash)
-  
+
   // It's possible, that there was already some deposits
   // TODO: Update balances (once balances are implemented)
 }
@@ -26,14 +26,14 @@ export function createTokenIfNotCreated(tokenId: u32, event: EthereumEvent): Tok
   let id = BigInt.fromI32(tokenId).toString()
   let token = Token.load(id)
   log.info('[createTokenIfNotCreated] Make sure token {} is created', [id])
-  
+
   if (token == null) {
-    let batchExchange = BatchExchange.bind(event.address);
-    let address = batchExchange.tokenIdToAddressMap(tokenId)    
+    let batchExchange = BatchExchange.bind(event.address)
+    let address = batchExchange.tokenIdToAddressMap(tokenId)
 
     let timestamp = event.block.timestamp
     let txHash = event.transaction.hash
-  
+
     // Create token if not created
     token = _createToken(id, address, timestamp, txHash)
   }
@@ -44,7 +44,7 @@ export function createTokenIfNotCreated(tokenId: u32, event: EthereumEvent): Tok
 export function _createToken(id: string, address: Address, timestamp: BigInt, txHash: Bytes): Token {
   log.info('[createToken] Create Token {} with address {}', [id, address.toHex()])
 
-  // Create token  
+  // Create token
   let token = new Token(id)
   token.address = address
   token.fromBatchId = epochToBatchId(timestamp)

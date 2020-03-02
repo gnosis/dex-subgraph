@@ -2,11 +2,11 @@ import { log } from '@graphprotocol/graph-ts'
 import { Deposit as DepositEvent } from '../../generated/BatchExchange/BatchExchange'
 import { Deposit } from '../../generated/schema'
 import { toEventId } from '../utils'
-import { createTokenIfNotCreated } from './tokens';
-import { createUserIfNotCreated } from './users';
+import { createTokenIfNotCreated } from './tokens'
+import { createUserIfNotCreated } from './users'
 
 export function onDeposit(event: DepositEvent): void {
-  let params = event.params;
+  let params = event.params
   log.info('[onDeposit] New Deposit: {}', [event.transaction.hash.toHex()])
 
   // Create user and token

@@ -6,11 +6,11 @@ import {
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch, getBatchId } from '../utils'
-import { createTokenIfNotCreated } from './tokens';
+import { createTokenIfNotCreated } from './tokens'
 import { createUserIfNotCreated } from './users'
 
-export function onOrderPlacement(event: OrderPlacementEvent): void {  
-  let params = event.params;
+export function onOrderPlacement(event: OrderPlacementEvent): void {
+  let params = event.params
 
   // Crete user if doesn't exist
   let owner = createUserIfNotCreated(params.owner, event)
@@ -31,8 +31,8 @@ export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
 }
 
 export function onOrderCancellation(event: OrderCancellationEvent): void {
-  let params = event.params;
-  
+  let params = event.params
+
   let orderId = toOrderId(params.owner, params.id)
   log.info('[onOrderCancellation] Order Cancellation: {}', [orderId])
   let order = getOrderById(orderId)
@@ -43,14 +43,13 @@ export function onOrderCancellation(event: OrderCancellationEvent): void {
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.cancelEpoch = event.block.timestamp
   } else {
-    log.warning("The order {} was already canceled", [orderId])
+    log.warning('The order {} was already canceled', [orderId])
   }
 }
 
-
 export function onOrderDeletion(event: OrderDeletionEvent): void {
-  let params = event.params;
-  
+  let params = event.params
+
   let orderId = toOrderId(params.owner, params.id)
   log.info('[onOrderDeletion] Order Deletion: {}', [orderId])
   let order = getOrderById(orderId)
@@ -61,7 +60,7 @@ export function onOrderDeletion(event: OrderDeletionEvent): void {
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.deleteEpoch = event.block.timestamp
   } else {
-    log.warning("The order {} was already deleted", [orderId])
+    log.warning('The order {} was already deleted', [orderId])
   }
 }
 
@@ -74,10 +73,10 @@ export function getOrderById(orderId: string): Order {
 }
 
 function _createOrder(event: OrderPlacementEvent, owner: User, sellToken: Token, buyToken: Token): Order {
-  let params = event.params;
+  let params = event.params
   let id = toOrderId(params.owner, params.index)
   log.info('[onOrderPlacement] Create Order: {}', [id])
-  
+
   // Create order
   let order = new Order(id)
   order.owner = owner.id
@@ -110,7 +109,7 @@ function _createOrder(event: OrderPlacementEvent, owner: User, sellToken: Token,
   // Transaction
   order.txHash = event.transaction.hash
   order.txLogIndex = event.transactionLogIndex
-  
+
   order.save()
   return order
 }
