@@ -35,7 +35,7 @@
     "ganache-cli": "^6.9.1",
     "mustache": "^4.0.0",
     "openzeppelin-solidity": "^2.5.0",
-    "truffle": "^5.1.14",
+    "truffle": "^5.1.15",
     "truffle-contract": "^4.0.31",
     "truffle-hdwallet-provider": "^1.0.17"
   }
