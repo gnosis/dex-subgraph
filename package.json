@@ -9,7 +9,7 @@
     "addresses": "node src/scripts/printAddresses",
     "compile": "truffle compile",
     "gen": "graph codegen",
-    "postinstall": "npm run gen",
+    "postinstall": "npm run prepare:ganache && npm run gen",
     "build": "graph build",
     "run-ganache": "ganache-cli -h 0.0.0.0 --gasLimit 8e6 --deterministic",
     "create-ganache": "npm run prepare:ganache && graph create gnosis/dfusion --node http://127.0.0.1:8020",
