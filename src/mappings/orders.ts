@@ -34,7 +34,7 @@ export function onOrderCancellation(event: OrderCancellationEvent): void {
   let params = event.params
   let orderId = toOrderId(params.owner, params.id)
   log.info('[onOrderCancellation] Order Cancellation: {}', [orderId])
-  let order = getOrderById(orderId)
+  let order = Order.load(orderId)
 
   if (order === null) {
     // Order don't exist
@@ -55,7 +55,7 @@ export function onOrderDeletion(event: OrderDeletionEvent): void {
   let params = event.params
   let orderId = toOrderId(params.owner, params.id)
   log.info('[onOrderDeletion] Order Deletion: {}', [orderId])
-  let order = getOrderById(orderId)
+  let order = Order.load(orderId)
 
   if (order === null) {
     // Order don't exist
