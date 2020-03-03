@@ -32,37 +32,43 @@ export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
 
 export function onOrderCancellation(event: OrderCancellationEvent): void {
   let params = event.params
-
   let orderId = toOrderId(params.owner, params.id)
   log.info('[onOrderCancellation] Order Cancellation: {}', [orderId])
   let order = getOrderById(orderId)
 
-  if (order.cancelEpoch == null) {
+  if (order === null) {
+    // Order don't exist
+    log.warning("[onOrderCancellation] The order {} doesn't exist, therefore, cannot be created", [orderId])
+  } else if (order.cancelEpoch !== null) {
+    // Order was already deleted
+    log.warning('[onOrderCancellation] The order {} was already canceled', [orderId])
+  } else {
     let batchId = getBatchId(event)
     order.untilBatchId = batchId.minus(new BigInt(1))
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.cancelEpoch = event.block.timestamp
     order.save()
-  } else {
-    log.warning('The order {} was already canceled', [orderId])
   }
 }
 
 export function onOrderDeletion(event: OrderDeletionEvent): void {
   let params = event.params
-
   let orderId = toOrderId(params.owner, params.id)
   log.info('[onOrderDeletion] Order Deletion: {}', [orderId])
   let order = getOrderById(orderId)
 
-  if (order.deleteEpoch == null) {
+  if (order === null) {
+    // Order don't exist
+    log.warning("[onOrderDeletion] The order {} doesn't exist, therefore, cannot be created", [orderId])
+  } else if (order.deleteEpoch !== null) {
+    // Order was already deleted
+    log.warning('[onOrderDeletion] The order {} was already deleted', [orderId])
+  } else {
     let batchId = getBatchId(event)
     order.untilBatchId = batchId.minus(new BigInt(1))
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.deleteEpoch = event.block.timestamp
     order.save()
-  } else {
-    log.warning('The order {} was already deleted', [orderId])
   }
 }
 
