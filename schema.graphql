@@ -160,6 +160,10 @@ type Trade @entity {
   tradeBatchId: BigInt!
   tradeEpoch: BigInt!
 
+  # Tokens
+  buyToken: Token!
+  sellToken: Token!
+
   # Audit Dates
   #   Note that "createEpoch" is different from "tradeEpoch", since "tradeEpoch" is the end of the batch, and the
   #   "createEpoch" is the date where the transaction was mined
