@@ -134,6 +134,8 @@ type Order @entity {
   priceDenominator: BigInt! # uint128
   # Traded amounts
   maxSellAmount: BigInt!
+  minReceiveAmount: BigInt!
+
   soldVolume: BigInt!
   boughtVolume: BigInt!
   trades: [Trade!]! @derivedFrom(field: "order")
