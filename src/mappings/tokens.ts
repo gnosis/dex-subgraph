@@ -22,6 +22,14 @@ export function onAddToken(call: AddTokenCall): void {
   // TODO: Update balances (once balances are implemented)
 }
 
+export function getTokenById(tokenId: string): Token {
+  let tokenOpt = Token.load(tokenId)
+  if (!tokenOpt) {
+    throw new Error("Token doesn't exist: " + tokenId)
+  }
+  return tokenOpt!
+}
+
 export function createTokenIfNotCreated(tokenId: u32, event: EthereumEvent): Token {
   let id = BigInt.fromI32(tokenId).toString()
   let token = Token.load(id)
