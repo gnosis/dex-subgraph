@@ -132,6 +132,8 @@ type Order @entity {
   # Price
   priceNumerator: BigInt! # uint128
   priceDenominator: BigInt! # uint128
+  price: BigInt!
+
   # Traded amounts
   maxSellAmount: BigInt!
   soldVolume: BigInt!
@@ -159,6 +161,9 @@ type Trade @entity {
   buyVolume: BigInt!
   tradeBatchId: BigInt!
   tradeEpoch: BigInt!
+
+  # Price
+  price: BigInt!
 
   # Tokens
   buyToken: Token!

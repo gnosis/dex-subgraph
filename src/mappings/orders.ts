@@ -6,7 +6,7 @@ import {
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch, getBatchId } from '../utils'
-import { createTokenIfNotCreated } from './tokens'
+import { createTokenIfNotCreated, getTokenById } from './tokens'
 import { createUserIfNotCreated } from './users'
 
 export function onOrderPlacement(event: OrderPlacementEvent): void {
@@ -97,6 +97,9 @@ function _createOrder(event: OrderPlacementEvent, owner: User, sellToken: Token,
   // Price
   order.priceNumerator = params.priceNumerator
   order.priceDenominator = params.priceDenominator
+
+  // TODO: Take decimals intro account for price
+  // order.price = sellToken.decimals
 
   // Traded amounts
   order.maxSellAmount = params.priceDenominator

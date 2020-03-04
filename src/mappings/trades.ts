@@ -4,6 +4,7 @@ import { Trade, User } from '../../generated/schema'
 import { toOrderId, toEventId, batchIdToEndOfBatchEpoch, getBatchId } from '../utils'
 import { updateOrderOnNewTrade, getOrderById } from './orders'
 import { createSolutionOrAddTrade } from './solution'
+import { getTokenById } from './tokens'
 
 export function getTradeById(tradeId: string): Trade {
   let tradeOpt = Trade.load(tradeId)
@@ -105,6 +106,12 @@ function _createTrade(orderId: string, event: TradeEvent): Trade {
   let order = getOrderById(orderId)
   trade.buyToken = order.buyToken
   trade.sellToken = order.sellToken
+
+  // Price
+  // let buyToken = getTokenById(order.buyToken)
+  // let sellToken = getTokenById(order.sellToken)
+  // TODO: Take decimals intro account for price
+  // trade.price
 
   // Audit dates
   trade.createEpoch = event.block.timestamp
