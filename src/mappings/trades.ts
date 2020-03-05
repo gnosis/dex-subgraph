@@ -101,6 +101,11 @@ function _createTrade(orderId: string, event: TradeEvent): Trade {
   trade.tradeBatchId = batchId
   trade.tradeEpoch = batchIdToEndOfBatchEpoch(batchId)
 
+  // Tokens
+  let order = getOrderById(orderId)
+  trade.buyToken = order.buyToken
+  trade.sellToken = order.sellToken
+
   // Audit dates
   trade.createEpoch = event.block.timestamp
   trade.revertEpoch = null
