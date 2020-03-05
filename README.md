@@ -203,7 +203,11 @@ graph auth https://api.thegraph.com/deploy/ <your-access-token>
 # Deploy to rinkeby
 yarn deploy-rinkeby
 
+# Deploy to staging
+yarn deploy-staging
+
 # Deploy to mainnet
+#   IMPORTANT: Make sure the graph is well tested in staging environment
 yarn deploy-mainnet
 ```
 
