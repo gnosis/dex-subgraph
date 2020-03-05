@@ -98,8 +98,11 @@ function _createOrder(event: OrderPlacementEvent, owner: User, sellToken: Token,
   order.priceNumerator = params.priceNumerator
   order.priceDenominator = params.priceDenominator
 
-  // Traded amounts
+  // Sell amount and receive amount
   order.maxSellAmount = params.priceDenominator
+  order.minReceiveAmount = params.priceNumerator
+
+  // Traded amounts
   order.soldVolume = BigInt.fromI32(0)
   order.boughtVolume = BigInt.fromI32(0)
 
