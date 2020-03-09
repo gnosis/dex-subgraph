@@ -18,10 +18,8 @@ export function createOrUpdatePrice(tokenId: i32, trade: Trade, event: EthereumE
   if (price == null) {
     // Create price for the current batch
     price = _createPrice(priceId, tokenId, trade, event)
-  } else {
-    // Update price
-    // TODO: Trades for the same solution don't need to be updated, but if there's a new solution we need to revert the prices too
   }
+  // TODO: Else handling reverts of solutions
 
   price.volume = price.volume.plus(trade.sellVolume)
   price.save()
