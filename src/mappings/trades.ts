@@ -1,9 +1,10 @@
 import { log, BigInt } from '@graphprotocol/graph-ts'
 import { Trade as TradeEvent, TradeReversion as TradeReversionEvent } from '../../generated/BatchExchange/BatchExchange'
-import { Trade, User } from '../../generated/schema'
+import { Trade } from '../../generated/schema'
 import { toOrderId, toEventId, batchIdToEndOfBatchEpoch, getBatchId } from '../utils'
 import { updateOrderOnNewTrade, getOrderById } from './orders'
 import { createSolutionOrAddTrade } from './solution'
+import { createOrUpdatePrice } from './prices'
 
 export function getTradeById(tradeId: string): Trade {
   let tradeOpt = Trade.load(tradeId)
@@ -46,6 +47,10 @@ export function onTrade(event: TradeEvent): void {
 
   // Create trade
   let trade = _createTrade(orderId, event)
+
+  // Update traces
+  createOrUpdatePrice(event.params.buyToken, trade, event)
+  createOrUpdatePrice(event.params.sellToken, trade, event)
 
   // Update order (traded amounts totals)
   updateOrderOnNewTrade(orderId, trade)

@@ -29,6 +29,23 @@ type Token @entity {
   txHash: Bytes!
 }
 
+type Price @entity {
+  "Token listed in dFusion"
+  id: ID! # tokenId + batchId
+  token: Token!
+  batchId: BigInt!
+
+  # Price and volume
+  priceInOwl: BigInt!
+  volume: BigInt!
+
+  # Audit Dates
+  createEpoch: BigInt!
+
+  # Transaction
+  txHash: Bytes!
+}
+
 type User @entity {
   "User in dFusion. Any ethereum account that deposited tokens or traded with dFusion"
   id: ID! # address
