@@ -71,12 +71,6 @@ export function calculatePrice(
 ): BigInt[] {
   let decimalsBase = coalesce<BigInt>(decimalsBaseOpt, DEFAULT_DECIMALS).toI32()
   let decimalsQuote = coalesce<BigInt>(decimalsQuoteOpt, DEFAULT_DECIMALS).toI32()
-  log.info('[utils:calculatePrice] {} / {} with decimals {} and {}', [
-    priceNumerator.toString(),
-    priceDenominator.toString(),
-    BigInt.fromI32(decimalsBase).toString(),
-    BigInt.fromI32(decimalsQuote).toString(),
-  ])
 
   let newNumerator: BigInt
   let newDenominator: BigInt
@@ -91,8 +85,6 @@ export function calculatePrice(
     newNumerator = newNumerator
     newDenominator = priceDenominator.times(TEN.pow(u8(decimalsQuote - decimalsBase)))
   }
-
-  log.info('[utils:calculatePrice] {} / {}', [newNumerator.toString(), newDenominator.toString()])
 
   return reduce(newNumerator, newDenominator)
 }
