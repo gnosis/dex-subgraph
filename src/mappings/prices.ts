@@ -1,8 +1,9 @@
 import { log, BigInt } from '@graphprotocol/graph-ts'
-import { Order, Price, Trade } from '../../generated/schema'
+import { Price, Trade } from '../../generated/schema'
 import { EthereumEvent } from '@graphprotocol/graph-ts'
-import { toPriceId } from '../utils'
+import { toPriceId, getOwlDecimals, toPriceInUnits } from '../utils'
 import { BatchExchange } from '../../generated/BatchExchange/BatchExchange'
+import { getTokenById } from './tokens'
 
 export function createOrUpdatePrice(tokenId: i32, trade: Trade, event: EthereumEvent): void {
   log.info('[createOrUpdatePrice] Create or Update Price for batch {} and Token {}. Tx: ', [
@@ -35,9 +36,13 @@ export function _createPrice(priceId: string, tokenId: i32, trade: Trade, event:
   // Addd token
   price.token = BigInt.fromI32(tokenId).toString()
 
-  // Price and volume
+  // Price: The price is given in weis of the token per owl, so it needs to be translated into tokens per owl
   let batchExchange = BatchExchange.bind(event.address)
-  price.priceInOwl = batchExchange.currentPrices(tokenId)
+  let token = getTokenById(tokenId)
+  let priceInWeis = batchExchange.currentPrices(tokenId)
+  price.priceInOwl = toPriceInUnits(priceInWeis, token.decimals, getOwlDecimals())
+
+  // Volume
   price.volume = BigInt.fromI32(0)
 
   // Audit dates
@@ -48,12 +53,4 @@ export function _createPrice(priceId: string, tokenId: i32, trade: Trade, event:
 
   price.save()
   return price
-}
-
-export function getPriceById(priceId: string): Order {
-  let priceOpt = Order.load(priceId)
-  if (!priceOpt) {
-    throw new Error("Price doesn't exist: " + priceId)
-  }
-  return priceOpt
 }
