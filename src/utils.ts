@@ -6,6 +6,10 @@ export function toOrderId(ownerAddress: Address, orderId: i32): string {
   return ownerAddress.toHex() + '-' + BigInt.fromI32(orderId).toString()
 }
 
+export function toPriceId(tokenId: i32, batchId: BigInt): string {
+  return BigInt.fromI32(tokenId).toString() + '-' + batchId.toString()
+}
+
 export function toEventId(event: EthereumEvent): string {
   return event.transaction.hash.toHex() + '-' + event.logIndex.toString()
 }
