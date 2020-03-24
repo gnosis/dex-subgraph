@@ -45,9 +45,29 @@ export function coalesce<T>(valueOpt: T | null, defaultValue: T): T {
   }
 }
 
-export function toPriceInUnits(price: BigInt, decimalsBaseOpt: BigInt | null, decimalsQuoteOpt: BigInt | null): BigInt {
+export function toWei(amount: BigInt, decimalsOpt: BigInt | null): BigInt {
+  let decimals = coalesce<BigInt>(decimalsOpt, DEFAULT_DECIMALS).toI32()
+  return amount.times(TEN.pow(u8(decimals)))
+}
+
+export function calculatePrice(
+  priceNumerator: BigInt,
+  priceDenominator: BigInt,
+  decimalsBaseOpt: BigInt | null,
+  decimalsQuoteOpt: BigInt | null,
+): BigInt[] {
   let decimalsBase = coalesce<BigInt>(decimalsBaseOpt, DEFAULT_DECIMALS).toI32()
   let decimalsQuote = coalesce<BigInt>(decimalsQuoteOpt, DEFAULT_DECIMALS).toI32()
 
-  return price.div(TEN.pow(u8(decimalsBase - decimalsQuote)))
+  let newNumerator: BigInt
+  let newDenominator: BigInt
+  if (decimalsBase > decimalsQuote) {
+    newNumerator = priceNumerator.times(TEN.pow(u8(decimalsBase - decimalsQuote)))
+    newDenominator = priceDenominator
+  } else {
+    newNumerator = priceDenominator
+    newDenominator = priceNumerator.times(TEN.pow(u8(decimalsBase - decimalsQuote)))
+  }
+
+  return [newNumerator, newDenominator]
 }
