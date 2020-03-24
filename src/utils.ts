@@ -1,4 +1,4 @@
-import { Address, BigInt, EthereumEvent, EthereumCall } from '@graphprotocol/graph-ts'
+import { Address, BigInt, log, EthereumEvent } from '@graphprotocol/graph-ts'
 
 let BATCH_TIME = BigInt.fromI32(300)
 let OWL_DECIMALS = BigInt.fromI32(18)
@@ -50,24 +50,49 @@ export function toWei(amount: BigInt, decimalsOpt: BigInt | null): BigInt {
   return amount.times(TEN.pow(u8(decimals)))
 }
 
+export function greatestCommonDenominator(numerator: BigInt, denominator: BigInt): BigInt {
+  if (denominator.isZero()) {
+    return numerator
+  } else {
+    return greatestCommonDenominator(denominator, numerator.mod(denominator))
+  }
+}
+
+export function reduce(numerator: BigInt, denominator: BigInt): BigInt[] {
+  let greatestCommonDenominator = greatestCommonDenominator(numerator, denominator)
+  return [numerator.div(greatestCommonDenominator), denominator.div(greatestCommonDenominator)]
+}
+
 export function calculatePrice(
-  priceNumerator: BigInt,
-  priceDenominator: BigInt,
-  decimalsBaseOpt: BigInt | null,
-  decimalsQuoteOpt: BigInt | null,
+  priceNumerator: BigInt, // 1,001997154410.220200000000000000    --- 1001997154410220200000000000000
+  priceDenominator: BigInt, // 1                                    --- 1000000000000000000
+  decimalsBaseOpt: BigInt | null, // 6
+  decimalsQuoteOpt: BigInt | null, // 18
 ): BigInt[] {
   let decimalsBase = coalesce<BigInt>(decimalsBaseOpt, DEFAULT_DECIMALS).toI32()
   let decimalsQuote = coalesce<BigInt>(decimalsQuoteOpt, DEFAULT_DECIMALS).toI32()
+  log.info('[utils:calculatePrice] {} / {} with decimals {} and {}', [
+    priceNumerator.toString(),
+    priceDenominator.toString(),
+    BigInt.fromI32(decimalsBase).toString(),
+    BigInt.fromI32(decimalsQuote).toString(),
+  ])
 
   let newNumerator: BigInt
   let newDenominator: BigInt
-  if (decimalsBase > decimalsQuote) {
+  if (decimalsBase == decimalsQuote) {
+    // Strictly not needed to handle this case separately, but saves a bit of computation to the indexer
+    newNumerator = priceNumerator
+    newDenominator = priceDenominator
+  } else if (decimalsBase > decimalsQuote) {
     newNumerator = priceNumerator.times(TEN.pow(u8(decimalsBase - decimalsQuote)))
     newDenominator = priceDenominator
   } else {
-    newNumerator = priceDenominator
-    newDenominator = priceNumerator.times(TEN.pow(u8(decimalsBase - decimalsQuote)))
+    newNumerator = newNumerator
+    newDenominator = priceDenominator.times(TEN.pow(u8(decimalsQuote - decimalsBase)))
   }
 
-  return [newNumerator, newDenominator]
+  log.info('[utils:calculatePrice] {} / {}', [newNumerator.toString(), newDenominator.toString()])
+
+  return reduce(newNumerator, newDenominator)
 }
