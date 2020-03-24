@@ -1,6 +1,7 @@
 import { Address, BigInt, EthereumEvent, EthereumCall } from '@graphprotocol/graph-ts'
 
 let BATCH_TIME = BigInt.fromI32(300)
+let OWL_DECIMALS = BigInt.fromI32(18)
 
 export function toOrderId(ownerAddress: Address, orderId: i32): string {
   return ownerAddress.toHex() + '-' + BigInt.fromI32(orderId).toString()
@@ -28,4 +29,8 @@ export function epochToBatchId(epoch: BigInt): BigInt {
 
 export function getBatchId(event: EthereumEvent): BigInt {
   return epochToBatchId(event.block.timestamp)
+}
+
+export function getOwlDecimals(): BigInt {
+  return OWL_DECIMALS
 }
