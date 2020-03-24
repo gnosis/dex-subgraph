@@ -2,6 +2,8 @@ import { Address, BigInt, EthereumEvent, EthereumCall } from '@graphprotocol/gra
 
 let BATCH_TIME = BigInt.fromI32(300)
 let OWL_DECIMALS = BigInt.fromI32(18)
+let DEFAULT_DECIMALS = BigInt.fromI32(18)
+let TEN = BigInt.fromI32(10)
 
 export function toOrderId(ownerAddress: Address, orderId: i32): string {
   return ownerAddress.toHex() + '-' + BigInt.fromI32(orderId).toString()
@@ -41,4 +43,11 @@ export function coalesce<T>(valueOpt: T | null, defaultValue: T): T {
   } else {
     return valueOpt!
   }
+}
+
+export function toPriceInUnits(price: BigInt, decimalsBaseOpt: BigInt | null, decimalsQuoteOpt: BigInt | null): BigInt {
+  let decimalsBase = coalesce<BigInt>(decimalsBaseOpt, DEFAULT_DECIMALS).toI32()
+  let decimalsQuote = coalesce<BigInt>(decimalsQuoteOpt, DEFAULT_DECIMALS).toI32()
+
+  return price.div(TEN.pow(u8(decimalsBase - decimalsQuote)))
 }
