@@ -34,3 +34,11 @@ export function getBatchId(event: EthereumEvent): BigInt {
 export function getOwlDecimals(): BigInt {
   return OWL_DECIMALS
 }
+
+export function coalesce<T>(valueOpt: T | null, defaultValue: T): T {
+  if (valueOpt == null) {
+    return defaultValue
+  } else {
+    return valueOpt!
+  }
+}
