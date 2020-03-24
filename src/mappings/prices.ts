@@ -55,5 +55,5 @@ export function getPriceById(priceId: string): Order {
   if (!priceOpt) {
     throw new Error("Price doesn't exist: " + priceId)
   }
-  return priceOpt!
+  return priceOpt
 }
