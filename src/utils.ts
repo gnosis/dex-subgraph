@@ -64,6 +64,20 @@ export function reduce(numerator: BigInt, denominator: BigInt): BigInt[] {
   return [numerator.div(greatestCommonDenominator), denominator.div(greatestCommonDenominator)]
 }
 
+/**
+ * Calculate the price given twe amounts of two tokens
+ *
+ * For the market Orange-Apple, we say:
+ *   - Orange is the base currency
+ *   - Apple is the quote currency
+ *   - And the price would be, how many Apples you pay for one Orange
+ *
+ *
+ * @param amountBase Amount in the base token
+ * @param decimalsBaseOpt
+ * @param amountQuote
+ * @param decimalsQuoteOpt
+ */
 export function calculatePrice(
   amountBase: BigInt,
   decimalsBaseOpt: BigInt | null,
@@ -74,12 +88,12 @@ export function calculatePrice(
   let decimalsQuote = coalesce<BigInt>(decimalsQuoteOpt, DEFAULT_DECIMALS)
   let decimalsDifference = decimalsBase.minus(decimalsQuote)
 
-  log.info('[utils:calculatePrice] Base: {} ({}) and Quote: {} ({})', [
-    amountBase.toString(),
-    decimalsBase.toString(),
-    amountQuote.toString(),
-    decimalsQuote.toString(),
-  ])
+  // log.info('[utils:calculatePrice] Base: {} ({}) and Quote: {} ({})', [
+  //   amountBase.toString(),
+  //   decimalsBase.toString(),
+  //   amountQuote.toString(),
+  //   decimalsQuote.toString(),
+  // ])
 
   let priceNumerator: BigInt
   let priceDenominator: BigInt
