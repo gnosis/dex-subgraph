@@ -45,9 +45,9 @@ export function _createPrice(priceId: string, tokenId: i32, trade: Trade, event:
   //        "sell token" / OWL
   let batchExchange = BatchExchange.bind(event.address)
   let token = getTokenById(tokenId)
-  let priceInWeis = batchExchange.currentPrices(tokenId)
+  let weisOfTokenForOneOwl = batchExchange.currentPrices(tokenId)
 
-  let priceInOwl = calculatePrice(priceInWeis, ONE_WEI, token.decimals, getOwlDecimals())
+  let priceInOwl = calculatePrice(weisOfTokenForOneOwl, token.decimals, ONE_WEI, getOwlDecimals())
   price.priceInOwlNumerator = priceInOwl[0]
   price.priceInOwlDenominator = priceInOwl[1]
 

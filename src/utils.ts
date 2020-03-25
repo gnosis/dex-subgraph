@@ -4,6 +4,7 @@ let BATCH_TIME = BigInt.fromI32(300)
 let OWL_DECIMALS = BigInt.fromI32(18)
 let DEFAULT_DECIMALS = BigInt.fromI32(18)
 let TEN = BigInt.fromI32(10)
+let ZERO = BigInt.fromI32(0)
 
 export function toOrderId(ownerAddress: Address, orderId: i32): string {
   return ownerAddress.toHex() + '-' + BigInt.fromI32(orderId).toString()
@@ -64,27 +65,47 @@ export function reduce(numerator: BigInt, denominator: BigInt): BigInt[] {
 }
 
 export function calculatePrice(
-  priceNumerator: BigInt, // 1,001997154410.220200000000000000    --- 1001997154410220200000000000000
-  priceDenominator: BigInt, // 1                                    --- 1000000000000000000
-  decimalsBaseOpt: BigInt | null, // 6
-  decimalsQuoteOpt: BigInt | null, // 18
+  amountBase: BigInt,
+  decimalsBaseOpt: BigInt | null,
+  amountQuote: BigInt,
+  decimalsQuoteOpt: BigInt | null,
 ): BigInt[] {
-  let decimalsBase = coalesce<BigInt>(decimalsBaseOpt, DEFAULT_DECIMALS).toI32()
-  let decimalsQuote = coalesce<BigInt>(decimalsQuoteOpt, DEFAULT_DECIMALS).toI32()
+  let decimalsBase = coalesce<BigInt>(decimalsBaseOpt, DEFAULT_DECIMALS)
+  let decimalsQuote = coalesce<BigInt>(decimalsQuoteOpt, DEFAULT_DECIMALS)
+  let decimalsDifference = decimalsBase.minus(decimalsQuote)
 
-  let newNumerator: BigInt
-  let newDenominator: BigInt
-  if (decimalsBase == decimalsQuote) {
+  log.info('[utils:calculatePrice] Base: {} ({}) and Quote: {} ({})', [
+    amountBase.toString(),
+    decimalsBase.toString(),
+    amountQuote.toString(),
+    decimalsQuote.toString(),
+  ])
+
+  let priceNumerator: BigInt
+  let priceDenominator: BigInt
+  if (decimalsDifference.isZero()) {
     // Strictly not needed to handle this case separately, but saves a bit of computation to the indexer
-    newNumerator = priceNumerator
-    newDenominator = priceDenominator
-  } else if (decimalsBase > decimalsQuote) {
-    newNumerator = priceNumerator.times(TEN.pow(u8(decimalsBase - decimalsQuote)))
-    newDenominator = priceDenominator
+    priceNumerator = amountQuote
+    priceDenominator = amountBase
   } else {
-    newNumerator = newNumerator
-    newDenominator = priceDenominator.times(TEN.pow(u8(decimalsQuote - decimalsBase)))
+    let precisionFactor = TEN.pow(u8(decimalsDifference.abs().toI32()))
+    // log.info('[utils:calculatePrice] precisionFactor: {}', [precisionFactor.toString()])
+
+    // decimalsBase - decimalsQuote < 0?
+    if (decimalsDifference.gt(ZERO)) {
+      // log.info('[utils:calculatePrice] decimalsBase - decimalsQuote < 0 ? yes', [])
+      // Base token has more decimals
+      priceNumerator = amountQuote
+      priceDenominator = amountBase.times(precisionFactor)
+    } else {
+      // log.info('[utils:calculatePrice] decimalsBase - decimalsQuote < 0 ? no', [])
+      // Quote token has more decimals
+      priceNumerator = amountQuote.times(precisionFactor)
+      priceDenominator = amountBase
+    }
   }
 
-  return reduce(newNumerator, newDenominator)
+  // log.info('[utils:calculatePrice] Price: {} / {}', [priceNumerator.toString(), priceDenominator.toString()])
+
+  return reduce(priceNumerator, priceDenominator)
 }
