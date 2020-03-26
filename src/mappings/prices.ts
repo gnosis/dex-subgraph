@@ -1,7 +1,7 @@
 import { log, BigInt } from '@graphprotocol/graph-ts'
 import { Price, Trade } from '../../generated/schema'
 import { EthereumEvent } from '@graphprotocol/graph-ts'
-import { toPriceId, getOwlDecimals, calculatePrice, toWei } from '../utils'
+import { toPriceId, getOwlDecimals, calculatePrice, toWei, exponential, coalesce } from '../utils'
 import { BatchExchange } from '../../generated/BatchExchange/BatchExchange'
 import { getTokenById } from './tokens'
 
@@ -57,28 +57,49 @@ export function _createPrice(priceId: string, tokenId: i32, trade: Trade, event:
 
 /**
   The price in the contract is recorded in an internal format that would be something like:
-         "sell token in weis" / 1e18 OWLs
+        "OWL weis" / "1e18 Token weis"
+    ... or in other words:
+        "OWL weis" / "exa Token weis"
+
+  Yes it's confusing, but keep reading to understand what it means, and the reason why.
          
-  We need to calculate the price in a user friendly format, a fraction with units:
-         "sell token" / OWL
+  Our objective is to calculate the price in a user friendly format.
+  The format we want is "number of OWLs per unit of Token": OWL / Token
+  
+  So, in this price format we want to return, for example in WETH-OWL market, 150 would mean:
+    - The units in scientific notation are OWL/WETH
+    - It would mean 150 OWLs is the price of 1 WETH
+    - Informally, people would say, the price of the token is "150 OWL"
+    - WETH is the base token
+    - OWL is the quote token
 
-  i.e. For USDC wich has 6 decimals can return 980942729992317873036301363769, meaning:
-      The units of this big number (980942729992317873036301363769) is:
-          "OWL wei / exa USDC wei"
-        or in other words:
-          "weis of OWL by each 1e18 weis of USDC"
-        
-        Yes! it's confusing, but let's just explain it backwards:
+  i.e. For USDC wich has 6 decimals if the contract returns 980942729992317873036301363769:
+    - It would mean 980942729992317873036301363769 "weis of owl for each 1e18 weis of USDC"
+    - In other words 980942729992317873036301363769 "OWL weis / exa USDC weis"  
+    - Indeed, it's confusing, however it's the way the contract stores the price, for 2 reasons:
+        - 1) To avoid dealing with decimals simplify it's logic (this is why prices and amounts are always in wei)
+        - 2) The 1e18 (or exa) is just to be able to give a more accurate price, so instead of saving the 
+             price for 1 wei (that could be potentially to small), it saves the price of a lot of weis (1e18 --> exa)
+        - To understand better why exa is used, let's see two examples:
+            * What is the price of an egg? Probably no-one would ask that, and he would ask for the price of a dozen
+            * A bit more extreme. What's the mass of an atom? Instead of calculating the mass of a single atom, we 
+              express the values for a huge number of them; 1.66 * 1e27 (Avogadro number) 
+              https://en.wikipedia.org/wiki/Atomic_mass
+    - Now that we understand the reasoning. Let's explain how we go from that number to units.
+      For that we will explain it using scientific notation, and going backwards:
 
-        980942729992317873036301363769 * <something> = 0.98094273 USDC/OWL
-            --> <something> = 1e-30 = 1e-18 * 1e-18 * 1e6
-            
-          [price * 1e-18 * 1e-18 * 1e6 ] USDC / OWL
-          [price * 1e-18 * 1e-18 ] USDC * 1e6 / OWL
-          [price * 1e-18 * 1e-18 ] USDC wei / OWL
-          [price * 1e-18  ] USDC wei / OWL * 1e18
-          [price * 1e-18 ] USDC wei / OWL wei
-          [price] exa USDC wei / OWL wei
+          980942729992317873036301363769 * <something> = 0.98094273 OWL/USDC
+            --> <something> = 1e-30
+      Okay, so:
+        [price * 1e-30 ] OWL / USDC
+        [price * 1e-18 * 1e-18 * 1e6 ] OWL / USDC
+        [price * 1e-18 * 1e-18  ] OWL / USDC * 1e-6
+        [price * 1e-18 * 1e-18] OWL / USDC wei
+        [price * 1e-18] OWL / 1e18 * USDC wei
+        [price * 1e-18] OWL / exa USDC wei
+        [price] OWL * 1e-18 / exa USDC wei
+        [price] OWL wei / exa USDC wei
+
  */
 function _getPriceInOwl(tokenId: i32, event: EthereumEvent): BigInt[] {
   // Price: Calculate price in user friendly format
@@ -86,8 +107,12 @@ function _getPriceInOwl(tokenId: i32, event: EthereumEvent): BigInt[] {
   let batchExchange = BatchExchange.bind(event.address)
   let token = getTokenById(tokenId)
 
-  // Excuse the name of the var name, but it tries to represent what the contract returns
-  let weisOfTokenPerExaWeiOfOwl = batchExchange.currentPrices(tokenId)
+  // Excuse the name of the var name, but it tries to represent what the contract returns (read above comments)
+  let weisOfOwlPerExaWeiOfToken = batchExchange.currentPrices(tokenId)
+  let hexaWeiOfToken = toWei(EXA_AMOUNT, token.decimals)
 
-  return calculatePrice(EXA_AMOUNT, getOwlDecimals(), weisOfTokenPerExaWeiOfOwl, token.decimals)
+  // Since the "price value" is in "OWL wei / exa USDC wei"
+  //    - base token: exa Token weis
+  //    - quote token: the "price value"
+  return calculatePrice(hexaWeiOfToken, token.decimals, weisOfOwlPerExaWeiOfToken, getOwlDecimals())
 }
