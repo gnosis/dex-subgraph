@@ -41,6 +41,15 @@ export function createTokenIfNotCreated(tokenId: u32, event: EthereumEvent): Tok
   return token!
 }
 
+export function getTokenById(tokenId: i32): Token {
+  let id = BigInt.fromI32(tokenId).toString()
+  let tokenOpt = Token.load(id)
+  if (!tokenOpt) {
+    throw new Error("Order doesn't exist: " + id)
+  }
+  return tokenOpt!
+}
+
 export function _createToken(id: string, address: Address, timestamp: BigInt, txHash: Bytes): Token {
   log.info('[createToken] Create Token {} with address {}', [id, address.toHex()])
 

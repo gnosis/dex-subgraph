@@ -36,7 +36,8 @@ type Price @entity {
   batchId: BigInt!
 
   # Price and volume
-  priceInOwl: BigInt!
+  priceInOwlNumerator: BigInt!
+  priceInOwlDenominator: BigInt!
   volume: BigInt!
 
   # Audit Dates
