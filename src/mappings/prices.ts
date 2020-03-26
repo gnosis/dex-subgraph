@@ -66,7 +66,7 @@ export function _createPrice(priceId: string, tokenId: i32, trade: Trade, event:
   Our objective is to calculate the price in a user friendly format.
   The format we want is "number of OWLs per unit of Token": OWL / Token
   
-  So, in this price format we want to return, for example in WETH-OWL market, 150 would mean:
+  So we want a price that, for example in WETH-OWL market, 150 would mean:
     - The units in scientific notation are OWL/WETH
     - It would mean 150 OWLs is the price of 1 WETH
     - Informally, people would say, the price of the token is "150 OWL"
@@ -108,8 +108,13 @@ function _getPriceInOwl(tokenId: i32, event: EthereumEvent): BigInt[] {
   let token = getTokenById(tokenId)
 
   // Excuse the name of the var name, but it tries to represent what the contract returns (read above comments)
-  let weisOfOwlPerExaWeiOfToken = batchExchange.currentPrices(tokenId)
-  let hexaWeiOfToken = toWei(EXA_AMOUNT, token.decimals)
+  let weisOfOwlPerExaWeiOfToken = batchExchange.currentPrices(tokenId) // i.e. 0.9809 * 1e30 for the example above
+  let hexaWeiOfToken = toWei(EXA_AMOUNT, token.decimals) // i.e. for USDC 1e24
+
+  log.debug('[_getPriceInOwl] weisOfOwlPerExaWeiOfToken={}, hexaWeiOfToken={}', [
+    weisOfOwlPerExaWeiOfToken.toString(),
+    hexaWeiOfToken.toString(),
+  ])
 
   // Since the "price value" is in "OWL wei / exa USDC wei"
   //    - base token: exa Token weis
