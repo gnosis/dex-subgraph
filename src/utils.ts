@@ -64,6 +64,10 @@ export function reduce(numerator: BigInt, denominator: BigInt): BigInt[] {
   return [numerator.div(greatestCommonDenominator), denominator.div(greatestCommonDenominator)]
 }
 
+export function exponential(value: BigInt): BigInt {
+  return TEN.pow(u8(value.toI32()))
+}
+
 /**
  * Calculate the price given twe amounts of two tokens
  *
@@ -102,7 +106,7 @@ export function calculatePrice(
     priceNumerator = amountQuote
     priceDenominator = amountBase
   } else {
-    let precisionFactor = TEN.pow(u8(decimalsDifference.abs().toI32()))
+    let precisionFactor = exponential(decimalsDifference.abs())
     // log.info('[utils:calculatePrice] precisionFactor: {}', [precisionFactor.toString()])
 
     // decimalsBase - decimalsQuote < 0?
