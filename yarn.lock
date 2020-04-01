@@ -4973,10 +4973,10 @@ truffle-interface-adapter@^0.2.5:
     lodash "^4.17.13"
     web3 "1.2.1"
 
-truffle@^5.1.15:
-  version "5.1.15"
-  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.1.15.tgz#cf1efb8a601571eb20de13e95dbd8d27c574c0c3"
-  integrity sha512-sknMUERo+3bihwUEThxI4a8h+lJdumLSYGCObmqCNMxjNWCwfqlPkYaIl8z64PcN3Dus/Sr8aLEF8IHpHQWISA==
+truffle@^5.1.19:
+  version "5.1.19"
+  resolved "https://registry.yarnpkg.com/truffle/-/truffle-5.1.19.tgz#daf0aca071b9e2cdd88f456f10c1a81e840794aa"
+  integrity sha512-H4S7GbKCN56eW5ftLo+l160c+SLyF8C205hUF9VRfulxFBdXvmTIeHdRO/zcnBWiKfEbXzuHWSI9gyFkPtkvmw==
   dependencies:
     app-module-path "^2.2.0"
     mocha "5.2.0"
