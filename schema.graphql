@@ -8,7 +8,7 @@
 #   - BigDecimal	BigDecimal is used to represent arbitrary precision decimals
 
 type Token @entity {
-  "Token listed in dFusion"
+  "Registered token"
   id: ID! # tokenId
   address: Bytes!
   fromBatchId: BigInt!
@@ -30,7 +30,7 @@ type Token @entity {
 }
 
 type Price @entity {
-  "Token listed in dFusion"
+  "Price for a token and batchId"
   id: ID! # tokenId + batchId
   token: Token!
   batchId: BigInt!
@@ -48,7 +48,7 @@ type Price @entity {
 }
 
 type User @entity {
-  "User in dFusion. Any ethereum account that deposited tokens or traded with dFusion"
+  "User of the protocol. Any ethereum account that deposited tokens or traded"
   id: ID! # address
   fromBatchId: BigInt!
 
@@ -81,7 +81,7 @@ type User @entity {
 # }
 
 type Deposit @entity {
-  "Deposit of an user into dFusion"
+  "Deposit of an user"
   id: ID! # user-token
   user: User!
   tokenAddress: Bytes!
@@ -98,7 +98,7 @@ type Deposit @entity {
 }
 
 type WithdrawRequest @entity {
-  "WithdrawRequest of an user into dFusion"
+  "Withdraw request of an user"
   id: ID! # txHash + id
   user: User!
   tokenAddress: Bytes!
@@ -116,7 +116,7 @@ type WithdrawRequest @entity {
 }
 
 type Withdraw @entity {
-  "Withdraw of an user into dFusion"
+  "Withdraw of an user"
   id: ID! # txHash + id
   user: User!
   tokenAddress: Bytes!
@@ -133,7 +133,7 @@ type Withdraw @entity {
 }
 
 type Order @entity {
-  "Order submitted by an user to dFusion. It has a validity (dates) so they can only be executed from/until some given batches. Partial executions of this trades must respect the limit price."
+  "Order submitted by an user. It has a validity (dates) so they can only be executed from/until some given batches. Partial executions of this trades must respect the limit price."
   id: ID! # ownerAddress + orderId
   owner: User! # address - TODO: User
   orderId: Int! # uint16
@@ -169,7 +169,7 @@ type Order @entity {
 }
 
 type Trade @entity {
-  "Trade executed in dFusion. It's part of the solution submitted by a solver for a given batch"
+  "Trade for a single user, as part of a ring trade. It's part of the solution submitted by a solver for a given batch"
   id: ID! # txHash + logIndex
   order: Order!
 
@@ -196,7 +196,7 @@ type Trade @entity {
 }
 
 type Batch @entity {
-  "Batch executed in dFusion. Every batch will contain at least solution with the a set of trades that are executed in it"
+  "Batch executed. Every batch will contain at least solution with the a set of trades that are executed in it"
   id: ID! # batchId
   # batch details
   startEpoch: BigInt!
