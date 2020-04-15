@@ -1,11 +1,11 @@
-# dFusion subgraph
+# Gnosis Protocol subgraph
 
 <img align="right" width="350" src="./docs/subgraph.png">
 
-Implements a subgraph for the [dFusion protocol](https://github.com/gnosis/dex-contracts)
+Implements a subgraph for the [Gnosis Protocol](https://github.com/gnosis/dex-contracts)
 
-- [Subgraph in Mainnet](https://thegraph.com/explorer/subgraph/gnosis/dfusion)
-- [Subgraph in Rinkeby](https://thegraph.com/explorer/subgraph/gnosis/dfusion-rinkeby)
+- [Subgraph in Mainnet](https://thegraph.com/explorer/subgraph/gnosis/protocol)
+- [Subgraph in Rinkeby](https://thegraph.com/explorer/subgraph/gnosis/protocol-rinkeby)
 
 For more information see https://thegraph.com/docs/.
 
