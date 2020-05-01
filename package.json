@@ -34,7 +34,7 @@
     "cli-confirm": "^1.0.1",
     "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
-    "eslint-config-prettier": "^6.10.0",
+    "eslint-config-prettier": "^6.11.0",
     "ganache-cli": "^6.9.1",
     "mustache": "^4.0.1",
     "openzeppelin-solidity": "^2.5.0",
