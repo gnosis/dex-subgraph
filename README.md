@@ -1,4 +1,4 @@
-# Gnosis Protocol Subgraph
+# Gnosis Protocol subgraph
 
 <img align="right" width="350" src="./docs/subgraph.png">
 
