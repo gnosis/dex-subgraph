@@ -48,8 +48,8 @@ yarn
 # Migrate dependencies (in another tab)
 npx truffle migrate
 
-# Setup 3 testing account and tokens
-npx truffle exec scripts/stablex/setup_environment.js
+# Setup some test data
+npx truffle exec scripts/stablex/setup_thegraph_data.js
 ```
 
 2. Run a local The Graph Node
@@ -128,29 +128,6 @@ subscription UserData {
 ```
 
 </details>
-
-## Local development: Deposit, claim, place orders
-
-> First setup for local development (see above)
-
-In dex-contracts project:
-
-```bash
-# place order
-npx truffle exec scripts/stablex/place_order.js --accountId=0 --buyToken=1 --sellToken=0 --minBuy=999 --maxSell=2000 --validFor=20
-
-# Deposit
-npx truffle exec scripts/stablex/deposit.js --accountId=0 --tokenId=0 --amount=3000
-
-# Request Withdraw
-npx truffle exec scripts/stablex/request_withdraw.js --tokenId=0 --accountId=0 --amount=3000
-
-# Wait 300s
-npx truffle exec scripts/wait_seconds.js 300
-
-# Claim
-npx truffle exec scripts/stablex/claim_withdraw.js --accountId=0 --tokenId=0
-```
 
 ## Update to a new version of the contracts
 
