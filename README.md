@@ -7,7 +7,10 @@ Implements a subgraph for the [Gnosis Protocol](https://github.com/gnosis/dex-co
 - [Subgraph in Mainnet](https://thegraph.com/explorer/subgraph/gnosis/protocol)
 - [Subgraph in Rinkeby](https://thegraph.com/explorer/subgraph/gnosis/protocol-rinkeby)
 
-For more information see https://thegraph.com/docs/.
+For more information about:
+
+- The Gnosis Protocol: https://docs.gnosis.io/protocol
+- The graph: https://thegraph.com/docs
 
 ---
 
@@ -73,7 +76,7 @@ yarn create-ganache
 yarn deploy
 ```
 
-The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/gnosis/dfusion/graphql
+The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/gnosis/protocol/graphql
 
 <details><summary>Example of GraphQL subscription to try:</summary>
 
