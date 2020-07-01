@@ -46,7 +46,7 @@ yarn
 npx truffle migrate
 
 # Setup some test data
-npx truffle exec scripts/stablex/setup_thegraph_data
+npx truffle exec scripts/stablex/setup_thegraph_data.js
 ```
 
 2. Run a local The Graph Node
