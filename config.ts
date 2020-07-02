@@ -1,4 +1,7 @@
-import { Address } from '@graphprotocol/graph-ts'
+import { Address, dataSource, log } from '@graphprotocol/graph-ts'
+// import { address as ganacheAddress } from './config/ganache.json'
+// import { address as mainnetAddress } from './config/mainnet'
+// import { address as rinkebyAddress } from './config/rinkeby'
 
 export class TokenDetails {
   name: string
@@ -11,10 +14,13 @@ class TokenDetailsByNetwork {
   ganache: TokenDetails[]
 }
 
+// FIXME: Find a nicer solution. I cannot load from JSON ('./config/ganache.json')
+const GANACHE_NETWORK = '0x9561C133DD8580860B6b7E504bC5Aa500f0f06a7'
+const RINKEBY_NETWORK = '0xC576eA7bd102F7E476368a5E98FA455d1Ea34dE2'
 /**
  * List of deprecated tokens. They are renamed to avoid users to get confused with this token, and the newer version
  */
-let deprecatedTokens: TokenDetailsByNetwork = {
+let deprecatedTokensByNetwork: TokenDetailsByNetwork = {
   mainnet: [
     {
       name: 'Synth sUSD (deprecated)',
@@ -43,9 +49,24 @@ let deprecatedTokens: TokenDetailsByNetwork = {
   ],
 }
 
+let contractAddress = dataSource.address().toHexString()
+
+let deprecatedTokens = [] as TokenDetails[]
+let NETWORK = 'mainnet'
+if (contractAddress == Address.fromString(GANACHE_NETWORK).toHex()) {
+  NETWORK = 'ganache'
+  deprecatedTokens = deprecatedTokensByNetwork.ganache
+} else if (contractAddress == Address.fromString(RINKEBY_NETWORK).toHex()) {
+  NETWORK = 'rinkeby'
+  deprecatedTokens = deprecatedTokensByNetwork.rinkeby
+} else {
+  deprecatedTokens = deprecatedTokensByNetwork.mainnet
+}
+log.info('[config] Network "{}". BatchExchange Contract: {}', [NETWORK, GANACHE_NETWORK, contractAddress])
+
 let DEPRECATED_TOKENS = new Map<string, TokenDetails>()
-deprecatedTokens.rinkeby.forEach(tokenDetails => {
+deprecatedTokens.forEach(tokenDetails => {
   DEPRECATED_TOKENS.set(tokenDetails.address.toHex(), tokenDetails)
 })
 
-export { DEPRECATED_TOKENS }
+export { NETWORK, DEPRECATED_TOKENS }
