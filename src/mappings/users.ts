@@ -1,8 +1,8 @@
-import { log, Address, BigInt, Bytes, EthereumEvent } from '@graphprotocol/graph-ts'
+import { log, Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { User } from '../../generated/schema'
 import { epochToBatchId } from '../utils'
 
-export function createUserIfNotCreated(address: Address, event: EthereumEvent): User {
+export function createUserIfNotCreated(address: Address, event: ethereum.Event): User {
   let id = address.toHex()
   let user = User.load(id)
   log.info('[createUserIfNotCreated] Get User: {}', [id])

@@ -1,10 +1,10 @@
-import { log, BigInt, EthereumEvent } from '@graphprotocol/graph-ts'
+import { log, ethereum } from '@graphprotocol/graph-ts'
 import { Trade, Solution, Batch } from '../../generated/schema'
 import { createBatchIfNotCreated } from './batch'
 import { BatchExchange } from '../../generated/BatchExchange/BatchExchange'
 import { createUserIfNotCreated } from './users'
 
-export function createSolutionOrAddTrade(trade: Trade, event: EthereumEvent): Solution {
+export function createSolutionOrAddTrade(trade: Trade, event: ethereum.Event): Solution {
   let batchId = trade.tradeBatchId
 
   // Make sure the batch is created
@@ -19,7 +19,7 @@ export function createSolutionOrAddTrade(trade: Trade, event: EthereumEvent): So
   return solution
 }
 
-function createSolutionIfNotCreated(batch: Batch, trade: Trade, event: EthereumEvent): Solution {
+function createSolutionIfNotCreated(batch: Batch, trade: Trade, event: ethereum.Event): Solution {
   let solutionId = batch.solution
   let solution = Solution.load(solutionId)
 
@@ -31,7 +31,7 @@ function createSolutionIfNotCreated(batch: Batch, trade: Trade, event: EthereumE
   return solution!
 }
 
-function _createSolution(solutionId: string, trade: Trade, batch: Batch, event: EthereumEvent): Solution {
+function _createSolution(solutionId: string, trade: Trade, batch: Batch, event: ethereum.Event): Solution {
   log.info('[createSolution] Create Solution {} for batch {}', [solutionId, batch.id])
 
   // Get latest solution
@@ -68,7 +68,7 @@ function _createSolution(solutionId: string, trade: Trade, batch: Batch, event: 
   return solution
 }
 
-function _addTradeToSolution(solution: Solution, trade: Trade, event: EthereumEvent): void {
+function _addTradeToSolution(solution: Solution, trade: Trade, event: ethereum.Event): void {
   log.info('[addTradeToSolution] Add Trade {} to current Solution for batch {}', [trade.id, solution.batch])
 
   let trades = solution.trades

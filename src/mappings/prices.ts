@@ -1,13 +1,12 @@
-import { log, BigInt } from '@graphprotocol/graph-ts'
+import { log, BigInt, ethereum } from '@graphprotocol/graph-ts'
 import { Price, Trade } from '../../generated/schema'
-import { EthereumEvent } from '@graphprotocol/graph-ts'
 import { toPriceId, getOwlDecimals, calculatePrice, toWei } from '../utils'
 import { BatchExchange } from '../../generated/BatchExchange/BatchExchange'
 import { getTokenById } from './tokens'
 
 let EXA_AMOUNT = toWei(BigInt.fromI32(1), BigInt.fromI32(18))
 
-export function createOrUpdatePrice(tokenId: i32, trade: Trade, event: EthereumEvent): void {
+export function createOrUpdatePrice(tokenId: i32, trade: Trade, event: ethereum.Event): void {
   log.info('[createOrUpdatePrice] Create or Update Price for batch {} and Token {}. Tx: ', [
     trade.tradeBatchId.toString(),
     BigInt.fromI32(tokenId).toString(),
@@ -28,7 +27,7 @@ export function createOrUpdatePrice(tokenId: i32, trade: Trade, event: EthereumE
   price.save()
 }
 
-export function _createPrice(priceId: string, tokenId: i32, trade: Trade, event: EthereumEvent): Price {
+export function _createPrice(priceId: string, tokenId: i32, trade: Trade, event: ethereum.Event): Price {
   log.info('[createPrice] Create Price {}', [priceId])
 
   // Create token
@@ -80,7 +79,7 @@ export function _createPrice(priceId: string, tokenId: i32, trade: Trade, event:
           [price * 1e-18 ] USDC wei / OWL wei
           [price] exa USDC wei / OWL wei
  */
-function _getPriceInOwl(tokenId: i32, event: EthereumEvent): BigInt[] {
+function _getPriceInOwl(tokenId: i32, event: ethereum.Event): BigInt[] {
   // Price: Calculate price in user friendly format
 
   let batchExchange = BatchExchange.bind(event.address)
