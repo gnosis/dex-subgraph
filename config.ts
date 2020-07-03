@@ -51,7 +51,7 @@ let deprecatedTokensByNetwork: TokenDetailsByNetwork = {
 
 let contractAddress = dataSource.address().toHexString()
 
-let deprecatedTokens = [] as TokenDetails[]
+let deprecatedTokens: TokenDetails[] = []
 let NETWORK = 'mainnet'
 if (contractAddress == Address.fromString(GANACHE_NETWORK).toHex()) {
   NETWORK = 'ganache'
