@@ -2,6 +2,7 @@ import { log, Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { Token } from '../../generated/schema'
 import { AddTokenCall, BatchExchange } from '../../generated/BatchExchange/BatchExchange'
 import { Erc20 } from '../../generated/BatchExchange/Erc20'
+import { DEPRECATED_TOKENS, TokenDetails } from '../../config'
 import { epochToBatchId } from '../utils'
 
 export function onAddToken(call: AddTokenCall): void {
@@ -51,36 +52,56 @@ export function getTokenById(tokenId: i32): Token {
 }
 
 export function _createToken(id: string, address: Address, timestamp: BigInt, txHash: Bytes): Token {
-  log.info('[createToken] Create Token {} with address {}', [id, address.toHex()])
+  let addressString = address.toHex()
+  log.info('[createToken] Create Token {} with address {}', [id, addressString])
 
   // Create token
   let token = new Token(id)
   token.address = address
   token.fromBatchId = epochToBatchId(timestamp)
 
-  // Add symbol (optional)
-  let erc20 = Erc20.bind(address)
-  let symbolAttempt = erc20.try_symbol()
-  if (symbolAttempt.reverted) {
-    log.warning('Adding a ERC20 token with no "symbol". Address: {}', [address.toHex()])
-    token.symbol = null
-  } else {
-    token.symbol = symbolAttempt.value
-  }
+  var deprecatedToken: TokenDetails | null = DEPRECATED_TOKENS.has(addressString)
+    ? DEPRECATED_TOKENS.get(addressString)
+    : null
 
-  // Add name (optional)
-  let nameAttempt = erc20.try_name()
-  if (nameAttempt.reverted) {
-    log.warning('Adding a ERC20 token with no "name". Address: {}', [address.toHex()])
-    token.name = null
+  // Load the name and symbols
+  let erc20 = Erc20.bind(address)
+  if (deprecatedToken) {
+    // Deprecated token, use the config names instead of the info from the contract
+    log.info('[createToken] Deprecated token {} ({}): {}', [
+      deprecatedToken.symbol,
+      deprecatedToken.name,
+      addressString,
+    ])
+    token.name = deprecatedToken.name
+    token.symbol = deprecatedToken.symbol
   } else {
-    token.name = nameAttempt.value
+    // Load name and symbol from ERC20 contract
+    log.info('[createToken] Get ERC20 token Info for token: {}', [addressString])
+
+    // Add symbol (optional)
+    let symbolAttempt = erc20.try_symbol()
+    if (symbolAttempt.reverted) {
+      log.warning('Adding a ERC20 token with no "symbol". Address: {}', [addressString])
+      token.symbol = null
+    } else {
+      token.symbol = symbolAttempt.value
+    }
+
+    // Add name (optional)
+    let nameAttempt = erc20.try_name()
+    if (nameAttempt.reverted) {
+      log.warning('Adding a ERC20 token with no "name". Address: {}', [addressString])
+      token.name = null
+    } else {
+      token.name = nameAttempt.value
+    }
   }
 
   // Add decimals (optional)
   let decimalsAttempt = erc20.try_decimals()
   if (decimalsAttempt.reverted) {
-    log.warning('Adding a ERC20 token with no "decimals". Address: {}', [address.toHex()])
+    log.warning('Adding a ERC20 token with no "decimals". Address: {}', [addressString])
     token.decimals = null
   } else {
     token.decimals = BigInt.fromI32(decimalsAttempt.value)

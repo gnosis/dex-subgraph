@@ -3,6 +3,7 @@ import { Deposit as DepositEvent } from '../../generated/BatchExchange/BatchExch
 import { Deposit } from '../../generated/schema'
 import { toEventId } from '../utils'
 import { createUserIfNotCreated } from './users'
+// import { createTokenIfNotCreated } from './tokens'
 
 export function onDeposit(event: DepositEvent): void {
   let params = event.params
