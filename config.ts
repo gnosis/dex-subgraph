@@ -1,13 +1,10 @@
 import { Address, dataSource, log } from '@graphprotocol/graph-ts'
-// import { address as ganacheAddress } from './config/ganache.json'
-// import { address as mainnetAddress } from './config/mainnet'
-// import { address as rinkebyAddress } from './config/rinkeby'
-
 export class TokenDetails {
   name: string
   symbol: string
   address: Address
 }
+
 class TokenDetailsByNetwork {
   mainnet: TokenDetails[]
   rinkeby: TokenDetails[]
@@ -49,20 +46,20 @@ let deprecatedTokensByNetwork: TokenDetailsByNetwork = {
   ],
 }
 
-let contractAddress = dataSource.address().toHexString()
+let contractAddress = dataSource.address()
 
 let deprecatedTokens: TokenDetails[] = []
 let NETWORK = 'mainnet'
-if (contractAddress == Address.fromString(GANACHE_NETWORK).toHex()) {
+if (contractAddress.equals(Address.fromString(GANACHE_NETWORK))) {
   NETWORK = 'ganache'
   deprecatedTokens = deprecatedTokensByNetwork.ganache
-} else if (contractAddress == Address.fromString(RINKEBY_NETWORK).toHex()) {
+} else if (contractAddress.equals(Address.fromString(RINKEBY_NETWORK))) {
   NETWORK = 'rinkeby'
   deprecatedTokens = deprecatedTokensByNetwork.rinkeby
 } else {
   deprecatedTokens = deprecatedTokensByNetwork.mainnet
 }
-log.info('[config] Network "{}". BatchExchange Contract: {}', [NETWORK, GANACHE_NETWORK, contractAddress])
+log.info('[config] Network "{}". BatchExchange Contract: {}', [NETWORK, GANACHE_NETWORK, contractAddress.toHex()])
 
 let DEPRECATED_TOKENS = new Map<string, TokenDetails>()
 deprecatedTokens.forEach(tokenDetails => {
