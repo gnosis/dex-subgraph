@@ -1,4 +1,4 @@
-import { log, Address, BigInt, Bytes, EthereumEvent, CallResult } from '@graphprotocol/graph-ts'
+import { log, Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
 import { Token } from '../../generated/schema'
 import { AddTokenCall, BatchExchange } from '../../generated/BatchExchange/BatchExchange'
 import { Erc20 } from '../../generated/BatchExchange/Erc20'
@@ -22,7 +22,7 @@ export function onAddToken(call: AddTokenCall): void {
   // TODO: Update balances (once balances are implemented)
 }
 
-export function createTokenIfNotCreated(tokenId: u32, event: EthereumEvent): Token {
+export function createTokenIfNotCreated(tokenId: u32, event: ethereum.Event): Token {
   let id = BigInt.fromI32(tokenId).toString()
   let token = Token.load(id)
   log.info('[createTokenIfNotCreated] Make sure token {} is created', [id])

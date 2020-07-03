@@ -46,10 +46,10 @@ cd dex-contracts
 yarn
 
 # Migrate dependencies (in another tab)
-npx truffle migrate
+yarn build && npx truffle migrate
 
 # Setup some test data
-npx truffle exec scripts/stablex/setup_thegraph_data.js
+yarn truffle-exec scripts/ganache/setup_thegraph_data.js
 ```
 
 2. Run a local The Graph Node

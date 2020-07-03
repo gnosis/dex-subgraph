@@ -1,8 +1,8 @@
-import { log, BigInt, EthereumEvent } from '@graphprotocol/graph-ts'
-import { Batch, Solution } from '../../generated/schema'
+import { log, BigInt, ethereum } from '@graphprotocol/graph-ts'
+import { Batch } from '../../generated/schema'
 import { batchIdToEpoch, batchIdToEndOfBatchEpoch, toEventId } from '../utils'
 
-export function createBatchIfNotCreated(batchId: BigInt, event: EthereumEvent): Batch {
+export function createBatchIfNotCreated(batchId: BigInt, event: ethereum.Event): Batch {
   let id = batchId.toString()
   log.info('[createBatchIfNotCreated] Make sure Batch {} is created', [id])
   // If there's no batch created for the trade, means there's no solution either
@@ -17,7 +17,7 @@ export function createBatchIfNotCreated(batchId: BigInt, event: EthereumEvent): 
   return batch!
 }
 
-export function _createBatch(batchId: BigInt, solutionId: string, event: EthereumEvent): Batch {
+export function _createBatch(batchId: BigInt, solutionId: string, event: ethereum.Event): Batch {
   let id = batchId.toString()
   log.info('[createBatch] Create Batch {}', [id])
 
