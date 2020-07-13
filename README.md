@@ -35,6 +35,7 @@ Edit `.env` and setup your own config
 
 ```bash
 # Run a local ganache in one tab
+# Make sure your node version is `v12.*`, as `v14.*` is not yet supported by ganache
 yarn run-ganache
 
 # Clone dex-contracts project (in another tab)
