@@ -79,7 +79,7 @@ yarn create-ganache
 yarn deploy
 ```
 
-The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/gnosis/protocol/graphql
+The subgraph should be accessible in: http://127.0.0.1:8000/subgraphs/name/gnosis/protocol/graphql
 
 <details><summary>Example of GraphQL subscription to try:</summary>
 
