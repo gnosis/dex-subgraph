@@ -61,9 +61,11 @@ git clone https://github.com/graphprotocol/graph-node/
 cd graph-node/docker
 
 # [only Linux] Inject host IP in docker-compose.yml
+# You might need to run it as `root`
 ./setup.sh
 
 # Start a local Graph Node
+# If you ran `./setup.sh` as `root`, you'll need to do that here too
 docker-compose up
 ```
 
