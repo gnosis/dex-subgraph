@@ -35,6 +35,7 @@ Edit `.env` and setup your own config
 
 ```bash
 # Run a local ganache in one tab
+# Make sure your node version is `v12.*`, as `v14.*` is not yet supported by ganache
 yarn run-ganache
 
 # Clone dex-contracts project (in another tab)
@@ -60,9 +61,11 @@ git clone https://github.com/graphprotocol/graph-node/
 cd graph-node/docker
 
 # [only Linux] Inject host IP in docker-compose.yml
+# You might need to run it as `root`
 ./setup.sh
 
 # Start a local Graph Node
+# If you ran `./setup.sh` as `root`, you'll need to do that here too
 docker-compose up
 ```
 
@@ -76,7 +79,7 @@ yarn create-ganache
 yarn deploy
 ```
 
-The subgraph should be accesible in: http://127.0.0.1:8000/subgraphs/name/gnosis/protocol/graphql
+The subgraph should be accessible in: http://127.0.0.1:8000/subgraphs/name/gnosis/protocol/graphql
 
 <details><summary>Example of GraphQL subscription to try:</summary>
 
