@@ -49,7 +49,6 @@ export function onTrade(event: TradeEvent): void {
   let trade = _createTrade(orderId, event)
 
   // Update traces
-  createOrUpdatePrice(event.params.buyToken, trade, event)
   createOrUpdatePrice(event.params.sellToken, trade, event)
 
   // Update order (traded amounts totals)
