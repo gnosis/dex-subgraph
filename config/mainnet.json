@@ -1,6 +1,7 @@
 {
   "network": "mainnet",
-  "address": "0x6F400810b62df8E13fded51bE75fF5393eaa841F",
+  "address_batch_exchange": "0x6F400810b62df8E13fded51bE75fF5393eaa841F",
+  "address_fleet_factory": "0xc628FB35ca39705CCD0cBDD5080F1b3d267AdC31",
   "startBlock": 9340147,
   "indexCalls": true
 }

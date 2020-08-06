@@ -7,6 +7,7 @@ const path = require('path')
 const TRUFFLE_CONTRACTS = {
   BatchExchange: '@gnosis.pm/dex-contracts/build/contracts/BatchExchange.json',
   Erc20: 'openzeppelin-solidity/build/contracts/ERC20Detailed.json',
+  FleetFactory: '@gnosis.pm/dex-liquidity-provision/build/contracts/FleetFactory.json',
 }
 var ABI_DIR = path.join(__dirname, '../../abis')
 

@@ -24,7 +24,8 @@
     "lint:fix": "eslint --fix src"
   },
   "dependencies": {
-    "@gnosis.pm/dex-contracts": "^0.4.1"
+    "@gnosis.pm/dex-contracts": "^0.4.1",
+    "@gnosis.pm/dex-liquidity-provision": "^0.0.1"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.18.0",
