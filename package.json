@@ -27,7 +27,7 @@
     "@gnosis.pm/dex-contracts": "^0.4.1"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "^0.18.0",
+    "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git",
     "@graphprotocol/graph-ts": "^0.18.1",
     "babel-polyfill": "^6.26.0",
     "babel-register": "^6.26.0",

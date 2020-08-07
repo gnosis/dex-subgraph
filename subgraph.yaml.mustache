@@ -61,11 +61,11 @@ dataSources:
         - event: OrderPlacement(indexed address,uint16,indexed uint16,indexed uint16,uint32,uint32,uint128,uint128)
           handler: onOrderPlacement
         
-        # FIXME: Uncomment when this issue is solved https://github.com/gnosis/dex-subgraph/issues/9
-        #- event: OrderCancellation(indexed address,uint16)
-        #  handler: onOrderCancellation
-        #- event: OrderDeletion(indexed address,uint16)
-        #  handler: onOrderDeletion
+        # TODO: Update to @graphprotocol/graph-cli@0.19.0 when it's released
+        - event: OrderCancellation(indexed address,uint16)
+          handler: onOrderCancellation
+        - event: OrderDeletion(indexed address,uint16)
+          handler: onOrderDeletion
         
         # Trades
         - event: Trade(indexed address,indexed uint16,indexed uint16,uint16,uint128,uint128)
