@@ -32,34 +32,6 @@
   dependencies:
     bn.js "^5.1.2"
 
-"@graphprotocol/graph-cli@^0.18.0":
-  version "0.18.0"
-  resolved "https://registry.yarnpkg.com/@graphprotocol/graph-cli/-/graph-cli-0.18.0.tgz#c09c6a54cb2da114c499b19de7adb74f0157fbd2"
-  integrity sha512-UsLB2LAwnVfUgkd4D0Rbfqq6ImLlDq9TEL/tBMYmZkB7pgnJZ/gJT5ouC33Gh0yhdXOYqWRk/KUcxSpgsKviPw==
-  dependencies:
-    assemblyscript "https://github.com/AssemblyScript/assemblyscript#36040d5b5312f19a025782b5e36663823494c2f3"
-    chalk "^3.0.0"
-    chokidar "^3.0.2"
-    debug "^4.1.1"
-    docker-compose "^0.23.2"
-    dockerode "^2.5.8"
-    fs-extra "^8.1.0"
-    glob "^7.1.2"
-    gluegun "^4.1.2"
-    graphql "^14.0.2"
-    immutable "^3.8.2"
-    ipfs-http-client "^34.0.0"
-    jayson "^3.0.2"
-    js-yaml "^3.13.1"
-    node-fetch "^2.3.0"
-    pkginfo "^0.4.1"
-    prettier "^1.13.5"
-    request "^2.88.0"
-    tmp "^0.1.0"
-    yaml "^1.5.1"
-  optionalDependencies:
-    keytar "^5.0.0"
-
 "@graphprotocol/graph-cli@https://github.com/graphprotocol/graph-cli.git":
   version "0.18.0"
   resolved "https://github.com/graphprotocol/graph-cli.git#5079eefb7d0cf30d89abe03dcb18f59678dc52b9"
@@ -2102,15 +2074,6 @@ fs-extra@^4.0.2:
   integrity sha512-q6rbdDd1o2mAnQreO7YADIxf/Whx4AHBiRf6d+/cVT8h44ss+lHgxf1FemcqDnQt9X3ct4McHr+JMGlYSsK7Cg==
   dependencies:
     graceful-fs "^4.1.2"
-    jsonfile "^4.0.0"
-    universalify "^0.1.0"
-
-fs-extra@^8.1.0:
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/fs-extra/-/fs-extra-8.1.0.tgz#49d43c45a88cd9677668cb7be1b46efdb8d2e1c0"
-  integrity sha512-yhlQgA6mnOJUKOsRUFsgJdQCvkKhcz8tlZG5HBQfReYZy46OwLcY+Zia0mtdHsOo9y/hP+CxMN0TU9QxoOtG4g==
-  dependencies:
-    graceful-fs "^4.2.0"
     jsonfile "^4.0.0"
     universalify "^0.1.0"
 
