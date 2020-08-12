@@ -52,19 +52,9 @@ cd dex-liquidity-provision
 yarn
 yarn build && npx truffle migrate
 
-# Install dependencies
-cd ../dex-contracts
-yarn
-
-# Migrate dependencies (in another tab)
-yarn build && cp ../dex-liquidity-provision/build/contracts/* ./build/contracts
-
 # Setup some test data
-yarn truffle-exec scripts/ganache/setup_thegraph_data.js
-
-# Setup some test data
-cd ../dex-liquidity-provision
-npx truffle exec scripts/ganache/setup_thegraph_data.js
+npx truffle exec ./node_modules/@gnosis.pm/dex-contracts/build/common/scripts/ganache/setup_thegraph_data.js
+npx truffle exec scripts/testing/setup_thegraph_data.js# Setup some test data
 ```
 
 2. Run a local The Graph Node
