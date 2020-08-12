@@ -38,19 +38,23 @@ Edit `.env` and setup your own config
 # Make sure your node version is `v12.*`, as `v14.*` is not yet supported by ganache
 yarn run-ganache
 
-# Clone dex-contracts project (in another tab)
+# Clone dex-liquidity-provision project (in another tab)
+#   It doesn't matter where you clone the project, this project is independent from dex-subgraph
+git clone https://github.com/gnosis/dex-liquidity-provision
+
+# In order to generate even more data (esp withdraws and cancelations), clone the following project
 #   It doesn't matter where you clone the project, this project is independent from dex-subgraph
 git clone https://github.com/gnosis/dex-contracts
 
-# Install dependencies
-cd dex-contracts
-yarn
 
 # Migrate dependencies (in another tab)
+cd dex-liquidity-provision
+yarn
 yarn build && npx truffle migrate
 
 # Setup some test data
-yarn truffle-exec scripts/ganache/setup_thegraph_data.js
+npx truffle exec ./node_modules/@gnosis.pm/dex-contracts/build/common/scripts/ganache/setup_thegraph_data.js
+npx truffle exec scripts/testing/setup_thegraph_data.js# Setup some test data
 ```
 
 2. Run a local The Graph Node
@@ -127,6 +131,16 @@ subscription UserData {
       txHash
     }
   }
+}
+```
+
+or
+
+```
+subscription UserData {
+
+    fleetDeployeds {id, fleet}
+
 }
 ```
 

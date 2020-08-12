@@ -233,3 +233,12 @@ type Solution @entity {
   txHash: Bytes!
   txLogIndex: BigInt!
 }
+
+type FleetDeployed @entity {
+  id: ID! # txHash + id
+  owner: Bytes!
+  fleet: [Bytes!]
+
+  # Transaction
+  txHash: Bytes!
+}

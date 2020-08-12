@@ -22,7 +22,7 @@ dataSources:
     name: BatchExchange
     network: {{ network }}
     source:
-      address: '{{ address }}'
+      address: '{{ address_batch_exchange }}'
       abi: BatchExchange
 {{#startBlock}}
       startBlock: {{ startBlock }}
@@ -72,3 +72,27 @@ dataSources:
           handler: onTrade
         - event: TradeReversion(indexed address,indexed uint16,indexed uint16,uint16,uint128,uint128)
           handler: onTradeReversion
+  # FleetFactory contract
+  - kind: ethereum/contract
+    name: FleetFactory
+    network: {{ network }}
+    source:
+      address: '{{ address_fleet_factory }}'
+      abi: FleetFactory
+{{#startBlock}}
+      startBlock: {{ startBlock }}
+{{/startBlock}}
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - FleetDeployed
+      file: ./src/mappings/index.ts
+      abis:
+        - name: FleetFactory
+          file: ./abis/FleetFactory.json
+      eventHandlers:
+        # FleetDeployments
+        - event: FleetDeployed(indexed address,address[])
+          handler: onFleetDeployment
