@@ -23,7 +23,7 @@ export function batchIdToEpoch(batchId: BigInt): BigInt {
 }
 
 export function batchIdToEndOfBatchEpoch(batchId: BigInt): BigInt {
-  return batchIdToEpoch(batchId.plus(new BigInt(1)))
+  return batchIdToEpoch(batchId.plus(BigInt.fromI32(1)))
 }
 
 export function epochToBatchId(epoch: BigInt): BigInt {

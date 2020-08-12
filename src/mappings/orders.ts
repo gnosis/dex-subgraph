@@ -39,7 +39,7 @@ export function onOrderCancellation(event: OrderCancellationEvent): void {
 
   if (order.cancelEpoch == null) {
     let batchId = getBatchId(event)
-    order.untilBatchId = batchId.minus(new BigInt(1))
+    order.untilBatchId = batchId.minus(BigInt.fromI32(1))
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.cancelEpoch = event.block.timestamp
     order.save()
@@ -57,7 +57,7 @@ export function onOrderDeletion(event: OrderDeletionEvent): void {
 
   if (order.deleteEpoch == null) {
     let batchId = getBatchId(event)
-    order.untilBatchId = batchId.minus(new BigInt(1))
+    order.untilBatchId = batchId.minus(BigInt.fromI32(1))
     order.untilEpoch = batchIdToEpoch(order.untilBatchId)
     order.deleteEpoch = event.block.timestamp
     order.save()
