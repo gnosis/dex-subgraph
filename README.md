@@ -14,40 +14,34 @@ For more information about:
 
 ---
 
-## Setup environment
+## Installing Dependencies
 
 ```bash
-# Install dependencies
 yarn
-
-# Create your own environment file
-cp .env.example .env
 ```
 
-Edit `.env` and setup your own config
+## Setup for Local Development
 
-## Setup for local development
-
-> First setup environment (see above)
+> First install dependencies (see above)
 
 1. Run a local ganache-cli and migrate the dependencies
    > TODO: Initially this step was done in the same project, but there's a dependency issue to solve in dex-contracts. It's better for now cloning dex-contracts and migrating separatelly
 
 ```bash
-# Run a local ganache in one tab
-# Make sure your node version is `v12.*`, as `v14.*` is not yet supported by ganache
-yarn run-ganache
-
-# Clone dex-contracts project (in another tab)
+# Clone dex-contracts project
 #   It doesn't matter where you clone the project, this project is independent from dex-subgraph
 git clone https://github.com/gnosis/dex-contracts
-
-# Install dependencies
 cd dex-contracts
-yarn
 
-# Migrate dependencies (in another tab)
-yarn build && npx truffle migrate
+# Install dependencies and build project
+# Make sure your node version is `v12.*`, as `v14.*` is not yet supported by the dex-contracts project
+yarn && yarn build
+
+# Run a local ganache (in another tab)
+yarn run-ganache
+
+# Migrate dependencies
+npx truffle migrate
 
 # Setup some test data
 yarn truffle-exec scripts/ganache/setup_thegraph_data.js
@@ -79,7 +73,7 @@ yarn create-ganache
 yarn deploy
 ```
 
-The subgraph should be accessible in: http://127.0.0.1:8000/subgraphs/name/gnosis/protocol/graphql
+The subgraph should be accessible in: <http://127.0.0.1:8000/subgraphs/name/gnosis/protocol/graphql>
 
 <details><summary>Example of GraphQL subscription to try:</summary>
 
