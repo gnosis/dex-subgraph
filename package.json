@@ -7,7 +7,6 @@
     "prepare:ganache": "mustache config/ganache.json subgraph.yaml.mustache > subgraph.yaml",
     "abi": "node src/scripts/fetchAbi",
     "addresses": "node src/scripts/printAddresses",
-    "compile": "truffle compile",
     "gen": "graph codegen",
     "postinstall": "npm run prepare:ganache && npm run gen",
     "build": "graph build",
@@ -29,17 +28,10 @@
   "devDependencies": {
     "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git",
     "@graphprotocol/graph-ts": "^0.18.1",
-    "babel-polyfill": "^6.26.0",
-    "babel-register": "^6.26.0",
     "cli-confirm": "^1.0.1",
-    "dotenv": "^8.2.0",
     "eslint": "^6.8.0",
     "eslint-config-prettier": "^6.11.0",
     "ganache-cli": "^6.9.1",
-    "mustache": "^4.0.1",
-    "openzeppelin-solidity": "^2.5.0",
-    "truffle": "^5.1.37",
-    "truffle-contract": "^4.0.31",
-    "truffle-hdwallet-provider": "^1.0.17"
+    "mustache": "^4.0.1"
   }
 }
