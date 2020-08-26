@@ -104,7 +104,7 @@ function _createTrade(orderId: string, event: TradeEvent): Trade {
   trade.buyVolume = params.executedBuyAmount
   // Solutions are submitted always for the previous batch (not the current one)
   // For this reason, we know the trade id is the current batch minus one.
-  trade.tradeBatchId = batchId.minus(new BigInt(1))
+  trade.tradeBatchId = batchId.minus(BigInt.fromI32(1))
   trade.tradeEpoch = batchIdToEndOfBatchEpoch(batchId)
 
   // Tokens
