@@ -29,7 +29,7 @@
     "@graphprotocol/graph-ts": "^0.18.1",
     "@openzeppelin/contracts": "^2.5.1",
     "cli-confirm": "^1.0.1",
-    "eslint": "^6.8.0",
+    "eslint": "^7.7.0",
     "eslint-config-prettier": "^6.11.0",
     "mustache": "^4.0.1"
   }
