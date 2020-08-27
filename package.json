@@ -26,7 +26,7 @@
     "@openzeppelin/contracts": "^2.5.1"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git",
+    "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git#5079eefb7d0cf30d89abe03dcb18f5",
     "@graphprotocol/graph-ts": "^0.18.1",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
