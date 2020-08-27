@@ -34,5 +34,5 @@ export function _createBatch(batchId: BigInt, solutionId: string, event: ethereu
   batch.txHash = event.transaction.hash
 
   batch.save()
-  return batch!
+  return batch
 }

@@ -60,8 +60,8 @@ export function greatestCommonDenominator(numerator: BigInt, denominator: BigInt
 }
 
 export function reduce(numerator: BigInt, denominator: BigInt): BigInt[] {
-  let greatestCommonDenominator = greatestCommonDenominator(numerator, denominator)
-  return [numerator.div(greatestCommonDenominator), denominator.div(greatestCommonDenominator)]
+  let gcd = greatestCommonDenominator(numerator, denominator)
+  return [numerator.div(gcd), denominator.div(gcd)]
 }
 
 /**

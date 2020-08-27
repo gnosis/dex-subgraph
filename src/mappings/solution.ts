@@ -68,7 +68,7 @@ function _createSolution(solutionId: string, trade: Trade, batch: Batch, event: 
   return solution
 }
 
-function _addTradeToSolution(solution: Solution, trade: Trade, event: ethereum.Event): void {
+function _addTradeToSolution(solution: Solution, trade: Trade, _event: ethereum.Event): void {
   log.info('[addTradeToSolution] Add Trade {} to current Solution for batch {}', [trade.id, solution.batch])
 
   let trades = solution.trades
