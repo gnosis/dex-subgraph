@@ -16,16 +16,16 @@ export function getTradeById(tradeId: string): Trade {
 
 export function getTradesByOrderId(orderId: string): Trade[] {
   let order = getOrderById(orderId)
-  return order.trades.map<Trade>(tradeId => getTradeById(tradeId))
+  return order.trades.map<Trade>((tradeId) => getTradeById(tradeId))
 }
 
 export function getTradeInBatchForOrderId(orderId: string, batchId: BigInt): Trade[] {
-  return getTradesByOrderId(orderId).filter(trade => trade.tradeBatchId == batchId)
+  return getTradesByOrderId(orderId).filter((trade) => trade.tradeBatchId == batchId)
 }
 
 export function getActiveTradeInBatch(orderId: string, batchId: BigInt): Trade | null {
   // Get trades that are not reverted for the current order and batch
-  let activeTrades = getTradeInBatchForOrderId(orderId, batchId).filter(trade => trade.revertEpoch == null)
+  let activeTrades = getTradeInBatchForOrderId(orderId, batchId).filter((trade) => trade.revertEpoch == null)
 
   switch (activeTrades.length) {
     case 0:

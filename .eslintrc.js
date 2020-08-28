@@ -1,16 +1,10 @@
 module.exports = {
+  root: true,
   env: {
-    commonjs: true,
     es6: true,
     node: true,
   },
-  extends: 'prettier',
-  globals: {
-    Atomics: 'readonly',
-    SharedArrayBuffer: 'readonly',
-  },
-  parserOptions: {
-    ecmaVersion: 2018,
-  },
-  rules: {},
+  plugins: ['prettier'],
+  extends: ['eslint:recommended', 'plugin:prettier/recommended'],
+  ignorePatterns: ['abis/', 'build/', 'generated/', 'node_modules/', '!.prettierrc.js'],
 }
