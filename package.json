@@ -22,7 +22,7 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
-    "@gnosis.pm/dex-contracts": "^0.4.1",
+    "@gnosis.pm/dex-contracts": "^0.4.2",
     "@openzeppelin/contracts": "^2.5.1"
   },
   "devDependencies": {

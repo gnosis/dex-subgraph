@@ -35,10 +35,10 @@
     import-fresh "^3.2.1"
     strip-json-comments "^3.1.1"
 
-"@gnosis.pm/dex-contracts@^0.4.1":
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/@gnosis.pm/dex-contracts/-/dex-contracts-0.4.1.tgz#65ca96b2841e42f8de74220c79b04b6977af3230"
-  integrity sha512-DhMS2lrpBM4N0qC8pT3evzbOQt/DqfwsNbx/bBakPV4copOBLlfiFksNHLpr6G9MfVDOg69CCa6rQhzKcCvUJg==
+"@gnosis.pm/dex-contracts@^0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/dex-contracts/-/dex-contracts-0.4.2.tgz#a14dea8997c6dfbcd29ac7fa58c2d07d91eb7ab5"
+  integrity sha512-JjcCCEX1Q8bCKezq10xsGVz60eGJ+rmSfidja1vJMwfWKrys2Amld9TTjOFgPReY/B2DlU+odHf2WnNWR/vIpg==
   dependencies:
     bn.js "^5.1.2"
 
