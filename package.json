@@ -22,16 +22,16 @@
     "lint:fix": "eslint --fix ."
   },
   "dependencies": {
-    "@gnosis.pm/dex-contracts": "^0.4.2",
-    "@openzeppelin/contracts": "^2.5.1"
+    "@gnosis.pm/dex-contracts": "=0.4.3",
+    "@openzeppelin/contracts": "=2.5.1"
   },
   "devDependencies": {
-    "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git",
+    "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git#5079eef",
     "@graphprotocol/graph-ts": "^0.18.1",
     "@typescript-eslint/eslint-plugin": "^3.10.1",
     "@typescript-eslint/parser": "^3.10.1",
     "cli-confirm": "^1.0.1",
-    "eslint": "^7.8.0",
+    "eslint": "^7.9.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-prettier": "^3.1.4",
     "mustache": "^4.0.1",
