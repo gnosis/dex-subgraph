@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "@gnosis.pm/dex-contracts": "=0.4.3",
-    "@openzeppelin/contracts": "=2.5.1"
+    "@openzeppelin/contracts": "=3.2.0"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git#5079eef",
