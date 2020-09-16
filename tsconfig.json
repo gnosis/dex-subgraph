@@ -1,4 +1,12 @@
 {
-  "extends": "./node_modules/assemblyscript/std/assembly.json",
-  "include": ["**/*.ts"]
+  "compilerOptions": {
+    "target": "es5",
+    "module": "commonjs",
+    "noEmit": true,
+    "strict": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true
+  }
 }

@@ -6,8 +6,8 @@
     "prepare:rinkeby": "mustache config/rinkeby.json subgraph.yaml.mustache > subgraph.yaml",
     "prepare:ganache": "mustache config/ganache.json subgraph.yaml.mustache > subgraph.yaml",
     "prepare:xdai": "mustache config/xdai.json subgraph.yaml.mustache > subgraph.yaml",
-    "abi": "node scripts/fetchAbi",
-    "addresses": "node scripts/printAddresses",
+    "abi": "ts-node scripts/fetchAbi",
+    "addresses": "ts-node scripts/printAddresses",
     "gen": "graph codegen",
     "postinstall": "npm run prepare:ganache && npm run gen",
     "build": "graph build",
@@ -31,6 +31,7 @@
   "devDependencies": {
     "@graphprotocol/graph-cli": "https://github.com/graphprotocol/graph-cli.git#5079eef",
     "@graphprotocol/graph-ts": "^0.18.1",
+    "@types/node": "12",
     "@typescript-eslint/eslint-plugin": "^4.1.1",
     "@typescript-eslint/parser": "^4.1.1",
     "cli-confirm": "^1.0.1",
@@ -39,6 +40,7 @@
     "eslint-plugin-prettier": "^3.1.4",
     "mustache": "^4.0.1",
     "prettier": "^2.1.1",
+    "ts-node": "^9.0.0",
     "typescript": "^4.0.2"
   }
 }
