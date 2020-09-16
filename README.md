@@ -4,8 +4,9 @@
 
 Implements a subgraph for the [Gnosis Protocol](https://github.com/gnosis/dex-contracts)
 
-- [Subgraph in Mainnet](https://thegraph.com/explorer/subgraph/gnosis/protocol)
-- [Subgraph in Rinkeby](https://thegraph.com/explorer/subgraph/gnosis/protocol-rinkeby)
+- [Subgraph on Mainnet](https://thegraph.com/explorer/subgraph/gnosis/protocol)
+- [Subgraph on Rinkeby](https://thegraph.com/explorer/subgraph/gnosis/protocol-rinkeby)
+- [Subgraph on xDAI](https://thegraph.com/explorer/subgraph/gnosis/protocol-xdai)
 
 For more information about:
 
@@ -156,6 +157,7 @@ yarn addresses
 # Update the addresses and the start block
 vim config/ganache.json
 vim config/rinkeby.json
+vim config/xdai.json
 vim config/mainnet.json
 ```
 
@@ -179,6 +181,9 @@ graph auth https://api.thegraph.com/deploy/ <your-access-token>
 
 # Deploy to rinkeby
 yarn deploy-rinkeby
+
+# Deploy to xdai
+yarn deploy-xdai
 
 # Deploy to staging
 yarn deploy-staging
