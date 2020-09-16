@@ -1,8 +1,8 @@
 import { expect } from 'chai'
+import { Mappings } from './runtime'
 
-describe('something', function () {
-  it('does stuff', function () {
-    const result = 21 * 2
-    expect(result).equal(42)
+describe('onAddToken', function () {
+  it('adds a new token', async () => {
+    await Mappings.load().catch((err) => expect(err.message).to.equal('not implemented'))
   })
 })
