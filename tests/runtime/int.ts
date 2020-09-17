@@ -14,7 +14,7 @@ export function toBytesLE(value: bigint): Uint8Array {
 
   // NOTE: For two's compliment, an extra byte is required if the MSb of the
   // MSB of the magnitude of value is 1.
-  const msb = parseInt(hex.substr(0, 1))
+  const msb = parseInt(hex.substr(0, 1), 16)
   const signSpace = msb & 0x8 ? 1 : 0
 
   const len = hex.length / 2
