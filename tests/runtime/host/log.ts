@@ -1,3 +1,5 @@
+import debug from 'debug'
+
 export enum LogLevel {
   Critical = 0,
   Error,
@@ -6,26 +8,20 @@ export enum LogLevel {
   Debug,
 }
 
+const LOGGERS = {
+  [LogLevel.Critical]: debug('runtime:crit'),
+  [LogLevel.Error]: debug('runtime:erro'),
+  [LogLevel.Warn]: debug('runtime:warn'),
+  [LogLevel.Info]: debug('runtime:info'),
+  [LogLevel.Debug]: debug('runtime:dbug'),
+}
+
 export class Logger {
   public log(level: LogLevel, message: string): void {
-    switch (level) {
-      case LogLevel.Critical:
-        console.error(message)
-        throw new Error(message)
-      case LogLevel.Error:
-        console.error(message)
-        break
-      case LogLevel.Warn:
-        console.warn(message)
-        break
-      case LogLevel.Info:
-        console.info(message)
-        break
-      case LogLevel.Debug:
-        console.debug(message)
-        break
-      default:
-        throw new Error(`unknown log level ${level} (with message '${message}')`)
+    if (!LOGGERS[level]) {
+      throw new Error(`unknown log level ${level} (with message '${message}')`)
     }
+
+    LOGGERS[level](message)
   }
 }
