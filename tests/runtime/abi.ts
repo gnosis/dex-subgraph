@@ -65,14 +65,6 @@ export class Abi {
     return fromBytesLE(bytes)
   }
 
-  public readBigInt(ptr: Pointer): bigint | null {
-    if (ptr === 0) {
-      return null
-    }
-
-    throw new Error('not implemented')
-  }
-
   public readString(ptr: Pointer): string | null {
     if (ptr === 0) {
       return null
