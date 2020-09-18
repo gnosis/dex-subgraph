@@ -7,6 +7,7 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import wabt from 'wabt'
 import { Abi, Pointer } from './abi'
+import * as Entities from './entities'
 import { Event, ValueKind } from './ethereum'
 import * as Events from './events'
 import { addr, toHex } from './hex'
@@ -43,7 +44,7 @@ export class Mappings {
   }
 
   private handler(name: string, event: Event): void {
-    const eventPtr = this.abi.writeEvent(event)
+    const eventPtr = this.abi.writeEthereumEvent(event)
     ;(this.instance.exports[name] as (...a: unknown[]) => void)(eventPtr)
   }
 
@@ -67,6 +68,15 @@ export class Mappings {
         ],
       ),
     )
+  }
+
+  public getEntity(name: string, id: string): unknown | null {
+    const entity = this.host.store.get(name, id)
+    if (entity === null) {
+      return null
+    }
+
+    return Entities.toData(entity)
   }
 }
 
@@ -96,6 +106,7 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
   }
 
   const readBytes = (ptr: Pointer) => nonnull(abi().readUint8Array(ptr))
+  const readEntity = (ptr: Pointer) => nonnull(abi().readStoreEntity(ptr))
   const readInt = (ptr: Pointer) => nonnull(abi().readBigInt(ptr))
   const readStr = (ptr: Pointer) => nonnull(abi().readString(ptr))
   const writeInt = (val: bigint) => abi().writeBigInt(val)
@@ -121,8 +132,10 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
       'log.log': (level: number, message: Pointer) => {
         host.log.log(level, readStr(message))
       },
-      'store.get': todo,
-      'store.set': todo,
+      'store.get': () => 0,
+      'store.set': (entity: Pointer, id: Pointer, data: Pointer) => {
+        host.store.set(readStr(entity), readStr(id), readEntity(data))
+      },
       'typeConversion.bigIntToString': (x: Pointer) => writeStr(readInt(x).toString()),
       'typeConversion.bytesToHex': (x: Pointer) => writeStr(toHex(readBytes(x))),
     },

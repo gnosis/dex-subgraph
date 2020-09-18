@@ -11,11 +11,11 @@ export interface Deposit {
 }
 
 export type Metadata = Partial<{
-  logIndex: number
-  blockNumber: number
-  blockTimestamp: number
+  logIndex: bigint | number
+  blockNumber: bigint | number
+  blockTimestamp: bigint | number
   transactionHash: string
-  transactionIndex: number
+  transactionIndex: bigint | number
   from: string
 }>
 
@@ -23,7 +23,7 @@ export function newEvent(meta: Metadata, parameters: EventParam[]): Event {
   const defaultAddr = new Uint8Array(20).fill(0xff)
   const defaultHash = new Uint8Array(32).fill(0xff)
 
-  const num2hash = (value: number) => hash(`0x${value.toString().padStart(64, '0')}`)
+  const num2hash = (value: bigint) => hash(`0x${value.toString().padStart(64, '0')}`)
 
   return {
     address: DEFAULT_CONTRACT_ADDRESS,
@@ -31,8 +31,8 @@ export function newEvent(meta: Metadata, parameters: EventParam[]): Event {
     transactionLogIndex: BigInt(meta.logIndex || 0),
     logType: null,
     block: {
-      hash: num2hash(meta.blockNumber || 0),
-      parentHash: num2hash((meta.blockNumber || 1) - 1),
+      hash: num2hash(BigInt(meta.blockNumber || 0)),
+      parentHash: num2hash(BigInt(meta.blockNumber || 1) - 1n),
       unclesHash: defaultHash,
       author: defaultAddr,
       stateRoot: defaultHash,
@@ -47,7 +47,7 @@ export function newEvent(meta: Metadata, parameters: EventParam[]): Event {
       size: null,
     },
     transaction: {
-      hash: meta.transactionHash ? hash(meta.transactionHash) : num2hash(meta.transactionIndex || 0),
+      hash: meta.transactionHash ? hash(meta.transactionHash) : num2hash(BigInt(meta.transactionIndex || 0)),
       index: BigInt(meta.transactionIndex || 0),
       from: meta.from ? addr(meta.from) : defaultAddr,
       to: DEFAULT_CONTRACT_ADDRESS,

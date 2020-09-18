@@ -30,16 +30,16 @@ export interface Transaction {
 }
 
 export enum ValueKind {
-  Address,
-  FixedBytes,
-  Bytes,
-  Int,
-  Uint,
-  Bool,
-  String,
-  FixedArray,
-  Array,
-  Tuple,
+  Address = 0,
+  FixedBytes = 1,
+  Bytes = 2,
+  Int = 3,
+  Uint = 4,
+  Bool = 5,
+  String = 6,
+  FixedArray = 7,
+  Array = 8,
+  Tuple = 9,
 }
 
 export type Value =
