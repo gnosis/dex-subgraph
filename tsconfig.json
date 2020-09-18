@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "es2020",
     "module": "commonjs",
     "noEmit": true,
     "strict": true,
@@ -8,5 +8,7 @@
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true
-  }
+  },
+  "include": ["scripts/**/*", "tests/**/*"],
+  "exclude": ["node_modules", "src"]
 }
