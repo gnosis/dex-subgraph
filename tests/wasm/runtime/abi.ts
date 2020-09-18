@@ -1,6 +1,6 @@
 import * as Ethereum from './ethereum'
 import { fromBytesLE, toBytesLE } from './int'
-import * as Store from './host/store'
+import * as Store from './store'
 
 const LE = true
 const ENCODING = 'utf-16le'
@@ -107,6 +107,9 @@ export class Abi {
 
       const valuePtr = this.getWord(ptr + 4)
       const value = this.readStoreValue(valuePtr)
+      if (value === null) {
+        throw new Error('null entity entry value enum')
+      }
 
       return { name, value }
     })
