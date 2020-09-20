@@ -1,5 +1,24 @@
 import * as Entities from './runtime/entities'
+import * as Ethereum from './runtime/ethereum'
+import * as Events from './runtime/events'
 import * as Store from './runtime/store'
+
+const EventDefinitions = {
+  Deposit: {
+    user: Ethereum.ValueKind.Address,
+    token: Ethereum.ValueKind.Address,
+    amount: Ethereum.ValueKind.Uint,
+    batchId: Ethereum.ValueKind.Uint,
+  },
+} as const
+
+export type EventNames = Events.Names<typeof EventDefinitions>
+export type EventData<K extends EventNames> = Events.Data<typeof EventDefinitions, K>
+export type EventMetadata = Events.Metadata
+
+export function toEvent<K extends EventNames>(name: K, data: EventData<K>, meta?: EventMetadata): Ethereum.Event {
+  return Events.toEvent(EventDefinitions, name, data, meta)
+}
 
 const EntityDefinitions = {
   User: {

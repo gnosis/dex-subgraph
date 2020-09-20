@@ -13,7 +13,9 @@ type EntityProperties<T> = {
   [K in keyof T]: ValueOf<T[K]>
 }
 
-export type Definitions = Record<string, Record<string, RecursiveValueKind>>
+type RecursiveValueKind = Exclude<ValueKind, ValueKind.Array> | readonly [RecursiveValueKind]
+type Definitions = Record<string, Record<string, RecursiveValueKind>>
+
 export type Names<D> = keyof D
 export type Data<D, K extends Names<D>> = EntityProperties<D[K]>
 
@@ -40,8 +42,6 @@ export function fromData<D extends Definitions, K extends Names<D>>(definitions:
 
   return { entries }
 }
-
-type RecursiveValueKind = Exclude<ValueKind, ValueKind.Array> | readonly [RecursiveValueKind]
 
 function isRecursive(kind: RecursiveValueKind): kind is readonly [RecursiveValueKind] {
   return Array.isArray(kind)

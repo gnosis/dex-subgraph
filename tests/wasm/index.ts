@@ -6,8 +6,7 @@
 import fs from 'fs'
 import path from 'path'
 import { Module, Runtime } from './runtime'
-import { fromEntityData, toEntityData, EntityNames, EntityData } from './definitions'
-import * as Events from './events'
+import { fromEntityData, toEntityData, toEvent, EntityNames, EntityData, EventData, EventMetadata } from './definitions'
 
 // NOTE: Use `readFileSync` here so that we pay the price of reading the Wasm
 // binary when loading this file, instead of when creating the `Mappings` module
@@ -24,8 +23,8 @@ export class Mappings {
     return new Mappings(runtime)
   }
 
-  public onDeposit(deposit: Events.Deposit, meta?: Events.Metadata): void {
-    this.runtime.eventHandler('onDeposit', Events.deposit(deposit, meta))
+  public onDeposit(deposit: EventData<'Deposit'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onDeposit', toEvent('Deposit', deposit, meta))
   }
 
   public getEntity<T extends EntityNames>(name: T, id: string): EntityData<T> | null {
