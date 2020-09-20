@@ -1,5 +1,5 @@
-import { toHex } from './runtime/convert'
-import { Entity, Value, ValueKind } from './runtime/store'
+import { fromHex, toHex } from './runtime/convert'
+import { Entity, Entry, Value, ValueKind } from './runtime/store'
 
 export interface User {
   id: string
@@ -24,18 +24,41 @@ export function toData<T extends Names>(name: T, entity: Entity): Data<T> {
         id: getValueOf(entity, 'id', ValueKind.String),
         fromBatchId: getValueOf(entity, 'fromBatchId', ValueKind.BigInt),
         createEpoch: getValueOf(entity, 'createEpoch', ValueKind.BigInt),
-        txHash: getBytes(entity, 'txHash'),
+        txHash: getValueOf(entity, 'txHash', ValueKind.Bytes),
       }
     default:
       throw new Error(`unknown entity ${name}`)
   }
 }
 
-type ValueOf<T extends ValueKind> = Extract<Value, { kind: T }>['data']
+export function fromData<T extends Names>(name: T, data: Data<T>): Entity {
+  switch (name) {
+    case 'User':
+      return {
+        entries: [
+          getEntry(<User>data, 'id', ValueKind.String),
+          getEntry(<User>data, 'fromBatchId', ValueKind.BigInt),
+          getEntry(<User>data, 'createEpoch', ValueKind.BigInt),
+          getEntry(<User>data, 'txHash', ValueKind.Bytes),
+        ],
+      }
+    default:
+      throw new Error(`unknown entity ${name}`)
+  }
+}
+
+type ValueOf<T extends ValueKind> = T extends ValueKind.Bytes ? string : Extract<Value, { kind: T }>['data']
 
 function toValueOf<T extends ValueKind>(value: Value, kind: T): ValueOf<T> {
   if (value.kind === kind) {
-    return value.data as ValueOf<T>
+    // NOTE: Casting is necessary since as the type checker doesn't realize
+    // that `ValueOf<kind> === ValueOf<value.kind>`.
+    switch (value.kind) {
+      case ValueKind.Bytes:
+        return toHex(value.data) as ValueOf<T>
+      default:
+        return value.data as ValueOf<T>
+    }
   } else {
     const n = (kind: ValueKind) => ValueKind[kind] || 'unknown'
     throw new Error(`expected ${n(kind)} store value but got ${n(value.kind)}`)
@@ -50,13 +73,27 @@ function getValueOf<T extends ValueKind>(entity: Entity, key: string, kind: T): 
   return toValueOf(entry.value, kind)
 }
 
-function getBytes(entity: Entity, key: string): string {
-  return toHex(getValueOf(entity, key, ValueKind.Bytes))
-}
-
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 function getArrayOf<T extends ValueKind>(entity: Entity, key: string, kind: T): ValueOf<T>[] {
   // NOTE: We have to cast the closure to `any` to appease the type checker.
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return getValueOf(entity, key, ValueKind.Array).map(((v: Value) => toValueOf(v, kind)) as any)
+}
+
+function fromValueOf<T extends ValueKind>(data: ValueOf<T>, kind: T): Value {
+  switch (kind) {
+    case ValueKind.Bytes:
+      return { kind, data: fromHex(data as string) } as Value
+    default:
+      return { kind, data } as Value
+  }
+}
+
+type KindOf<T> = T extends string ? ValueKind.String | ValueKind.Bytes : Extract<Value, { data: T }>['kind']
+
+function getEntry<T, K extends keyof T>(data: T, key: K, kind: KindOf<T[K]>): Entry {
+  return {
+    name: key.toString(),
+    value: fromValueOf(data[key] as ValueOf<typeof kind>, kind),
+  }
 }

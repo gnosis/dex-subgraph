@@ -28,7 +28,8 @@ export function deposit(deposit: Deposit, meta?: Metadata): Event {
       { name: 'batchId', value: { kind: ValueKind.Uint, data: BigInt(deposit.batchId) } },
     ],
     {
-      ...{ from: deposit.user },
+      blockTimestamp: BigInt(deposit.batchId) * 300n,
+      from: deposit.user,
       ...meta,
     },
   )
