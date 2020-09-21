@@ -18,8 +18,14 @@ export type MetadataProperties<T> = {
 
 export type Metadata = MetadataProperties<Omit<Event, 'parameters'>>
 
+export type RecursiveValueKind =
+  | Exclude<ValueKind, ValueKind.FixedArray | ValueKind.Array | ValueKind.Array>
+  | readonly [RecursiveValueKind]
+  | RecursiveValueKind[]
+export type Definition = Record<string, RecursiveValueKind>
+
 type RawValueOf<T> = Extract<Value, { kind: T }>['data']
-type ValueOf<T> = T extends readonly [infer S]
+export type ValueOf<T> = T extends readonly [infer S]
   ? ValueOf<S>[]
   : T extends RecursiveValueKind[]
   ? unknown[]
@@ -31,28 +37,14 @@ type ValueOf<T> = T extends readonly [infer S]
   ? bigint | number
   : RawValueOf<T>
 
-type EventParameters<T> = {
+export type Data<T> = {
   [K in keyof T]: ValueOf<T[K]>
 }
 
-type RecursiveValueKind =
-  | Exclude<ValueKind, ValueKind.FixedArray | ValueKind.Array | ValueKind.Array>
-  | readonly [RecursiveValueKind]
-  | RecursiveValueKind[]
-type Definitions = Record<string, Record<string, RecursiveValueKind>>
-
-export type Names<D> = keyof D
-export type Data<D, K extends Names<D>> = EventParameters<D[K]>
-
-export function toEvent<D extends Definitions, K extends Names<D>>(
-  definitions: D,
-  name: K,
-  data: Data<D, K>,
-  meta?: Metadata,
-): Event {
+export function toEvent<D extends Definition>(definition: D, data: Data<D>, meta?: Metadata): Event {
   const parameters: EventParam[] = []
   const dataProperties = data as Record<string, unknown>
-  for (const [key, kind] of Object.entries(definitions[name])) {
+  for (const [key, kind] of Object.entries(definition)) {
     parameters.push({ name: key, value: coerceToParameter(dataProperties[key], kind) })
   }
 

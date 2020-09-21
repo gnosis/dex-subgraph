@@ -1,7 +1,10 @@
 import { fromHex, toHex } from './convert'
 import { Entity, Entry, Value, ValueKind } from './store'
 
-type ValueOf<T> = T extends ValueKind.Array
+export type RecursiveValueKind = Exclude<ValueKind, ValueKind.Array> | readonly [RecursiveValueKind]
+export type Definition = Record<string, RecursiveValueKind>
+
+export type ValueOf<T> = T extends ValueKind.Array
   ? never
   : T extends ValueKind.Bytes
   ? string
@@ -9,19 +12,13 @@ type ValueOf<T> = T extends ValueKind.Array
   ? ValueOf<S>[]
   : Extract<Value, { kind: T }>['data']
 
-type EntityProperties<T> = {
+export type Data<T> = {
   [K in keyof T]: ValueOf<T[K]>
 }
 
-type RecursiveValueKind = Exclude<ValueKind, ValueKind.Array> | readonly [RecursiveValueKind]
-type Definitions = Record<string, Record<string, RecursiveValueKind>>
-
-export type Names<D> = keyof D
-export type Data<D, K extends Names<D>> = EntityProperties<D[K]>
-
-export function toData<D extends Definitions, K extends Names<D>>(definitions: D, name: K, entity: Entity): Data<D, K> {
+export function toData<D extends Definition>(definition: D, entity: Entity): Data<D> {
   const data: Record<string, unknown> = {}
-  for (const [key, kind] of Object.entries(definitions[name])) {
+  for (const [key, kind] of Object.entries(definition)) {
     const entry = entity.entries.find(({ name }) => name === key)
     if (entry === undefined) {
       throw new Error(`entity missing '${key}' entry`)
@@ -30,13 +27,13 @@ export function toData<D extends Definitions, K extends Names<D>>(definitions: D
     data[key] = coerceFromValue(entry.value, kind)
   }
 
-  return data as Data<D, K>
+  return data as Data<D>
 }
 
-export function fromData<D extends Definitions, K extends Names<D>>(definitions: D, name: K, data: Data<D, K>): Entity {
+export function fromData<D extends Definition>(definition: D, data: Data<D>): Entity {
   const entries: Entry[] = []
   const dataProperties = data as Record<string, unknown>
-  for (const [key, kind] of Object.entries(definitions[name])) {
+  for (const [key, kind] of Object.entries(definition)) {
     entries.push({ name: key, value: coerceToValue(dataProperties[key], kind) })
   }
 

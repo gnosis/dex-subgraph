@@ -12,12 +12,12 @@ const EventDefinitions = {
   },
 } as const
 
-export type EventNames = Events.Names<typeof EventDefinitions>
-export type EventData<K extends EventNames> = Events.Data<typeof EventDefinitions, K>
+export type EventNames = keyof typeof EventDefinitions
+export type EventData<K extends EventNames> = Events.Data<typeof EventDefinitions[K]>
 export type EventMetadata = Events.Metadata
 
 export function toEvent<K extends EventNames>(name: K, data: EventData<K>, meta?: EventMetadata): Ethereum.Event {
-  return Events.toEvent(EventDefinitions, name, data, meta)
+  return Events.toEvent(EventDefinitions[name], data, meta)
 }
 
 const EntityDefinitions = {
@@ -38,13 +38,13 @@ const EntityDefinitions = {
   },
 } as const
 
-export type EntityNames = Entities.Names<typeof EntityDefinitions>
-export type EntityData<K extends EntityNames> = Entities.Data<typeof EntityDefinitions, K>
+export type EntityNames = keyof typeof EntityDefinitions
+export type EntityData<K extends EntityNames> = Entities.Data<typeof EntityDefinitions[K]>
 
 export function toEntityData<K extends EntityNames>(name: K, entity: Store.Entity): EntityData<K> {
-  return Entities.toData(EntityDefinitions, name, entity)
+  return Entities.toData(EntityDefinitions[name], entity)
 }
 
 export function fromEntityData<K extends EntityNames>(name: K, data: EntityData<K>): Store.Entity {
-  return Entities.fromData(EntityDefinitions, name, data)
+  return Entities.fromData(EntityDefinitions[name], data)
 }
