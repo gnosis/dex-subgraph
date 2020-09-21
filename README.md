@@ -103,6 +103,17 @@ query UserData {
 
 </details>
 
+Note that after modifications to the subgraph, simply re-deploying the subgraph is enough:
+
+```bash
+vim schema.graphql
+vim subgraph.yaml.mustache
+vim src/mappings/*.ts
+
+# Redeploy the subgraph
+yarn deploy:ganache
+```
+
 ## Update to a new version of the contracts
 
 > First setup for local development (see above)
