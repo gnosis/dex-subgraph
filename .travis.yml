@@ -3,6 +3,4 @@ node_js:
   - lts/*
 cache: yarn
 script:
-  - yarn lint
-  - yarn build
-  - yarn test
+  - yarn ci && ./e2e/ci.sh
