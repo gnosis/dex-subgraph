@@ -20,7 +20,6 @@ services:
       ipfs: ipfs:5001
       ethereum: mainnet:http://ganache:8545
       RUST_LOG: info
-
   dex-contracts:
     build:
       context: ./docker/dex-contracts
