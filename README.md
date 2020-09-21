@@ -25,9 +25,10 @@ yarn
 
 ### Unit Tests
 
-This repository contains a mock Graph runtime implementation in order to be able to test mapping handlers. These tests can be run with `yarn`.
+This repository contains a mock Graph runtime implementation in order to be able to test mapping handlers. These tests can be run with `yarn` once the mappings have been built.
 
 ```bash
+yarn build
 yarn test
 ```
 
