@@ -98,3 +98,11 @@ export interface Event {
   transaction: Transaction
   parameters: EventParam[]
 }
+
+export interface Call {
+  contractName: string
+  contractAddress: Address
+  functionName: string
+  functionSignature: string
+  functionParams: Value[]
+}

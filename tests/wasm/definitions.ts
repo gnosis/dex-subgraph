@@ -10,6 +10,10 @@ const EventDefinitions = {
     amount: Ethereum.ValueKind.Uint,
     batchId: Ethereum.ValueKind.Uint,
   },
+  TokenListing: {
+    token: Ethereum.ValueKind.Address,
+    id: Ethereum.ValueKind.Uint,
+  },
 } as const
 
 export type EventNames = keyof typeof EventDefinitions
@@ -33,6 +37,16 @@ const EntityDefinitions = {
     tokenAddress: Store.ValueKind.Bytes,
     amount: Store.ValueKind.BigInt,
     batchId: Store.ValueKind.BigInt,
+    createEpoch: Store.ValueKind.BigInt,
+    txHash: Store.ValueKind.Bytes,
+  },
+  Token: {
+    id: Store.ValueKind.String,
+    address: Store.ValueKind.Bytes,
+    fromBatchId: Store.ValueKind.BigInt,
+    symbol: { optional: Store.ValueKind.String },
+    decimals: { optional: Store.ValueKind.BigInt },
+    name: { optional: Store.ValueKind.String },
     createEpoch: Store.ValueKind.BigInt,
     txHash: Store.ValueKind.Bytes,
   },
