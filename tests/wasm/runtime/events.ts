@@ -1,19 +1,19 @@
 import { addrToBytes, fromHex, hashToBytes } from './convert'
 import { Address, Block, Event, EventParam, Hash, Transaction, Value, ValueKind } from './ethereum'
 
+export type MetadataProperty = Uint8Array | bigint | boolean | string | null
+export type MetadataPropertyLike<T extends MetadataProperty> = T extends Uint8Array
+  ? Uint8Array | string
+  : T extends bigint
+  ? bigint | number
+  : T
+
 export type MetadataProperties<T> = {
-  [K in keyof T]?: T[K] extends Address | Hash
-    ? string
-    : T[K] extends Address | null
-    ? string | null
-    : T[K] extends bigint
-    ? bigint | number
-    : T[K] extends (infer S)[]
+  [K in keyof T]?: T[K] extends (infer S)[]
     ? MetadataProperties<S>[]
-    : // eslint-disable-next-line @typescript-eslint/ban-types
-    T[K] extends object
-    ? MetadataProperties<T[K]>
-    : T[K]
+    : T[K] extends MetadataProperty
+    ? MetadataPropertyLike<T[K]>
+    : MetadataProperties<T[K]>
 }
 
 export type Metadata = MetadataProperties<Omit<Event, 'parameters'>>
@@ -32,7 +32,7 @@ export type ValueOf<T> = T extends readonly [infer S]
   : RawValueOf<T> extends Value[]
   ? never
   : RawValueOf<T> extends Uint8Array
-  ? string
+  ? Uint8Array | string
   : RawValueOf<T> extends bigint
   ? bigint | number
   : RawValueOf<T>
@@ -78,10 +78,10 @@ function coerceToParameter(data: unknown, kind: RecursiveValueKind): Value {
   } else {
     switch (kind) {
       case ValueKind.Address:
-        return { kind, data: addrToBytes(data as string) }
+        return { kind, data: coerceAddr(data as Address | string) }
       case ValueKind.FixedBytes:
       case ValueKind.Bytes:
-        return { kind, data: fromHex(data as string) }
+        return { kind, data: coerceBytes(data as Uint8Array | string) }
       case ValueKind.Int:
       case ValueKind.Uint:
         return { kind, data: BigInt(data) }
@@ -92,8 +92,8 @@ function coerceToParameter(data: unknown, kind: RecursiveValueKind): Value {
 }
 
 function newEvent(parameters: EventParam[], meta?: Metadata): Event {
-  const defaultAddr = `0x${'ff'.repeat(20)}`
-  const defaultHash = `0x${'ff'.repeat(32)}`
+  const defaultAddr = `0x${'cd'.repeat(20)}`
+  const defaultHash = `0x${'cd'.repeat(32)}`
   const m = {
     block: {} as MetadataProperties<Block>,
     transaction: {} as MetadataProperties<Transaction>,
@@ -101,36 +101,60 @@ function newEvent(parameters: EventParam[], meta?: Metadata): Event {
   }
 
   return {
-    address: addrToBytes(m.address || defaultAddr),
+    address: coerceAddr(m.address || defaultAddr),
     logIndex: BigInt(m.logIndex || 0),
     transactionLogIndex: BigInt(m.logIndex || 0),
     logType: m.logType || null,
     block: {
-      hash: hashToBytes(m.block.hash || defaultHash),
-      parentHash: hashToBytes(m.block.parentHash || defaultHash),
-      unclesHash: hashToBytes(m.block.unclesHash || defaultHash),
-      author: addrToBytes(m.block.author || defaultAddr),
-      stateRoot: hashToBytes(m.block.stateRoot || defaultHash),
-      transactionsRoot: hashToBytes(m.block.transactionsRoot || defaultHash),
-      receiptsRoot: hashToBytes(m.block.receiptsRoot || defaultHash),
+      hash: coerceHash(m.block.hash || defaultHash),
+      parentHash: coerceHash(m.block.parentHash || defaultHash),
+      unclesHash: coerceHash(m.block.unclesHash || defaultHash),
+      author: coerceAddr(m.block.author || defaultAddr),
+      stateRoot: coerceHash(m.block.stateRoot || defaultHash),
+      transactionsRoot: coerceHash(m.block.transactionsRoot || defaultHash),
+      receiptsRoot: coerceHash(m.block.receiptsRoot || defaultHash),
       number: BigInt(m.block.number || 0),
       gasUsed: BigInt(m.block.gasUsed || 0),
       gasLimit: BigInt(m.block.gasLimit || 0),
       timestamp: BigInt(m.block.timestamp || 0),
       difficulty: BigInt(m.block.difficulty || 0),
       totalDifficulty: BigInt(m.block.totalDifficulty || 0),
-      size: m.block.size !== null ? BigInt(m.block.size || 0) : null,
+      size: m.block.size !== null && m.block.size !== undefined ? BigInt(m.block.size) : null,
     },
     transaction: {
-      hash: hashToBytes(m.transaction.hash || defaultHash),
+      hash: coerceHash(m.transaction.hash || defaultHash),
       index: BigInt(m.transaction.index || 0),
-      from: addrToBytes(m.transaction.from || defaultAddr),
-      to: addrToBytes(m.transaction.to || m.address || defaultAddr),
+      from: coerceAddr(m.transaction.from || defaultAddr),
+      to: coerceAddr(m.transaction.to || m.address || defaultAddr),
       value: BigInt(m.transaction.value || 0),
       gasUsed: BigInt(m.transaction.gasUsed || 0),
       gasPrice: BigInt(m.transaction.gasPrice || 0),
-      input: fromHex(m.transaction.input || '0x'),
+      input: coerceBytes(m.transaction.input || '0x'),
     },
     parameters,
+  }
+}
+
+function coerceAddr(value: Address | string): Address {
+  if (typeof value === 'string') {
+    return addrToBytes(value)
+  } else if (value.length === 20) {
+    return value
+  } else {
+    throw new Error(`invalid address '${value}'`)
+  }
+}
+
+function coerceBytes(value: Uint8Array | string): Uint8Array {
+  return typeof value === 'string' ? fromHex(value) : value
+}
+
+function coerceHash(value: Hash | string): Hash {
+  if (typeof value === 'string') {
+    return hashToBytes(value)
+  } else if (value.length === 32) {
+    return value
+  } else {
+    throw new Error(`invalid hash '${value}'`)
   }
 }
