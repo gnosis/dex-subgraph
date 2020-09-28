@@ -5,7 +5,8 @@
 
 import { promises as fs } from 'fs'
 import path from 'path'
-import { Abi } from './abi'
+import wabt from 'wabt'
+import { Abi, Pointer } from './abi'
 import { Host } from './host'
 
 let CACHED_MODULE: Promise<WebAssembly.Module> | undefined
@@ -28,7 +29,12 @@ export class Mappings {
       }, host),
     )
 
-    abi = new Abi(instance.exports.memory as WebAssembly.Memory)
+    const memory = instance.exports['memory'] as WebAssembly.Memory
+    const start = instance.exports['__start'] as () => void
+
+    abi = new Abi(memory)
+    start()
+
     return new Mappings(abi, host, instance)
   }
 
@@ -44,7 +50,18 @@ export class Mappings {
 async function compile(): Promise<WebAssembly.Module> {
   const modulePath = path.join(__dirname, '../../build/BatchExchange/BatchExchange.wasm')
   const buffer = await fs.readFile(modulePath)
-  return WebAssembly.compile(buffer)
+
+  // NOTE: The compiled AssemblyScript WebAssembly module calls exports in its
+  // `start` initialization method that **require** exports to work (for example
+  // 'index/bigInt.pow' which requires the exported `memory`). This,
+  // unfortunately is not supported with the JavaScript WebAssembly API. To
+  // work around this, we disable the `start` function and add it as an export
+  // to be called manually **after** the module has been compiled.
+  const wat = await wasm2wat(buffer)
+  const adjustedWat = wat.replace(/\(start (.*)\)/, '(export "__start" (func $1))')
+  const wasm = await wat2wasm('BatchExchange.wasm', adjustedWat)
+
+  return WebAssembly.compile(wasm)
 }
 
 function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
@@ -54,14 +71,17 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
     }
     return value
   }
+
+  const readStr = (ptr: Pointer) => nonnull(abi().readString(ptr))
+
   const todo = () => {
     throw new Error('not implemented')
   }
 
   return {
     env: {
-      abort: (message: number, fileName: number, line: number, column: number) => {
-        host.abort(nonnull(abi().readString(message)), abi().readString(fileName), line, column)
+      abort: (message: Pointer, fileName: Pointer, line: number, column: number) => {
+        host.abort(readStr(message), abi().readString(fileName), line, column)
       },
     },
     index: {
@@ -81,4 +101,24 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
       'ethereum.call': todo,
     },
   }
+}
+
+const WABT = wabt()
+
+async function wasm2wat(wasm: Buffer): Promise<string> {
+  const module = (await WABT).readWasm(wasm, { readDebugNames: true })
+  module.applyNames()
+  return module.toText({ foldExprs: false, inlineExport: false })
+}
+
+async function wat2wasm(filename: string, wat: string): Promise<ArrayBuffer> {
+  const module = (await WABT).parseWat(filename, wat)
+  const { buffer } = module.toBinary({
+    log: false,
+    canonicalize_lebs: false,
+    relocatable: false,
+    write_debug_names: true,
+  })
+
+  return buffer.buffer
 }

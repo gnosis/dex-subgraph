@@ -46,6 +46,7 @@
     "mustache": "^4.0.1",
     "prettier": "^2.1.1",
     "ts-node": "^9.0.0",
-    "typescript": "^4.0.2"
+    "typescript": "^4.0.2",
+    "wabt": "^1.0.19"
   }
 }
