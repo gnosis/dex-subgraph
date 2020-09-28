@@ -30,9 +30,10 @@ export class Mappings {
     )
 
     const memory = instance.exports['memory'] as WebAssembly.Memory
+    const allocate = instance.exports['memory.allocate'] as (size: number) => Pointer
     const start = instance.exports['__start'] as () => void
 
-    abi = new Abi(memory)
+    abi = new Abi(memory, allocate)
     start()
 
     return new Mappings(abi, host, instance)
@@ -73,6 +74,8 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
   }
 
   const readStr = (ptr: Pointer) => nonnull(abi().readString(ptr))
+  const readInt = (ptr: Pointer) => nonnull(abi().readBigInt(ptr))
+  const writeInt = (val: bigint) => abi().writeBigInt(val)
 
   const todo = () => {
     throw new Error('not implemented')
@@ -85,12 +88,12 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
       },
     },
     index: {
-      'bigInt.dividedBy': todo,
-      'bigInt.minus': todo,
-      'bigInt.mod': todo,
-      'bigInt.plus': todo,
-      'bigInt.pow': todo,
-      'bigInt.times': todo,
+      'bigInt.dividedBy': (x: Pointer, y: Pointer) => writeInt(readInt(x) / readInt(y)),
+      'bigInt.minus': (x: Pointer, y: Pointer) => writeInt(readInt(x) - readInt(y)),
+      'bigInt.mod': (x: Pointer, y: Pointer) => writeInt(readInt(x) % readInt(y)),
+      'bigInt.plus': (x: Pointer, y: Pointer) => writeInt(readInt(x) + readInt(y)),
+      'bigInt.pow': (x: Pointer, exp: number) => writeInt(readInt(x) ** BigInt(exp)),
+      'bigInt.times': (x: Pointer, y: Pointer) => writeInt(readInt(x) * readInt(y)),
       'log.log': todo,
       'store.get': todo,
       'store.set': todo,
