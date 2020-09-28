@@ -18,23 +18,21 @@ export type MetadataProperties<T> = {
 
 export type Metadata = MetadataProperties<Omit<Event, 'parameters'>>
 
-export type RecursiveValueKind =
-  | Exclude<ValueKind, ValueKind.FixedArray | ValueKind.Array | ValueKind.Array>
-  | readonly [RecursiveValueKind]
-  | RecursiveValueKind[]
-export type Definition = Record<string, RecursiveValueKind>
+export type SimpleValueKind = Exclude<ValueKind, ValueKind.FixedArray | ValueKind.Array | ValueKind.Tuple>
+export type EventValueKind = SimpleValueKind | readonly [SimpleValueKind] | SimpleValueKind[]
+export type Definition = Record<string, EventValueKind>
 
-type RawValueOf<T> = Extract<Value, { kind: T }>['data']
-export type ValueOf<T> = T extends readonly [infer S]
-  ? ValueOf<S>[]
-  : T extends RecursiveValueKind[]
-  ? unknown[]
-  : RawValueOf<T> extends Value[]
-  ? never
-  : RawValueOf<T> extends Uint8Array
+export type RawValueOf<T> = T extends ValueKind.Address | ValueKind.FixedBytes | ValueKind.Bytes
   ? Uint8Array | string
-  : RawValueOf<T> extends bigint
+  : T extends ValueKind.Int | ValueKind.Uint
   ? bigint | number
+  : T extends SimpleValueKind
+  ? Extract<Value, { kind: T }>['data']
+  : never
+export type ValueOf<T> = T extends readonly [infer S]
+  ? RawValueOf<S>[]
+  : T extends SimpleValueKind[]
+  ? unknown[]
   : RawValueOf<T>
 
 export type Data<T> = {
@@ -51,15 +49,15 @@ export function toEvent<D extends Definition>(definition: D, data: Data<D>, meta
   return newEvent(parameters, meta)
 }
 
-function isArray(kind: RecursiveValueKind): kind is readonly [RecursiveValueKind] {
+function isArray(kind: EventValueKind): kind is readonly [SimpleValueKind] {
   return Array.isArray(kind) && kind.length === 1
 }
 
-function isTuple(kind: RecursiveValueKind): kind is RecursiveValueKind[] {
+function isTuple(kind: EventValueKind): kind is SimpleValueKind[] {
   return Array.isArray(kind) && kind.length !== 1
 }
 
-function coerceToParameter(data: unknown, kind: RecursiveValueKind): Value {
+function coerceToParameter(data: unknown, kind: EventValueKind): Value {
   if (isArray(kind)) {
     return {
       kind: ValueKind.Array,
