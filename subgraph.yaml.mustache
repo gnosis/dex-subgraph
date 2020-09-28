@@ -3,12 +3,10 @@
 
 specVersion: 0.0.2
 description: >
- Gnosis Protocol introduces a new, fully decentralized exchange mechanism for ERC20 tokens with the following properties:
-  Batch auctions, 
+  Gnosis Protocol introduces a new, fully decentralized exchange mechanism for ERC20 tokens with the following properties:
+  Batch auctions,
   Multidimensional order books with ring trades, and
   Uniform clearing prices in every batch
-
-  
 
   More info in https://docs.gnosis.io/protocol
 repository: https://github.com/gnosis/dex-subgraph
@@ -60,13 +58,13 @@ dataSources:
         # Orders
         - event: OrderPlacement(indexed address,uint16,indexed uint16,indexed uint16,uint32,uint32,uint128,uint128)
           handler: onOrderPlacement
-        
+
         # TODO: Update to @graphprotocol/graph-cli@0.19.0 when it's released
         - event: OrderCancellation(indexed address,uint16)
           handler: onOrderCancellation
         - event: OrderDeletion(indexed address,uint16)
           handler: onOrderDeletion
-        
+
         # Trades
         - event: Trade(indexed address,indexed uint16,indexed uint16,uint16,uint128,uint128)
           handler: onTrade
