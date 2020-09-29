@@ -94,7 +94,9 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
       'bigInt.plus': (x: Pointer, y: Pointer) => writeInt(readInt(x) + readInt(y)),
       'bigInt.pow': (x: Pointer, exp: number) => writeInt(readInt(x) ** BigInt(exp)),
       'bigInt.times': (x: Pointer, y: Pointer) => writeInt(readInt(x) * readInt(y)),
-      'log.log': todo,
+      'log.log': (level: number, message: Pointer) => {
+        host.log.log(level, readStr(message))
+      },
       'store.get': todo,
       'store.set': todo,
       'typeConversion.bigIntToString': todo,
