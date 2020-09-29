@@ -1,5 +1,6 @@
-import { Event, Value, ValueKind } from './ethereum'
+import * as Ethereum from './ethereum'
 import { fromBytesLE, toBytesLE } from './int'
+import * as Store from './host/store'
 
 const LE = true
 const ENCODING = 'utf-16le'
@@ -47,6 +48,31 @@ export class Abi {
     this.view.setUint32(ptr, value, LE)
   }
 
+  private readArray<T>(ptr: Pointer, reader: (value: Pointer) => T): T[] | null {
+    if (ptr === null) {
+      return null
+    }
+
+    const len = this.getWord(ptr + 4)
+    if (len === 0) {
+      return []
+    }
+
+    const bufferPtr = this.getWord(ptr)
+    const buffer = this.readArrayBuffer(bufferPtr)
+    if (buffer === null) {
+      throw new Error('array with null buffer pointer')
+    }
+
+    const ptrs = new DataView(buffer)
+    const values = Array(len)
+    for (let i = 0; i < len; i++) {
+      values[i] = reader(ptrs.getUint32(i * 4, LE))
+    }
+
+    return values
+  }
+
   public readArrayBuffer(ptr: Pointer): ArrayBuffer | null {
     if (ptr === 0) {
       return null
@@ -59,11 +85,91 @@ export class Abi {
 
   public readBigInt(ptr: Pointer): bigint | null {
     const bytes = this.readUint8Array(ptr)
-    if (!bytes) {
+    if (bytes === null) {
       return null
     }
 
     return fromBytesLE(bytes)
+  }
+
+  public readStoreEntity(ptr: Pointer): Store.Entity | null {
+    if (ptr === 0) {
+      return null
+    }
+
+    const entriesPtr = this.getWord(ptr)
+    const entries = this.readArray(entriesPtr, (ptr) => {
+      const namePtr = this.getWord(ptr)
+      const name = this.readString(namePtr)
+      if (name === null) {
+        throw new Error('null entity entry name')
+      }
+
+      const valuePtr = this.getWord(ptr + 4)
+      const value = this.readStoreValue(valuePtr)
+
+      return { name, value }
+    })
+    if (entries === null) {
+      throw new Error('entity with null entries')
+    }
+
+    return { entries }
+  }
+
+  private readStoreValue(ptr: Pointer): Store.Value | null {
+    if (ptr === 0) {
+      return null
+    }
+
+    const kind = this.getWord(ptr)
+    const payload = Number(this.view.getBigInt64(ptr + 8, LE))
+
+    let data: unknown
+    switch (kind) {
+      case Store.ValueKind.String:
+        data = this.readString(payload)
+        break
+      case Store.ValueKind.Int:
+        data = payload
+        break
+      case Store.ValueKind.BigDecimal:
+        throw new Error('big decimal values not supported')
+      case Store.ValueKind.Bool:
+        switch (payload) {
+          case 0:
+            data = false
+            break
+          case 1:
+            data = true
+            break
+          default:
+            throw new Error(`invalid boolean value ${payload}`)
+        }
+        break
+      case Store.ValueKind.Array:
+        data = this.readArray(payload, (ptr) => {
+          const value = this.readStoreValue(ptr)
+          if (value === null) {
+            throw new Error('invalid null store value in array')
+          }
+          return value
+        })
+        break
+      case Store.ValueKind.Null:
+        data = null
+        break
+      case Store.ValueKind.Bytes:
+        data = this.readUint8Array(payload)
+        break
+      case Store.ValueKind.BigInt:
+        data = this.readBigInt(payload)
+        break
+      default:
+        throw new Error(`invalid store value ${kind}`)
+    }
+
+    return { kind, data } as Store.Value
   }
 
   public readString(ptr: Pointer): string | null {
@@ -95,13 +201,14 @@ export class Abi {
   }
 
   private writeArray<T>(values: T[], writer: (value: T) => Pointer): Pointer {
-    const ptrs = new Uint32Array(values.length)
+    const buffer = new ArrayBuffer(values.length * 4)
+    const ptrs = new DataView(buffer)
     for (let i = 0; i < values.length; i++) {
-      ptrs[i] = writer(values[i])
+      ptrs.setUint32(i * 4, writer(values[i]), LE)
     }
 
     const ptr = this.allocate(8)
-    this.setWord(ptr, this.writeArrayBuffer(ptrs.buffer))
+    this.setWord(ptr, this.writeArrayBuffer(buffer))
     this.setWord(ptr + 4, values.length)
 
     return ptr
@@ -127,7 +234,7 @@ export class Abi {
     return this.writeUint8Array(bytes)
   }
 
-  public writeEvent(value: Event | null): Pointer {
+  public writeEthereumEvent(value: Ethereum.Event | null): Pointer {
     if (value === null) {
       return 0
     }
@@ -161,7 +268,7 @@ export class Abi {
     const paramsPtr = this.writeArray(value.parameters, ({ name, value }) => {
       const ptr = this.allocate(8)
       this.setWord(ptr, this.writeString(name))
-      this.setWord(ptr + 4, this.writeValue(value))
+      this.setWord(ptr + 4, this.writeEthereumValue(value))
       return ptr
     })
 
@@ -173,6 +280,40 @@ export class Abi {
     this.setWord(ptr + 16, blockPtr)
     this.setWord(ptr + 20, txPtr)
     this.setWord(ptr + 24, paramsPtr)
+
+    return ptr
+  }
+
+  private writeEthereumValue(value: Ethereum.Value): Pointer {
+    let payload
+    switch (value.kind) {
+      case Ethereum.ValueKind.Address:
+      case Ethereum.ValueKind.FixedBytes:
+      case Ethereum.ValueKind.Bytes:
+        payload = this.writeUint8Array(value.data)
+        break
+      case Ethereum.ValueKind.Int:
+      case Ethereum.ValueKind.Uint:
+        payload = this.writeBigInt(value.data)
+        break
+      case Ethereum.ValueKind.Bool:
+        payload = ~~value.data
+        break
+      case Ethereum.ValueKind.String:
+        payload = this.writeString(value.data)
+        break
+      case Ethereum.ValueKind.FixedArray:
+      case Ethereum.ValueKind.Array:
+      case Ethereum.ValueKind.Tuple:
+        payload = this.writeArray(value.data, this.writeEthereumValue)
+        break
+      default:
+        throw new Error(`invalid ethereum value ${value}`)
+    }
+
+    const ptr = this.allocate(16)
+    this.setWord(ptr, value.kind)
+    this.view.setBigInt64(ptr + 8, BigInt(payload), LE)
 
     return ptr
   }
@@ -204,40 +345,6 @@ export class Abi {
     this.setWord(ptr, bufferPtr)
     this.setWord(ptr + 4, value.byteOffset)
     this.setWord(ptr + 8, value.length)
-
-    return ptr
-  }
-
-  public writeValue(value: Value): Pointer {
-    let payload
-    switch (value.kind) {
-      case ValueKind.Address:
-      case ValueKind.FixedBytes:
-      case ValueKind.Bytes:
-        payload = this.writeUint8Array(value.data)
-        break
-      case ValueKind.Int:
-      case ValueKind.Uint:
-        payload = this.writeBigInt(value.data)
-        break
-      case ValueKind.Bool:
-        payload = ~~value.data
-        break
-      case ValueKind.String:
-        payload = this.writeString(value.data)
-        break
-      case ValueKind.FixedArray:
-      case ValueKind.Array:
-      case ValueKind.Tuple:
-        payload = this.writeArray(value.data, this.writeValue)
-        break
-      default:
-        throw new Error(`invalid ethereum value ${value}`)
-    }
-
-    const ptr = this.allocate(16)
-    this.setWord(ptr, value.kind)
-    this.view.setBigInt64(ptr + 8, BigInt(payload), LE)
 
     return ptr
   }
