@@ -3987,6 +3987,11 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
+wabt@^1.0.19:
+  version "1.0.19"
+  resolved "https://registry.yarnpkg.com/wabt/-/wabt-1.0.19.tgz#3efa9ab225498975ececea7d2a827da0ef35118f"
+  integrity sha512-z/7XRZB8tPRW0XdE8HYbA95w2kjus5AwOHnJ5NT9PqzaNZ7z/zHnUdpNdB78TFMgWt+D/u01lg1jG6nWiFmyEw==
+
 wcwidth@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/wcwidth/-/wcwidth-1.0.1.tgz#f0b0dcf915bc5ff1528afadb2c0e17b532da2fe8"
