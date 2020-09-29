@@ -1,6 +1,10 @@
 import { addrToBytes, fromHex, hashToBytes } from './convert'
 import { Address, Block, Event, EventParam, Hash, Transaction, Value, ValueKind } from './ethereum'
 
+export const ZERO_ADDRESS = addrToBytes(`0x${'00'.repeat(20)}`)
+export const ZERO_HASH = hashToBytes(`0x${'00'.repeat(32)}`)
+export const EMPTY_INPUT = new Uint8Array(0)
+
 export type MetadataProperty = Uint8Array | bigint | boolean | string | null
 export type MetadataPropertyLike<T extends MetadataProperty> = T extends Uint8Array
   ? Uint8Array | string
@@ -90,8 +94,6 @@ function coerceToParameter(data: unknown, kind: EventValueKind): Value {
 }
 
 function newEvent(parameters: EventParam[], meta?: Metadata): Event {
-  const defaultAddr = `0x${'cd'.repeat(20)}`
-  const defaultHash = `0x${'cd'.repeat(32)}`
   const m = {
     block: {} as MetadataProperties<Block>,
     transaction: {} as MetadataProperties<Transaction>,
@@ -99,18 +101,18 @@ function newEvent(parameters: EventParam[], meta?: Metadata): Event {
   }
 
   return {
-    address: coerceAddr(m.address || defaultAddr),
+    address: coerceAddr(m.address || ZERO_ADDRESS),
     logIndex: BigInt(m.logIndex || 0),
     transactionLogIndex: BigInt(m.logIndex || 0),
     logType: m.logType || null,
     block: {
-      hash: coerceHash(m.block.hash || defaultHash),
-      parentHash: coerceHash(m.block.parentHash || defaultHash),
-      unclesHash: coerceHash(m.block.unclesHash || defaultHash),
-      author: coerceAddr(m.block.author || defaultAddr),
-      stateRoot: coerceHash(m.block.stateRoot || defaultHash),
-      transactionsRoot: coerceHash(m.block.transactionsRoot || defaultHash),
-      receiptsRoot: coerceHash(m.block.receiptsRoot || defaultHash),
+      hash: coerceHash(m.block.hash || ZERO_HASH),
+      parentHash: coerceHash(m.block.parentHash || ZERO_HASH),
+      unclesHash: coerceHash(m.block.unclesHash || ZERO_HASH),
+      author: coerceAddr(m.block.author || ZERO_ADDRESS),
+      stateRoot: coerceHash(m.block.stateRoot || ZERO_HASH),
+      transactionsRoot: coerceHash(m.block.transactionsRoot || ZERO_HASH),
+      receiptsRoot: coerceHash(m.block.receiptsRoot || ZERO_HASH),
       number: BigInt(m.block.number || 0),
       gasUsed: BigInt(m.block.gasUsed || 0),
       gasLimit: BigInt(m.block.gasLimit || 0),
@@ -120,14 +122,14 @@ function newEvent(parameters: EventParam[], meta?: Metadata): Event {
       size: m.block.size !== null && m.block.size !== undefined ? BigInt(m.block.size) : null,
     },
     transaction: {
-      hash: coerceHash(m.transaction.hash || defaultHash),
+      hash: coerceHash(m.transaction.hash || ZERO_HASH),
       index: BigInt(m.transaction.index || 0),
-      from: coerceAddr(m.transaction.from || defaultAddr),
-      to: coerceAddr(m.transaction.to || m.address || defaultAddr),
+      from: coerceAddr(m.transaction.from || ZERO_ADDRESS),
+      to: coerceAddr(m.transaction.to || m.address || ZERO_ADDRESS),
       value: BigInt(m.transaction.value || 0),
       gasUsed: BigInt(m.transaction.gasUsed || 0),
       gasPrice: BigInt(m.transaction.gasPrice || 0),
-      input: coerceBytes(m.transaction.input || '0x'),
+      input: coerceBytes(m.transaction.input || EMPTY_INPUT),
     },
     parameters,
   }
