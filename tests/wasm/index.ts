@@ -6,6 +6,7 @@
 import fs from 'fs'
 import path from 'path'
 import { Module, Runtime } from './runtime'
+import { CallHandler } from './runtime/chain'
 import { fromEntityData, toEntityData, toEvent, EntityNames, EntityData, EventData, EventMetadata } from './definitions'
 
 // NOTE: Use `readFileSync` here so that we pay the price of reading the Wasm
@@ -16,7 +17,7 @@ const MODULE_WASM = fs.readFileSync(path.join(__dirname, '../../build/BatchExcha
 const MODULE = Module.compile('BatchExchange.wasm', MODULE_WASM)
 
 export class Mappings {
-  private constructor(private runtime: Runtime) {}
+  private constructor(private readonly runtime: Runtime) {}
 
   public static async load(): Promise<Mappings> {
     const runtime = await Runtime.instantiate(await MODULE)
@@ -25,6 +26,10 @@ export class Mappings {
 
   public onDeposit(deposit: EventData<'Deposit'>, meta?: EventMetadata): void {
     this.runtime.eventHandler('onDeposit', toEvent('Deposit', deposit, meta))
+  }
+
+  public onTokenListing(tokenListing: EventData<'TokenListing'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onTokenListing', toEvent('TokenListing', tokenListing, meta))
   }
 
   public getEntity<T extends EntityNames>(name: T, id: string): EntityData<T> | null {
@@ -39,5 +44,9 @@ export class Mappings {
   public setEntity<T extends EntityNames>(name: T, id: string, data: EntityData<T>): void {
     const entity = fromEntityData(name, data)
     this.runtime.setEntity(name, id, entity)
+  }
+
+  public setCallHandler(call: CallHandler): void {
+    this.runtime.setEth({ call })
   }
 }

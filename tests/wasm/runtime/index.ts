@@ -7,8 +7,9 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import wabt from 'wabt'
 import { Abi, Pointer } from './abi'
+import { IEthereum } from './chain'
 import { toHex } from './convert'
-import { Event } from './ethereum'
+import { Event, Value } from './ethereum'
 import { Host } from './host'
 import { Entity } from './store'
 
@@ -57,6 +58,10 @@ export class Runtime {
   public setEntity(name: string, id: string, entity: Entity): void {
     this.host.store.set(name, id, entity)
   }
+
+  public setEth(eth: IEthereum): void {
+    this.host.eth = eth
+  }
 }
 
 export class Module {
@@ -87,16 +92,14 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
   }
 
   const readBytes = (ptr: Pointer) => nonnull(abi().readUint8Array(ptr))
+  const readCall = (ptr: Pointer) => nonnull(abi().readEthereumCall(ptr))
   const readEntity = (ptr: Pointer) => nonnull(abi().readStoreEntity(ptr))
   const readInt = (ptr: Pointer) => nonnull(abi().readBigInt(ptr))
   const readStr = (ptr: Pointer) => nonnull(abi().readString(ptr))
   const writeEntityOrNull = (val: Entity | null) => abi().writeStoreEntity(val)
   const writeInt = (val: bigint) => abi().writeBigInt(val)
   const writeStr = (val: string) => abi().writeString(val)
-
-  const todo = () => {
-    throw new Error('not implemented')
-  }
+  const writeValuesOrNull = (val: Value[] | null) => abi().writeEthereumValues(val)
 
   return {
     env: {
@@ -124,7 +127,9 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
       'typeConversion.bytesToHex': (x: Pointer) => writeStr(toHex(readBytes(x))),
     },
     ethereum: {
-      'ethereum.call': todo,
+      'ethereum.call': (call: Pointer) => {
+        return writeValuesOrNull(host.eth.call(readCall(call)))
+      },
     },
   }
 }

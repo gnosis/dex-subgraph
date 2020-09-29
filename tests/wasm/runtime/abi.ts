@@ -49,7 +49,7 @@ export class Abi {
   }
 
   private readArray<T>(ptr: Pointer, reader: (value: Pointer) => T): T[] | null {
-    if (ptr === null) {
+    if (ptr === 0) {
       return null
     }
 
@@ -90,6 +90,94 @@ export class Abi {
     }
 
     return fromBytesLE(bytes)
+  }
+
+  public readEthereumCall(ptr: Pointer): Ethereum.Call | null {
+    if (ptr === 0) {
+      return null
+    }
+
+    const contractName = this.readString(this.getWord(ptr))
+    if (contractName === null) {
+      throw new Error('null call contract name')
+    }
+    const contractAddress = this.readUint8Array(this.getWord(ptr + 4))
+    if (contractAddress === null) {
+      throw new Error('null call contract address')
+    }
+
+    const functionName = this.readString(this.getWord(ptr + 8))
+    if (functionName === null) {
+      throw new Error('null call function name')
+    }
+    const functionSignature = this.readString(this.getWord(ptr + 12))
+    if (functionSignature === null) {
+      throw new Error('null call function signature')
+    }
+    const functionParams = this.readArray(this.getWord(ptr + 16), (ptr) => {
+      const value = this.readEthereumValue(ptr)
+      if (value === null) {
+        throw new Error('null call function parameter value')
+      }
+      return value
+    })
+    if (functionParams === null) {
+      throw new Error('null call function parameters')
+    }
+
+    return { contractName, contractAddress, functionName, functionSignature, functionParams }
+  }
+
+  private readEthereumValue(ptr: Pointer): Ethereum.Value | null {
+    if (ptr === 0) {
+      return null
+    }
+
+    const kind = this.getWord(ptr)
+    const payload = Number(this.view.getBigInt64(ptr + 8, LE))
+
+    let data: unknown
+    switch (kind) {
+      case Ethereum.ValueKind.Address:
+      case Ethereum.ValueKind.FixedBytes:
+      case Ethereum.ValueKind.Bytes:
+        data = this.readUint8Array(payload)
+        break
+      case Ethereum.ValueKind.Int:
+      case Ethereum.ValueKind.Uint:
+        data = this.readBigInt(payload)
+        break
+      case Ethereum.ValueKind.Bool:
+        switch (payload) {
+          case 0:
+            data = false
+            break
+          case 1:
+            data = true
+            break
+          default:
+            throw new Error(`invalid boolean value ${payload}`)
+        }
+        break
+      case Ethereum.ValueKind.String:
+        data = this.readString(payload)
+        break
+      case Ethereum.ValueKind.FixedArray:
+      case Ethereum.ValueKind.Array:
+      case Ethereum.ValueKind.Tuple:
+        data = this.readArray(payload, (ptr) => {
+          const value = this.readStoreValue(ptr)
+          if (value === null) {
+            throw new Error('invalid null ethereum value in array')
+          }
+          return value
+        })
+        break
+      default:
+        throw new Error(`invalid store value ${kind}`)
+    }
+
+    return { kind, data } as Ethereum.Value
   }
 
   public readStoreEntity(ptr: Pointer): Store.Entity | null {
@@ -308,7 +396,7 @@ export class Abi {
       case Ethereum.ValueKind.FixedArray:
       case Ethereum.ValueKind.Array:
       case Ethereum.ValueKind.Tuple:
-        payload = this.writeArray(value.data, (value) => this.writeEthereumValue(value))
+        payload = this.writeEthereumValues(value.data)
         break
       default:
         throw new Error(`invalid ethereum value ${value}`)
@@ -319,6 +407,14 @@ export class Abi {
     this.view.setBigInt64(ptr + 8, BigInt(payload), LE)
 
     return ptr
+  }
+
+  public writeEthereumValues(values: Ethereum.Value[] | null): Pointer {
+    if (values === null) {
+      return 0
+    }
+
+    return this.writeArray(values, (value) => this.writeEthereumValue(value))
   }
 
   public writeStoreEntity(value: Store.Entity | null): Pointer {

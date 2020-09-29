@@ -1,16 +1,20 @@
 import { fromHex, toHex } from './convert'
 import { Entity, Entry, Value, ValueKind } from './store'
 
-export type RecursiveValueKind = Exclude<ValueKind, ValueKind.Array> | readonly [RecursiveValueKind]
-export type Definition = Record<string, RecursiveValueKind>
+export type SimpleValueKind = Exclude<ValueKind, ValueKind.Array | ValueKind.Null>
+export type EntityValueKind = SimpleValueKind | readonly [SimpleValueKind] | { readonly optional: SimpleValueKind }
+export type Definition = Record<string, EntityValueKind>
 
-export type ValueOf<T> = T extends ValueKind.Array
+export type RawValueOf<T> = T extends ValueKind.Array | ValueKind.Null
   ? never
   : T extends ValueKind.Bytes
   ? string
-  : T extends readonly [infer S]
-  ? ValueOf<S>[]
   : Extract<Value, { kind: T }>['data']
+export type ValueOf<T> = T extends readonly [infer S]
+  ? RawValueOf<S>[]
+  : T extends { readonly optional: infer S }
+  ? RawValueOf<S> | null
+  : RawValueOf<T>
 
 export type Data<T> = {
   [K in keyof T]: ValueOf<T[K]>
@@ -40,26 +44,35 @@ export function fromData<D extends Definition>(definition: D, data: Data<D>): En
   return { entries }
 }
 
-function isRecursive(kind: RecursiveValueKind): kind is readonly [RecursiveValueKind] {
+function isArray(kind: EntityValueKind): kind is readonly [SimpleValueKind] {
   return Array.isArray(kind)
 }
 
-function coerceFromValue(value: Value, kind: RecursiveValueKind): unknown {
-  const unexpectedKindError = (expectedKind: ValueKind) => {
-    const n = (kind: ValueKind) => ValueKind[kind] || 'unknown'
-    return new Error(`expected ${n(expectedKind)} store value but got ${n(value.kind)}`)
-  }
+function isOptional(kind: EntityValueKind): kind is { readonly optional: SimpleValueKind } {
+  return typeof kind === 'object' && 'optional' in kind
+}
 
-  if (isRecursive(kind)) {
+function coerceFromValue(value: Value, kind: EntityValueKind): unknown {
+  if (isArray(kind)) {
     if (value.kind !== ValueKind.Array) {
-      throw unexpectedKindError(ValueKind.Array)
+      throw unexpectedKindError(value, ValueKind.Array)
     }
-    return value.data.map((value) => coerceFromValue(value, kind[0]))
+    return value.data.map((value) => coerceFromSimpleValue(value, kind[0]))
+  } else if (isOptional(kind)) {
+    if (value.kind === ValueKind.Null) {
+      return null
+    }
+    return coerceFromSimpleValue(value, kind.optional)
+  } else {
+    return coerceFromSimpleValue(value, kind)
+  }
+}
+
+function coerceFromSimpleValue(value: Value, kind: SimpleValueKind): unknown {
+  if (value.kind !== kind) {
+    throw unexpectedKindError(value, kind)
   }
 
-  if (value.kind !== kind) {
-    throw unexpectedKindError(kind)
-  }
   switch (value.kind) {
     case ValueKind.Bytes:
       return toHex(value.data)
@@ -68,14 +81,30 @@ function coerceFromValue(value: Value, kind: RecursiveValueKind): unknown {
   }
 }
 
-function coerceToValue(data: unknown, kind: RecursiveValueKind): Value {
-  if (isRecursive(kind)) {
+function unexpectedKindError(value: Value, expectedKind: ValueKind) {
+  if (value.kind !== expectedKind) {
+    const n = (kind: ValueKind) => ValueKind[kind] || 'unknown'
+    return new Error(`expected ${n(expectedKind)} store value but got ${n(value.kind)}`)
+  }
+}
+
+function coerceToValue(data: unknown, kind: EntityValueKind): Value {
+  if (isArray(kind)) {
     return {
       kind: ValueKind.Array,
-      data: (data as unknown[]).map((data) => coerceToValue(data, kind[0])),
+      data: (data as unknown[]).map((data) => coerceToSimpleValue(data, kind[0])),
     }
+  } else if (isOptional(kind)) {
+    if (data === null) {
+      return { kind: ValueKind.Null, data: null }
+    }
+    return coerceToSimpleValue(data, kind.optional)
+  } else {
+    return coerceToSimpleValue(data, kind)
   }
+}
 
+function coerceToSimpleValue(data: unknown, kind: SimpleValueKind): Value {
   switch (kind) {
     case ValueKind.Bytes:
       return { kind, data: fromHex(data as string) }
