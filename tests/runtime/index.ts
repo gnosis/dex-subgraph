@@ -7,6 +7,9 @@ import { promises as fs } from 'fs'
 import path from 'path'
 import wabt from 'wabt'
 import { Abi, Pointer } from './abi'
+import { Event, ValueKind } from './ethereum'
+import * as Events from './events'
+import { addr, toHex } from './hex'
 import { Host } from './host'
 
 let CACHED_MODULE: Promise<WebAssembly.Module> | undefined
@@ -39,12 +42,31 @@ export class Mappings {
     return new Mappings(abi, host, instance)
   }
 
-  private handler(name: string, ...args: unknown[]): void {
-    ;(this.instance.exports[name] as (...a: unknown[]) => void)(...args)
+  private handler(name: string, event: Event): void {
+    const eventPtr = this.abi.writeEvent(event)
+    ;(this.instance.exports[name] as (...a: unknown[]) => void)(eventPtr)
   }
 
   public onAddToken(): void {
-    this.handler('onAddToken')
+    throw new Error('not implemented')
+  }
+
+  public onDeposit(deposit: Events.Deposit, meta?: Events.Metadata): void {
+    this.handler(
+      'onDeposit',
+      Events.newEvent(
+        {
+          ...{ from: deposit.user },
+          ...(meta || {}),
+        },
+        [
+          { name: 'user', value: { kind: ValueKind.Address, data: addr(deposit.user) } },
+          { name: 'token', value: { kind: ValueKind.Address, data: addr(deposit.token) } },
+          { name: 'amount', value: { kind: ValueKind.Uint, data: deposit.amount } },
+          { name: 'batchId', value: { kind: ValueKind.Uint, data: BigInt(deposit.batchId) } },
+        ],
+      ),
+    )
   }
 }
 
@@ -73,9 +95,11 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
     return value
   }
 
-  const readStr = (ptr: Pointer) => nonnull(abi().readString(ptr))
+  const readBytes = (ptr: Pointer) => nonnull(abi().readUint8Array(ptr))
   const readInt = (ptr: Pointer) => nonnull(abi().readBigInt(ptr))
+  const readStr = (ptr: Pointer) => nonnull(abi().readString(ptr))
   const writeInt = (val: bigint) => abi().writeBigInt(val)
+  const writeStr = (val: string) => abi().writeString(val)
 
   const todo = () => {
     throw new Error('not implemented')
@@ -99,8 +123,8 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
       },
       'store.get': todo,
       'store.set': todo,
-      'typeConversion.bigIntToString': todo,
-      'typeConversion.bytesToHex': todo,
+      'typeConversion.bigIntToString': (x: Pointer) => writeStr(readInt(x).toString()),
+      'typeConversion.bytesToHex': (x: Pointer) => writeStr(toHex(readBytes(x))),
     },
     ethereum: {
       'ethereum.call': todo,
