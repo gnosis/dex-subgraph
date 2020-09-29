@@ -1,5 +1,5 @@
 import { expect } from 'chai'
-import { Mappings } from './runtime'
+import { Mappings } from './wasm'
 
 describe('onDeposit', function () {
   it('creates a user if it does not exist', async () => {

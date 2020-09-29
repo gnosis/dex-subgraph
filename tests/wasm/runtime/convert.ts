@@ -1,10 +1,10 @@
 import { Address, Hash } from './ethereum'
 
-export function addr(addr: string): Address {
+export function addrToBytes(addr: string): Address {
   return fixedLengthHex(addr, 20)
 }
 
-export function hash(hash: string): Hash {
+export function hashToBytes(hash: string): Hash {
   return fixedLengthHex(hash, 32)
 }
 

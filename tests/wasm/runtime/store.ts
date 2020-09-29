@@ -45,7 +45,7 @@ export type Value =
 
 export type Entry = {
   name: string
-  value: Value | null
+  value: Value
 }
 
 export interface Entity {
