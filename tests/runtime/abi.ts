@@ -91,7 +91,7 @@ export class Abi {
 
     const ptr = this.allocate(12)
     this.view.setUint32(ptr, bufferPtr, LE)
-    this.view.setUint32(ptr + 4, 0, LE)
+    this.view.setUint32(ptr + 4, bytes.byteOffset, LE)
     this.view.setUint32(ptr + 8, bytes.length, LE)
 
     return ptr
