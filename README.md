@@ -15,71 +15,48 @@ For more information about:
 
 ---
 
-## Installing Dependencies
+## Setup for Local Development
+
+In order to hack on the subgraph locally, first install the necessary project dependencies with Yarn:
 
 ```bash
 yarn
 ```
 
-## Setup for Local Development
+### Unit Tests
 
-> First install dependencies (see above)
-
-1. Run a local ganache-cli and migrate the dependencies
-   > TODO: Initially this step was done in the same project, but there's a dependency issue to solve in dex-contracts. It's better for now cloning dex-contracts and migrating separatelly
+This repository contains a mock Graph runtime implementation in order to be able to test mapping handlers. These tests can be run with `yarn` once the mappings have been built.
 
 ```bash
-# Clone dex-contracts project
-#   It doesn't matter where you clone the project, this project is independent from dex-subgraph
-git clone https://github.com/gnosis/dex-contracts
-cd dex-contracts
-
-# Install dependencies and build project
-# Make sure your node version is `v12.*`, as `v14.*` is not yet supported by the dex-contracts project
-yarn && yarn build
-
-# Run a local ganache (in another tab)
-yarn run-ganache
-
-# Migrate dependencies
-npx truffle migrate
-
-# Setup some test data
-yarn truffle-exec scripts/ganache/setup_thegraph_data.js
+yarn build
+yarn test
 ```
 
-2. Run a local The Graph Node
+### Integration Tests
 
+Addionally, integration tests with an actual local Graph node are also available for this subgraph. In order to facilitate things, a Docker compose configuration is provided:
 ```bash
-# Clone The Graph node
-git clone https://github.com/graphprotocol/graph-node/
-cd graph-node/docker
+cd e2e
 
-# [only Linux] Inject host IP in docker-compose.yml
-# You might need to run it as `root`
-./setup.sh
+# First start the local Graph node
+docker-compose up -d graph-node
 
-# Start a local Graph Node
-# If you ran `./setup.sh` as `root`, you'll need to do that here too
-docker-compose up
-```
+# Deploy the Gnosis Protocol contracts
+docker-compose up dex-contracts
 
-3. In dex-subgraph. Create a local subgraph:
-
-```bash
 # Create a new subgraph
-yarn create-ganache
+yarn create:ganache
 
 # Deploy it
-yarn deploy
+yarn deploy:ganache
 ```
 
 The subgraph should be accessible in: <http://127.0.0.1:8000/subgraphs/name/gnosis/protocol/graphql>
 
-<details><summary>Example of GraphQL subscription to try:</summary>
+<details><summary>Example of GraphQL query to try:</summary>
 
 ```graphql
-subscription UserData {
+query UserData {
   users {
     id
 
@@ -127,6 +104,17 @@ subscription UserData {
 
 </details>
 
+Note that after modifications to the subgraph, simply re-deploying the subgraph is enough:
+
+```bash
+vim schema.graphql
+vim subgraph.yaml.mustache
+vim src/mappings/*.ts
+
+# Redeploy the subgraph
+yarn deploy:ganache
+```
+
 ## Update to a new version of the contracts
 
 > First setup for local development (see above)
@@ -163,10 +151,10 @@ vim config/mainnet.json
 
 4. Review the differences between the two version in the contract, and adapt all the handlers.
 
-5) Regenerate the model:
+5. Regenerate the model:
 
 ```bash
-yarn gen
+yarn codegen
 ```
 
 ## Deploy to rinkeby or mainnet
@@ -180,25 +168,26 @@ Deploy to the different networks:
 graph auth https://api.thegraph.com/deploy/ <your-access-token>
 
 # Deploy to rinkeby
-yarn deploy-rinkeby
+yarn deploy:rinkeby
 
 # Deploy to xdai
-yarn deploy-xdai
+yarn deploy:xdai
 
 # Deploy to staging
-yarn deploy-staging
+yarn deploy:staging
 
 # Deploy to mainnet
-#   IMPORTANT: Make sure the graph is well tested in staging environment
-yarn deploy-mainnet
+# IMPORTANT: Make sure the graph is well tested in staging environment
+yarn deploy:mainnet
 ```
 
 ## Troubleshooting
 
 ```bash
-# Delete all containers and data
-docker-compose down && rm -rf data
+# Delete all containers and images
+docker-compose down
 
-# Run the graph
-docker-compose up
+# Run the Graph and re-deploy Gnosis Protocol
+docker-compose up -d graph-node
+docker-compose up dex-contracts
 ```

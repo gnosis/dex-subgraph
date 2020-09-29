@@ -28,8 +28,8 @@ echo "## Deploying Gnosis Protocol to testnet"
 docker_compose up dex-contracts
 
 echo "## Deploying subgraph to local Graph node"
-yarn create-ganache
-yarn deploy
+yarn create:ganache
+yarn deploy:ganache
 
 echo "## Waiting for subgraph to index"
 for i in $(seq 1 $INDEXING_CHECK_RETRIES); do
