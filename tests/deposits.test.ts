@@ -2,6 +2,35 @@ import { expect } from 'chai'
 import { Mappings } from './wasm'
 
 describe('onDeposit', function () {
+  it('creates a deposit entity', async () => {
+    const mappings = await Mappings.load()
+
+    const txHash = `0x${'42'.repeat(32)}`
+    mappings.onDeposit(
+      {
+        user: '0x0000000000000000000000000000000000000001',
+        token: '0x0000000000000000000000000000000000000002',
+        amount: 10n ** 18n,
+        batchId: 42,
+      },
+      {
+        logIndex: 42,
+        transactionHash: txHash,
+      },
+    )
+
+    const depositId = `${txHash}-42`
+    expect(mappings.getEntity('Deposit', depositId)).to.deep.equal({
+      id: depositId,
+      user: '0x0000000000000000000000000000000000000001',
+      tokenAddress: '0x0000000000000000000000000000000000000002',
+      amount: 10n ** 18n,
+      batchId: 42n,
+      createEpoch: 42n * 300n,
+      txHash,
+    })
+  })
+
   it('creates a user if it does not exist', async () => {
     const mappings = await Mappings.load()
 
