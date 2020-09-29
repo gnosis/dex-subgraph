@@ -1,6 +1,5 @@
 {
   "network": "rinkeby",
   "address": "0xC576eA7bd102F7E476368a5E98FA455d1Ea34dE2",
-  "startBlock": 5844678,
-  "indexCalls": false
+  "startBlock": 5844678
 }

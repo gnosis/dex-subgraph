@@ -1,62 +1,21 @@
-import { log, Address, BigInt, Bytes, ethereum } from '@graphprotocol/graph-ts'
+import { log, BigInt } from '@graphprotocol/graph-ts'
 import { Token } from '../../generated/schema'
-import { AddTokenCall, BatchExchange } from '../../generated/BatchExchange/BatchExchange'
+import { TokenListing as TokenListingEvent } from '../../generated/BatchExchange/BatchExchange'
 import { Erc20 } from '../../generated/BatchExchange/Erc20'
 import { epochToBatchId } from '../utils'
 
-export function onAddToken(call: AddTokenCall): void {
-  let address = call.inputs.token
-  let timestamp = call.block.timestamp
-  let txHash = call.transaction.hash
+export function onTokenListing(event: TokenListingEvent): void {
+  let params = event.params
 
   // Get token id
-  let batchExchange = BatchExchange.bind(call.to)
-  let tokenId = batchExchange.tokenAddressToIdMap(address)
-  log.info('[onAddToken] Add token {} with address', [BigInt.fromI32(tokenId).toString(), address.toHex()])
-
-  // Create token
-  let id = BigInt.fromI32(tokenId).toString()
-  _createToken(id, address, timestamp, txHash)
-
-  // It's possible, that there was already some deposits
-  // TODO: Update balances (once balances are implemented)
-}
-
-export function createTokenIfNotCreated(tokenId: u32, event: ethereum.Event): Token {
-  let id = BigInt.fromI32(tokenId).toString()
-  let token = Token.load(id)
-  log.info('[createTokenIfNotCreated] Make sure token {} is created', [id])
-
-  if (token == null) {
-    let batchExchange = BatchExchange.bind(event.address)
-    let address = batchExchange.tokenIdToAddressMap(tokenId)
-
-    let timestamp = event.block.timestamp
-    let txHash = event.transaction.hash
-
-    // Create token if not created
-    token = _createToken(id, address, timestamp, txHash)
-  }
-
-  return token!
-}
-
-export function getTokenById(tokenId: i32): Token {
-  let id = BigInt.fromI32(tokenId).toString()
-  let tokenOpt = Token.load(id)
-  if (!tokenOpt) {
-    throw new Error("Order doesn't exist: " + id)
-  }
-  return tokenOpt!
-}
-
-export function _createToken(id: string, address: Address, timestamp: BigInt, txHash: Bytes): Token {
-  log.info('[createToken] Create Token {} with address {}', [id, address.toHex()])
+  let id = BigInt.fromI32(params.id).toString()
+  let address = params.token
+  log.info('[onTokenListing] Add token {} with address {}', [id, address.toHex()])
 
   // Create token
   let token = new Token(id)
   token.address = address
-  token.fromBatchId = epochToBatchId(timestamp)
+  token.fromBatchId = epochToBatchId(event.block.timestamp)
 
   // Add symbol (optional)
   let erc20 = Erc20.bind(address)
@@ -87,11 +46,19 @@ export function _createToken(id: string, address: Address, timestamp: BigInt, tx
   }
 
   // Audit dates
-  token.createEpoch = timestamp
+  token.createEpoch = event.block.timestamp
 
   // Transaction
-  token.txHash = txHash
+  token.txHash = event.transaction.hash
 
   token.save()
-  return token
+}
+
+export function getTokenById(tokenId: i32): Token {
+  let id = BigInt.fromI32(tokenId).toString()
+  let tokenOpt = Token.load(id)
+  if (!tokenOpt) {
+    throw new Error("Token doesn't exist: " + id)
+  }
+  return tokenOpt!
 }

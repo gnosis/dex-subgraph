@@ -6,7 +6,7 @@ import {
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch, getBatchId } from '../utils'
-import { createTokenIfNotCreated } from './tokens'
+import { getTokenById } from './tokens'
 import { createUserIfNotCreated } from './users'
 
 export function onOrderPlacement(event: OrderPlacementEvent): void {
@@ -15,9 +15,10 @@ export function onOrderPlacement(event: OrderPlacementEvent): void {
   // Crete user if doesn't exist
   let owner = createUserIfNotCreated(params.owner, event)
 
-  // Crete tokens if they don't exist
-  let sellToken = createTokenIfNotCreated(params.sellToken, event)
-  let buyToken = createTokenIfNotCreated(params.buyToken, event)
+  // Get existing token entities - the `BatchExchange` contract requires token
+  // IDs to be valid to place orders.
+  let sellToken = getTokenById(params.sellToken)
+  let buyToken = getTokenById(params.buyToken)
 
   // Create order
   _createOrder(event, owner, sellToken, buyToken)

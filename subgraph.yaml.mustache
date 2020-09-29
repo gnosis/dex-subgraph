@@ -38,13 +38,11 @@ dataSources:
           file: ./abis/BatchExchange.json
         - name: Erc20
           file: ./abis/Erc20.json
-{{#indexCalls}}
-      callHandlers:
-        # Tokens
-        - function: addToken(address)
-          handler: onAddToken
-{{/indexCalls}}
       eventHandlers:
+        # Tokens
+        - event: TokenListing(address,uint16)
+          handler: onTokenListing
+
         # Deposits
         - event: Deposit(indexed address,indexed address,uint256,uint32)
           handler: onDeposit

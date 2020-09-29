@@ -1,6 +1,5 @@
 {
   "network": "mainnet",
   "address": "0x6F400810b62df8E13fded51bE75fF5393eaa841F",
-  "startBlock": 9340147,
-  "indexCalls": true
+  "startBlock": 9340147
 }
