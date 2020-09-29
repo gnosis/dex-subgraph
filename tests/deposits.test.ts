@@ -15,7 +15,12 @@ describe('onDeposit', function () {
       },
       {
         logIndex: 42,
-        transactionHash: txHash,
+        block: {
+          timestamp: 42 * 300,
+        },
+        transaction: {
+          hash: txHash,
+        },
       },
     )
 
@@ -45,8 +50,10 @@ describe('onDeposit', function () {
         batchId: 42,
       },
       {
-        transactionHash: txHash,
-        blockTimestamp: timestamp,
+        block: { timestamp },
+        transaction: {
+          hash: txHash,
+        },
       },
     )
 
@@ -81,7 +88,9 @@ describe('onDeposit', function () {
       },
       {
         // NOTE: Different Tx hash and batch than the manually created user.
-        transactionHash: `0x${'02'.repeat(32)}`,
+        transaction: {
+          hash: `0x${'02'.repeat(32)}`,
+        },
       },
     )
 

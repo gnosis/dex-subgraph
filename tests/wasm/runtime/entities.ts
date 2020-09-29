@@ -1,25 +1,10 @@
-import { fromHex, toHex } from './runtime/convert'
-import { Entity, Entry, Value, ValueKind } from './runtime/store'
+import { fromHex, toHex } from './convert'
+import { Entity, Entry, Value, ValueKind } from './store'
 
-const Kinds = {
-  User: {
-    id: ValueKind.String,
-    fromBatchId: ValueKind.BigInt,
-    createEpoch: ValueKind.BigInt,
-    txHash: ValueKind.Bytes,
-  },
-  Deposit: {
-    id: ValueKind.String,
-    user: ValueKind.String,
-    tokenAddress: ValueKind.Bytes,
-    amount: ValueKind.BigInt,
-    batchId: ValueKind.BigInt,
-    createEpoch: ValueKind.BigInt,
-    txHash: ValueKind.Bytes,
-  },
-} as const
+export type RecursiveValueKind = Exclude<ValueKind, ValueKind.Array> | readonly [RecursiveValueKind]
+export type Definition = Record<string, RecursiveValueKind>
 
-type ValueOf<T> = T extends ValueKind.Array
+export type ValueOf<T> = T extends ValueKind.Array
   ? never
   : T extends ValueKind.Bytes
   ? string
@@ -27,16 +12,13 @@ type ValueOf<T> = T extends ValueKind.Array
   ? ValueOf<S>[]
   : Extract<Value, { kind: T }>['data']
 
-type EntityData<T> = {
+export type Data<T> = {
   [K in keyof T]: ValueOf<T[K]>
 }
 
-export type Names = keyof typeof Kinds
-export type Data<K extends Names> = EntityData<typeof Kinds[K]>
-
-export function toData<K extends Names>(name: K, entity: Entity): Data<K> {
+export function toData<D extends Definition>(definition: D, entity: Entity): Data<D> {
   const data: Record<string, unknown> = {}
-  for (const [key, kind] of Object.entries(Kinds[name])) {
+  for (const [key, kind] of Object.entries(definition)) {
     const entry = entity.entries.find(({ name }) => name === key)
     if (entry === undefined) {
       throw new Error(`entity missing '${key}' entry`)
@@ -45,20 +27,18 @@ export function toData<K extends Names>(name: K, entity: Entity): Data<K> {
     data[key] = coerceFromValue(entry.value, kind)
   }
 
-  return data as Data<K>
+  return data as Data<D>
 }
 
-export function fromData<K extends Names>(name: K, data: Data<K>): Entity {
+export function fromData<D extends Definition>(definition: D, data: Data<D>): Entity {
   const entries: Entry[] = []
   const dataProperties = data as Record<string, unknown>
-  for (const [key, kind] of Object.entries(Kinds[name])) {
+  for (const [key, kind] of Object.entries(definition)) {
     entries.push({ name: key, value: coerceToValue(dataProperties[key], kind) })
   }
 
   return { entries }
 }
-
-type RecursiveValueKind = Exclude<ValueKind, ValueKind.Array> | readonly [RecursiveValueKind]
 
 function isRecursive(kind: RecursiveValueKind): kind is readonly [RecursiveValueKind] {
   return Array.isArray(kind)

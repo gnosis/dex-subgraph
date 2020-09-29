@@ -6,8 +6,7 @@
 import fs from 'fs'
 import path from 'path'
 import { Module, Runtime } from './runtime'
-import * as Entities from './entities'
-import * as Events from './events'
+import { fromEntityData, toEntityData, toEvent, EntityNames, EntityData, EventData, EventMetadata } from './definitions'
 
 // NOTE: Use `readFileSync` here so that we pay the price of reading the Wasm
 // binary when loading this file, instead of when creating the `Mappings` module
@@ -24,21 +23,21 @@ export class Mappings {
     return new Mappings(runtime)
   }
 
-  public onDeposit(deposit: Events.Deposit, meta?: Events.Metadata): void {
-    this.runtime.eventHandler('onDeposit', Events.deposit(deposit, meta))
+  public onDeposit(deposit: EventData<'Deposit'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onDeposit', toEvent('Deposit', deposit, meta))
   }
 
-  public getEntity<T extends Entities.Names>(name: T, id: string): Entities.Data<T> | null {
+  public getEntity<T extends EntityNames>(name: T, id: string): EntityData<T> | null {
     const entity = this.runtime.getEntity(name, id)
     if (entity === null) {
       return null
     }
 
-    return Entities.toData(name, entity)
+    return toEntityData(name, entity)
   }
 
-  public setEntity<T extends Entities.Names>(name: T, id: string, data: Entities.Data<T>): void {
-    const entity = Entities.fromData(name, data)
+  public setEntity<T extends EntityNames>(name: T, id: string, data: EntityData<T>): void {
+    const entity = fromEntityData(name, data)
     this.runtime.setEntity(name, id, entity)
   }
 }
