@@ -308,10 +308,65 @@ export class Abi {
       case Ethereum.ValueKind.FixedArray:
       case Ethereum.ValueKind.Array:
       case Ethereum.ValueKind.Tuple:
-        payload = this.writeArray(value.data, this.writeEthereumValue)
+        payload = this.writeArray(value.data, (value) => this.writeEthereumValue(value))
         break
       default:
         throw new Error(`invalid ethereum value ${value}`)
+    }
+
+    const ptr = this.allocate(16)
+    this.setWord(ptr, value.kind)
+    this.view.setBigInt64(ptr + 8, BigInt(payload), LE)
+
+    return ptr
+  }
+
+  public writeStoreEntity(value: Store.Entity | null): Pointer {
+    if (value === null) {
+      return 0
+    }
+
+    const entriesPtr = this.writeArray(value.entries, ({ name, value }) => {
+      const ptr = this.allocate(8)
+      this.setWord(ptr, this.writeString(name))
+      this.setWord(ptr + 4, this.writeStoreValue(value))
+      return ptr
+    })
+
+    const ptr = this.allocate(4)
+    this.setWord(ptr, entriesPtr)
+
+    return ptr
+  }
+
+  private writeStoreValue(value: Store.Value): Pointer {
+    let payload
+    switch (value.kind) {
+      case Store.ValueKind.String:
+        payload = this.writeString(value.data)
+        break
+      case Store.ValueKind.Int:
+        payload = value.data
+        break
+      case Store.ValueKind.BigDecimal:
+        throw new Error('big decimal values not supported')
+      case Store.ValueKind.Bool:
+        payload = ~~value
+        break
+      case Store.ValueKind.Array:
+        payload = this.writeArray(value.data, (value) => this.writeStoreValue(value))
+        break
+      case Store.ValueKind.Null:
+        payload = 0
+        break
+      case Store.ValueKind.Bytes:
+        payload = this.writeUint8Array(value.data)
+        break
+      case Store.ValueKind.BigInt:
+        payload = this.writeBigInt(value.data)
+        break
+      default:
+        throw new Error(`invalid store value ${value}`)
     }
 
     const ptr = this.allocate(16)

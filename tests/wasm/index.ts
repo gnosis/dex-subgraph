@@ -36,4 +36,9 @@ export class Mappings {
 
     return Entities.toData(name, entity)
   }
+
+  public setEntity<T extends Entities.Names>(name: T, id: string, data: Entities.Data<T>): void {
+    const entity = Entities.fromData(name, data)
+    this.runtime.setEntity(name, id, entity)
+  }
 }

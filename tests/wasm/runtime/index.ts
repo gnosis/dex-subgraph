@@ -53,6 +53,10 @@ export class Runtime {
   public getEntity(name: string, id: string): Entity | null {
     return this.host.store.get(name, id)
   }
+
+  public setEntity(name: string, id: string, entity: Entity): void {
+    this.host.store.set(name, id, entity)
+  }
 }
 
 export class Module {
@@ -86,6 +90,7 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
   const readEntity = (ptr: Pointer) => nonnull(abi().readStoreEntity(ptr))
   const readInt = (ptr: Pointer) => nonnull(abi().readBigInt(ptr))
   const readStr = (ptr: Pointer) => nonnull(abi().readString(ptr))
+  const writeEntityOrNull = (val: Entity | null) => abi().writeStoreEntity(val)
   const writeInt = (val: bigint) => abi().writeBigInt(val)
   const writeStr = (val: string) => abi().writeString(val)
 
@@ -109,9 +114,8 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
       'log.log': (level: number, message: Pointer) => {
         host.log.log(level, readStr(message))
       },
-      'store.get': () => {
-        // TODO(nlordell): Implement storage reading
-        return 0
+      'store.get': (entity: Pointer, id: Pointer) => {
+        return writeEntityOrNull(host.store.get(readStr(entity), readStr(id)))
       },
       'store.set': (entity: Pointer, id: Pointer, data: Pointer) => {
         host.store.set(readStr(entity), readStr(id), readEntity(data))
