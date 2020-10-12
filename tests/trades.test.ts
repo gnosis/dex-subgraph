@@ -134,7 +134,7 @@ describe('onTradeReversion', function () {
     ).to.throw('aborted')
   })
 
-  it('errors if there are no active trades for an order', async () => {
+  it('errors if there is more than one active trade for an order', async () => {
     const mappings = await Mappings.load()
 
     const user = `0x${'01'.repeat(20)}`
