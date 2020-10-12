@@ -14,6 +14,14 @@ const EventDefinitions = {
     token: Ethereum.ValueKind.Address,
     id: Ethereum.ValueKind.Uint,
   },
+  TradeReversion: {
+    owner: Ethereum.ValueKind.Address,
+    orderId: Ethereum.ValueKind.Uint,
+    sellToken: Ethereum.ValueKind.Uint,
+    buyToken: Ethereum.ValueKind.Uint,
+    executedSellAmount: Ethereum.ValueKind.Uint,
+    executedBuyAmount: Ethereum.ValueKind.Uint,
+  },
 } as const
 
 export type EventNames = keyof typeof EventDefinitions
@@ -25,12 +33,6 @@ export function toEvent<K extends EventNames>(name: K, data: EventData<K>, meta?
 }
 
 const EntityDefinitions = {
-  User: {
-    id: Store.ValueKind.String,
-    fromBatchId: Store.ValueKind.BigInt,
-    createEpoch: Store.ValueKind.BigInt,
-    txHash: Store.ValueKind.Bytes,
-  },
   Deposit: {
     id: Store.ValueKind.String,
     user: Store.ValueKind.String,
@@ -40,6 +42,30 @@ const EntityDefinitions = {
     createEpoch: Store.ValueKind.BigInt,
     txHash: Store.ValueKind.Bytes,
   },
+  Order: {
+    id: Store.ValueKind.String,
+    owner: Store.ValueKind.String,
+    orderId: Store.ValueKind.BigInt,
+    fromBatchId: Store.ValueKind.BigInt,
+    fromEpoch: Store.ValueKind.BigInt,
+    untilBatchId: Store.ValueKind.BigInt,
+    untilEpoch: Store.ValueKind.BigInt,
+    buyToken: Store.ValueKind.String,
+    sellToken: Store.ValueKind.String,
+    priceNumerator: Store.ValueKind.BigInt,
+    priceDenominator: Store.ValueKind.BigInt,
+    maxSellAmount: Store.ValueKind.BigInt,
+    minReceiveAmount: Store.ValueKind.BigInt,
+    soldVolume: Store.ValueKind.BigInt,
+    boughtVolume: Store.ValueKind.BigInt,
+    // TODO: derived fields
+    trades: [Store.ValueKind.String],
+    createEpoch: Store.ValueKind.BigInt,
+    cancelEpoch: { optional: Store.ValueKind.BigInt },
+    deleteEpoch: { optional: Store.ValueKind.BigInt },
+    txHash: Store.ValueKind.Bytes,
+    txLogIndex: Store.ValueKind.BigInt,
+  },
   Token: {
     id: Store.ValueKind.String,
     address: Store.ValueKind.Bytes,
@@ -47,6 +73,32 @@ const EntityDefinitions = {
     symbol: { optional: Store.ValueKind.String },
     decimals: { optional: Store.ValueKind.BigInt },
     name: { optional: Store.ValueKind.String },
+    createEpoch: Store.ValueKind.BigInt,
+    txHash: Store.ValueKind.Bytes,
+  },
+  Trade: {
+    id: Store.ValueKind.String,
+    order: Store.ValueKind.String,
+    owner: Store.ValueKind.String,
+    sellVolume: Store.ValueKind.BigInt,
+    buyVolume: Store.ValueKind.BigInt,
+    tradeBatchId: Store.ValueKind.BigInt,
+    tradeEpoch: Store.ValueKind.BigInt,
+    buyToken: Store.ValueKind.String,
+    sellToken: Store.ValueKind.String,
+    createEpoch: Store.ValueKind.BigInt,
+    revertEpoch: { optional: Store.ValueKind.BigInt },
+    txHash: Store.ValueKind.Bytes,
+    txLogIndex: Store.ValueKind.BigInt,
+  },
+  User: {
+    id: Store.ValueKind.String,
+    fromBatchId: Store.ValueKind.BigInt,
+    // TODO: derived fields
+    //orders: [Store.ValueKind.String],
+    //deposits: [Store.ValueKind.String],
+    //withdrawRequests: [Store.ValueKind.String],
+    //withdrawals: [Store.ValueKind.String],
     createEpoch: Store.ValueKind.BigInt,
     txHash: Store.ValueKind.Bytes,
   },

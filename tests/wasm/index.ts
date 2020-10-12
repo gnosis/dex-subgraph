@@ -32,6 +32,10 @@ export class Mappings {
     this.runtime.eventHandler('onTokenListing', toEvent('TokenListing', tokenListing, meta))
   }
 
+  public onTradeReversion(tradeReversion: EventData<'TradeReversion'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onTradeReversion', toEvent('TradeReversion', tradeReversion, meta))
+  }
+
   public getEntity<T extends EntityNames>(name: T, id: string): EntityData<T> | null {
     const entity = this.runtime.getEntity(name, id)
     if (entity === null) {

@@ -2,7 +2,7 @@ import { log, BigInt } from '@graphprotocol/graph-ts'
 import { Trade as TradeEvent, TradeReversion as TradeReversionEvent } from '../../generated/BatchExchange/BatchExchange'
 import { Trade } from '../../generated/schema'
 import { toOrderId, toEventId, batchIdToEndOfBatchEpoch, getBatchId } from '../utils'
-import { updateOrderOnNewTrade, getOrderById } from './orders'
+import { updateOrderOnNewTrade, getOrderById, updateOrderOnTradeReversion } from './orders'
 import { createSolutionOrAddTrade } from './solution'
 import { createOrUpdatePrice } from './prices'
 
@@ -19,8 +19,22 @@ export function getTradesByOrderId(orderId: string): Trade[] {
   return order.trades.map<Trade>((tradeId) => getTradeById(tradeId))
 }
 
+let _tradeFilterBatchId = BigInt.fromI32(-1)
 export function getTradeInBatchForOrderId(orderId: string, batchId: BigInt): Trade[] {
-  return getTradesByOrderId(orderId).filter((trade) => trade.tradeBatchId == batchId)
+  // NOTE: It appears that AssemblyScript does not yet fully implement closures.
+  // Even more so in the version being used by the Graph CLI. Specifically, the
+  // captured variable has no value (this can be verified by uncommenting out
+  // the log line to see that the captured `batchId` value is indeed `null`). To
+  // work around this issue, create a global variable for holding the batch ID
+  // being filtered for (🤮) and use that instead. Since Wasm is currently
+  // single threaded, this is not an issue yet. Unfortunately, there is not
+  // compiler error for capturing a variable, so its just something to watch out
+  // for.
+  _tradeFilterBatchId = batchId
+  return getTradesByOrderId(orderId).filter((trade) => {
+    //log.debug('batchId == {}', [batchId == null ? 'null' : batchId.toString()])
+    return trade.tradeBatchId == _tradeFilterBatchId
+  })
 }
 
 export function getActiveTradeInBatch(orderId: string, batchId: BigInt): Trade | null {
@@ -34,7 +48,7 @@ export function getActiveTradeInBatch(orderId: string, batchId: BigInt): Trade |
 
     case 1:
       // One active trade
-      return activeTrades[1]
+      return activeTrades[0]
 
     default:
       // For a given order and batch, there can be only one un-reverted order
@@ -62,21 +76,13 @@ export function onTradeReversion(event: TradeReversionEvent): void {
   let orderId = toOrderId(event.params.owner, event.params.orderId)
   log.info('[onTradeReversion] New Trade Reversion for orderId {}', [orderId])
 
-  // TODO: Handle trade revertion, not working
-  // Subgraph instance failed to run: Failed to process trigger in transaction 0x86a4…2f6b: Failed to handle Ethereum event with handler "onTradeReversion": Mapping aborted at ~lib/@graphprotocol/graph-ts/index.ts, line 1046, column 4, with message: Value is not an array., code: SubgraphSyncingFailure, id: QmTPBbCq2WhFFP54XVWHPiwosNrdtxiyyojNtDNMD9jRaD
+  // Update trade reversion epoch
+  let trade = _revertTrade(orderId, event)
 
-  // // Get the trade that need to be reverted (only one that is active in the batch)
-  // let batchId = getBatchId(event)
-  // let trade = getActiveTradeInBatch(orderId, batchId)
-  // if (trade == null) {
-  //   // If the contract emit a revert it should be
-  //   throw new Error('The order ' + orderId + " doesn't have any active trade to revert")
-  // }
+  // Update order (traded amounts totals)
+  updateOrderOnTradeReversion(orderId, trade)
 
-  // // Set the revert date for the active order
-  // trade.revertEpoch = event.block.timestamp
-  // trade.save()
-  // log.info('[onTradeReversion] Reverted trade {}', [trade.id])
+  log.info('[onTradeReversion] Reverted trade {}', [trade.id])
 }
 
 function _createTrade(orderId: string, event: TradeEvent): Trade {
@@ -122,4 +128,21 @@ function _createTrade(orderId: string, event: TradeEvent): Trade {
   trade.save()
 
   return trade
+}
+
+function _revertTrade(orderId: string, event: TradeReversionEvent): Trade {
+  // Get the trade that need to be reverted (only one that is active in the batch)
+  let batchId = getBatchId(event)
+  let tradeBatchId = batchId.minus(BigInt.fromI32(1))
+  let trade = getActiveTradeInBatch(orderId, tradeBatchId)
+  if (trade == null) {
+    // If the contract emit a revert it should be
+    throw new Error('The order ' + orderId + " doesn't have any active trade to revert")
+  }
+
+  // Set the revert date for the active order
+  trade.revertEpoch = event.block.timestamp
+  trade.save()
+
+  return trade!
 }

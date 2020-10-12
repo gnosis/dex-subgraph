@@ -104,7 +104,7 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
   return {
     env: {
       abort: (message: Pointer, fileName: Pointer, line: number, column: number) => {
-        host.abort(readStr(message), abi().readString(fileName), line, column)
+        host.abort(abi().readString(message), abi().readString(fileName), line, column)
       },
     },
     index: {

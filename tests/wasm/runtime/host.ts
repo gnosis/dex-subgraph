@@ -7,10 +7,11 @@ export class Host {
   public readonly store = new Store()
   public eth = DEFAULT_ETHEREUM
 
-  public abort(message: string, fileName: string | null, line: number, column: number): void {
+  public abort(message: string | null, fileName: string | null, line: number, column: number): void {
+    const m = message || '?'
     const f = fileName || '?'
     const l = line || '?'
     const c = column || '?'
-    throw new Error(`aborted "${message}" at ${f}, line ${l}, column ${c}`)
+    throw new Error(`aborted "${m}" at ${f}, line ${l}, column ${c}`)
   }
 }
