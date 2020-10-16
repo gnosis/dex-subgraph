@@ -73,6 +73,18 @@ const EntityDefinitions = {
     txHash: Store.ValueKind.Bytes,
     txLogIndex: Store.ValueKind.BigInt,
   },
+  Solution: {
+    id: Store.ValueKind.String,
+    batch: Store.ValueKind.String,
+    solver: { optional: Store.ValueKind.String },
+    feeReward: { optional: Store.ValueKind.BigInt },
+    objectiveValue: { optional: Store.ValueKind.BigInt },
+    trades: [Store.ValueKind.String],
+    createEpoch: Store.ValueKind.BigInt,
+    revertEpoch: { optional: Store.ValueKind.BigInt },
+    txHash: Store.ValueKind.Bytes,
+    txLogIndex: Store.ValueKind.BigInt,
+  },
   Token: {
     id: Store.ValueKind.String,
     address: Store.ValueKind.Bytes,
