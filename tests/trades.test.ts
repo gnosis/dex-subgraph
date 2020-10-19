@@ -125,7 +125,7 @@ describe('onTrade', function () {
     })
   })
 
-  it('creates a new solution and adds trades to it', async () => {
+  it('updates orders buy and sell volume', async () => {
     const order = mappings.getEntity('Order', orderUid)
     expect(order).to.exist
     expect(order!.soldVolume).to.equal(100000n * 10n ** 18n)
