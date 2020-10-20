@@ -31,6 +31,14 @@ const EventDefinitions = {
     executedSellAmount: Ethereum.ValueKind.Uint,
     executedBuyAmount: Ethereum.ValueKind.Uint,
   },
+  TradeReversion: {
+    owner: Ethereum.ValueKind.Address,
+    orderId: Ethereum.ValueKind.Uint,
+    sellToken: Ethereum.ValueKind.Uint,
+    buyToken: Ethereum.ValueKind.Uint,
+    executedSellAmount: Ethereum.ValueKind.Uint,
+    executedBuyAmount: Ethereum.ValueKind.Uint,
+  },
 } as const
 
 export type EventNames = keyof typeof EventDefinitions

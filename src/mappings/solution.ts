@@ -11,7 +11,7 @@ export function createSolutionOrAddTrade(trade: Trade, event: ethereum.Event): S
   let batch = createBatchIfNotCreated(batchId, event)
 
   // Make sure solution is created
-  let solution = createSolutionIfNotCreated(batch, event)
+  let solution = _createSolutionIfNotCreated(batch, event)
 
   // Add trade to current solution
   _addTradeToSolution(solution, trade, event)
@@ -19,19 +19,19 @@ export function createSolutionOrAddTrade(trade: Trade, event: ethereum.Event): S
   return solution
 }
 
-export function createSolutionIfNotCreated(batch: Batch, event: ethereum.Event): Solution {
+function _createSolutionIfNotCreated(batch: Batch, event: ethereum.Event): Solution {
   let solutionId = batch.solution
   let solution = Solution.load(solutionId)
 
   if (solution == null) {
     // Create solution
-    solution = _createSolution(solutionId, batch, event)
+    solution = createSolution(solutionId, batch, event)
   }
 
   return solution!
 }
 
-function _createSolution(solutionId: string, batch: Batch, event: ethereum.Event): Solution {
+export function createSolution(solutionId: string, batch: Batch, event: ethereum.Event): Solution {
   log.info('[createSolution] Create Solution {} for batch {}', [solutionId, batch.id])
 
   // Get latest solution

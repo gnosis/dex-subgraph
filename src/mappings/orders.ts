@@ -34,8 +34,8 @@ export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
 
 export function updateOrderOnTradeReversion(orderId: string, trade: TradeReversionEvent): void {
   let order = getOrderById(orderId)
-  order.soldVolume = order.soldVolume.plus(trade.params.executedSellAmount)
-  order.boughtVolume = order.boughtVolume.plus(trade.params.executedBuyAmount)
+  order.soldVolume = order.soldVolume.minus(trade.params.executedSellAmount)
+  order.boughtVolume = order.boughtVolume.minus(trade.params.executedBuyAmount)
   order.save()
 }
 

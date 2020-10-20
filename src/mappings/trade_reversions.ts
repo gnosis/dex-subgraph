@@ -1,8 +1,8 @@
 import { log, BigInt, store } from '@graphprotocol/graph-ts'
 import { TradeReversion as TradeReversionEvent } from '../../generated/BatchExchange/BatchExchange'
 import { Batch, Solution, Trade } from '../../generated/schema'
-import { toPriceId, getBatchId } from '../utils'
-import { createSolutionIfNotCreated } from './solution'
+import { toEventId, toPriceId, getBatchId } from '../utils'
+import { createSolution } from './solution'
 import { updateOrderOnTradeReversion } from './orders'
 
 export function onTradeReversion(event: TradeReversionEvent): void {
@@ -41,7 +41,7 @@ export function onTradeReversion(event: TradeReversionEvent): void {
 
   // Replace solution on batch
   batch.lastRevertEpoch = event.block.timestamp
-  let new_solution = createSolutionIfNotCreated(batch, event)
+  let new_solution = createSolution(toEventId(event), batch, event)
   batch.solution = new_solution.id
   batch.save()
 }
