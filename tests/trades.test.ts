@@ -11,10 +11,10 @@ describe('onTrade', function () {
   const txHash = `0x${'01'.repeat(32)}`
   const logIndex = 1n
   const timestamp = 10n * 300n + 42n
-  const batchId = timestamp / 300n
+  const batchId = timestamp / 300n - 1n // Trade is recorded for the solved batch
   const tradeId = `${txHash}-${logIndex}`
   const sellToken = '0'
-  const priceId = `${sellToken}-${batchId - 1n}` // Price is recorded for the solved batch
+  const priceId = `${sellToken}-${batchId}`
 
   before(async () => {
     mappings = await Mappings.load()
@@ -89,6 +89,20 @@ describe('onTrade', function () {
         transaction: { hash: txHash },
       },
     )
+  })
+
+  it('creates a new batch entity', async () => {
+    const batch = mappings.getEntity('Batch', `${batchId}`)
+    expect(batch).to.exist
+    expect(batch).to.deep.equal({
+      id: `${batchId}`,
+      startEpoch: batchId * 300n,
+      endEpoch: (batchId + 1n) * 300n,
+      solution: tradeId,
+      firstSolutionEpoch: timestamp,
+      lastRevertEpoch: null,
+      txHash,
+    })
   })
 
   it('creates a new trade entity', async () => {

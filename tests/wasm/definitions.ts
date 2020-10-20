@@ -42,6 +42,16 @@ export function toEvent<K extends EventNames>(name: K, data: EventData<K>, meta?
 }
 
 const EntityDefinitions = {
+  Batch: {
+    id: Store.ValueKind.String,
+    startEpoch: Store.ValueKind.BigInt,
+    endEpoch: Store.ValueKind.BigInt,
+    solution: Store.ValueKind.String,
+    // missing derived field solutions
+    firstSolutionEpoch: Store.ValueKind.BigInt,
+    lastRevertEpoch: { optional: Store.ValueKind.BigInt },
+    txHash: Store.ValueKind.Bytes,
+  },
   Deposit: {
     id: Store.ValueKind.String,
     user: Store.ValueKind.String,
