@@ -1,5 +1,5 @@
 import { log, BigInt } from '@graphprotocol/graph-ts'
-import { Trade as TradeEvent, TradeReversion as TradeReversionEvent } from '../../generated/BatchExchange/BatchExchange'
+import { Trade as TradeEvent } from '../../generated/BatchExchange/BatchExchange'
 import { Trade } from '../../generated/schema'
 import { toOrderId, toEventId, batchIdToEndOfBatchEpoch, getBatchId } from '../utils'
 import { updateOrderOnNewTrade, getOrderById } from './orders'
@@ -56,27 +56,6 @@ export function onTrade(event: TradeEvent): void {
 
   // Create solution, or add the trade to the current solution
   createSolutionOrAddTrade(trade, event)
-}
-
-export function onTradeReversion(event: TradeReversionEvent): void {
-  let orderId = toOrderId(event.params.owner, event.params.orderId)
-  log.info('[onTradeReversion] New Trade Reversion for orderId {}', [orderId])
-
-  // TODO: Handle trade revertion, not working
-  // Subgraph instance failed to run: Failed to process trigger in transaction 0x86a4…2f6b: Failed to handle Ethereum event with handler "onTradeReversion": Mapping aborted at ~lib/@graphprotocol/graph-ts/index.ts, line 1046, column 4, with message: Value is not an array., code: SubgraphSyncingFailure, id: QmTPBbCq2WhFFP54XVWHPiwosNrdtxiyyojNtDNMD9jRaD
-
-  // // Get the trade that need to be reverted (only one that is active in the batch)
-  // let batchId = getBatchId(event)
-  // let trade = getActiveTradeInBatch(orderId, batchId)
-  // if (trade == null) {
-  //   // If the contract emit a revert it should be
-  //   throw new Error('The order ' + orderId + " doesn't have any active trade to revert")
-  // }
-
-  // // Set the revert date for the active order
-  // trade.revertEpoch = event.block.timestamp
-  // trade.save()
-  // log.info('[onTradeReversion] Reverted trade {}', [trade.id])
 }
 
 function _createTrade(orderId: string, event: TradeEvent): Trade {

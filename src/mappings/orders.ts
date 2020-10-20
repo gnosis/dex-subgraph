@@ -3,6 +3,7 @@ import {
   OrderPlacement as OrderPlacementEvent,
   OrderCancellation as OrderCancellationEvent,
   OrderDeletion as OrderDeletionEvent,
+  TradeReversion as TradeReversionEvent,
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch, getBatchId } from '../utils'
@@ -28,6 +29,13 @@ export function updateOrderOnNewTrade(orderId: string, trade: Trade): void {
   let order = getOrderById(orderId)
   order.soldVolume = order.soldVolume.plus(trade.sellVolume)
   order.boughtVolume = order.boughtVolume.plus(trade.buyVolume)
+  order.save()
+}
+
+export function updateOrderOnTradeReversion(orderId: string, trade: TradeReversionEvent): void {
+  let order = getOrderById(orderId)
+  order.soldVolume = order.soldVolume.plus(trade.params.executedSellAmount)
+  order.boughtVolume = order.boughtVolume.plus(trade.params.executedBuyAmount)
   order.save()
 }
 
