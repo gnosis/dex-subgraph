@@ -73,6 +73,16 @@ const EntityDefinitions = {
     txHash: Store.ValueKind.Bytes,
     txLogIndex: Store.ValueKind.BigInt,
   },
+  Price: {
+    id: Store.ValueKind.String,
+    token: Store.ValueKind.String,
+    batchId: Store.ValueKind.BigInt,
+    priceInOwlNumerator: Store.ValueKind.BigInt,
+    priceInOwlDenominator: Store.ValueKind.BigInt,
+    volume: Store.ValueKind.BigInt,
+    createEpoch: Store.ValueKind.BigInt,
+    txHash: Store.ValueKind.Bytes,
+  },
   Solution: {
     id: Store.ValueKind.String,
     batch: Store.ValueKind.String,

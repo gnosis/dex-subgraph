@@ -11,13 +11,16 @@ describe('onTrade', function () {
   const txHash = `0x${'01'.repeat(32)}`
   const logIndex = 1n
   const timestamp = 10n * 300n + 42n
+  const batchId = timestamp / 300n
   const tradeId = `${txHash}-${logIndex}`
+  const sellToken = '0'
+  const priceId = `${sellToken}-${batchId - 1n}` // Price is recorded for the solved batch
 
   before(async () => {
     mappings = await Mappings.load()
 
-    mappings.setEntity('Token', '0', {
-      id: '0',
+    mappings.setEntity('Token', sellToken, {
+      id: sellToken,
       address: `0x${'00'.repeat(20)}`,
       fromBatchId: 0n,
       symbol: 'OWL',
@@ -35,7 +38,7 @@ describe('onTrade', function () {
       untilBatchId: 42n,
       untilEpoch: 42n * 300n,
       buyToken: '1',
-      sellToken: '0',
+      sellToken,
       priceNumerator: 200000n * 10n ** 18n,
       priceDenominator: 1000n * 10n ** 18n,
       maxSellAmount: 200000n * 10n ** 18n,
@@ -68,7 +71,7 @@ describe('onTrade', function () {
           ]
       }
 
-      throw new Error(`unpexcted contract call ${JSON.stringify(call)}`)
+      throw new Error(`unexpected contract call ${JSON.stringify(call)}`)
     })
 
     mappings.onTrade(
@@ -100,7 +103,7 @@ describe('onTrade', function () {
       tradeBatchId: 9n,
       tradeEpoch: 11n * 300n,
       buyToken: '1',
-      sellToken: '0',
+      sellToken,
       createEpoch: timestamp,
       revertEpoch: null,
       txHash,
@@ -130,5 +133,20 @@ describe('onTrade', function () {
     expect(order).to.exist
     expect(order!.soldVolume).to.equal(100000n * 10n ** 18n)
     expect(order!.boughtVolume).to.equal(500n * 10n ** 18n)
+  })
+
+  it('sets prices accordingly', async () => {
+    const price = mappings.getEntity('Price', priceId)
+    expect(price).to.exist
+    expect(price).to.deep.equal({
+      id: priceId,
+      token: sellToken,
+      batchId: 9n,
+      priceInOwlNumerator: 1n,
+      priceInOwlDenominator: 1n,
+      volume: 100000n * 10n ** 18n,
+      createEpoch: timestamp,
+      txHash,
+    })
   })
 })
