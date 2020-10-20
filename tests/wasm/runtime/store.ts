@@ -71,4 +71,11 @@ export class Store {
     }
     map.set(id, data)
   }
+
+  public remove(entity: string, id: string): void {
+    const map = this.entities.get(entity)
+    if (map) {
+      map.delete(id)
+    }
+  }
 }

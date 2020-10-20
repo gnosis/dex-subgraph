@@ -120,6 +120,9 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
       'store.get': (entity: Pointer, id: Pointer) => {
         return writeEntityOrNull(host.store.get(readStr(entity), readStr(id)))
       },
+      'store.remove': (entity: Pointer, id: Pointer) => {
+        host.store.remove(readStr(entity), readStr(id))
+      },
       'store.set': (entity: Pointer, id: Pointer, data: Pointer) => {
         host.store.set(readStr(entity), readStr(id), readEntity(data))
       },
