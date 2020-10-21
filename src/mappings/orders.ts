@@ -3,7 +3,6 @@ import {
   OrderPlacement as OrderPlacementEvent,
   OrderCancellation as OrderCancellationEvent,
   OrderDeletion as OrderDeletionEvent,
-  TradeReversion as TradeReversionEvent,
 } from '../../generated/BatchExchange/BatchExchange'
 import { Order, Token, Trade, User } from '../../generated/schema'
 import { toOrderId, batchIdToEpoch, getBatchId } from '../utils'
