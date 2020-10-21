@@ -68,6 +68,15 @@ export function createSolution(solutionId: string, batch: Batch, event: ethereum
   return solution
 }
 
+export function getSolutionById(solutionId: string): Solution {
+  let solution = Solution.load(solutionId)
+  if (solution === null) {
+    throw new Error(`[getSolutionById] Solution ${solutionId} not found`)
+  }
+
+  return solution!
+}
+
 function _addTradeToSolution(solution: Solution, trade: Trade, _event: ethereum.Event): void {
   log.info('[addTradeToSolution] Add Trade {} to current Solution for batch {}', [trade.id, solution.batch])
 

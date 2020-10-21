@@ -1,14 +1,15 @@
 import { log, BigInt, store } from '@graphprotocol/graph-ts'
 import { TradeReversion as TradeReversionEvent } from '../../generated/BatchExchange/BatchExchange'
-import { Batch, Solution, Trade } from '../../generated/schema'
 import { toEventId, toPriceId, getBatchId } from '../utils'
-import { createSolution } from './solution'
+import { createSolution, getSolutionById } from './solution'
 import { updateOrderOnTradeReversion } from './orders'
+import { getBatchById } from './batch'
+import { getTradeById } from './trades'
 
 export function onTradeReversion(event: TradeReversionEvent): void {
   let batchId = getBatchId(event).minus(BigInt.fromI32(1))
-  let batch = Batch.load(batchId.toString())!
-  let solution = Solution.load(batch.solution)!
+  let batch = getBatchById(batchId)
+  let solution = getSolutionById(batch.solution)!
 
   // Delete price associated with that trade
   let priceId = toPriceId(event.params.sellToken, batchId)
@@ -27,7 +28,7 @@ export function onTradeReversion(event: TradeReversionEvent): void {
   for (let i = 0; i < trades.length; i++) {
     let tradeId = trades[i]
     log.info('[onTradeReversion] Revert Trade: {}', [tradeId])
-    let trade = Trade.load(tradeId)!
+    let trade = getTradeById(tradeId)
     trade.revertEpoch = event.block.timestamp
     trade.save()
 
