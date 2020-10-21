@@ -31,7 +31,7 @@ export function onTradeReversion(event: TradeReversionEvent): void {
     trade.revertEpoch = event.block.timestamp
     trade.save()
 
-    updateOrderOnTradeReversion(trade.order, event)
+    updateOrderOnTradeReversion(trade.order, trade)
   }
 
   // Revert solution
