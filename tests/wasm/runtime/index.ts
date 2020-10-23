@@ -113,6 +113,12 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
           recordCoverage(fileName, from_line, to_line)
         }
       },
+      trace: (fileNamePtr: Pointer, from_line: number, to_line: number) => {
+        const fileName = abi().readString(fileNamePtr)
+        if (fileName) {
+          recordCoverage(fileName, from_line, to_line)
+        }
+      },
     },
     index: {
       'bigInt.dividedBy': (x: Pointer, y: Pointer) => writeInt(readInt(x) / readInt(y)),
