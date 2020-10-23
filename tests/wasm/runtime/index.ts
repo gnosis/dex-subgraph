@@ -12,6 +12,7 @@ import { toHex } from './convert'
 import { Event, Value } from './ethereum'
 import { Host } from './host'
 import { Entity } from './store'
+import { recordCoverage } from '../coverage'
 
 export class Runtime {
   private constructor(private abi: Abi, private host: Host, private instance: WebAssembly.Instance) {}
@@ -105,6 +106,12 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
     env: {
       abort: (message: Pointer, fileName: Pointer, line: number, column: number) => {
         host.abort(abi().readString(message), abi().readString(fileName), line, column)
+      },
+      trace: (fileNamePtr: Pointer, from_line: number, to_line: number) => {
+        const fileName = abi().readString(fileNamePtr)
+        if (fileName) {
+          recordCoverage(fileName, from_line, to_line)
+        }
       },
     },
     index: {
