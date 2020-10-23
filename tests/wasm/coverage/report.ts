@@ -24,7 +24,7 @@ export class Report {
       data = {
         repo_token: process.env.COVERALLS_REPO_TOKEN,
         service_job_id: process.env.TRAVIS_BUILD_ID,
-        service_name: 'travis-ci',
+        service_name: 'travis-pro',
         source_files: [],
       }
     }
