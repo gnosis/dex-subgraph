@@ -23,7 +23,7 @@ services:
   dex-contracts:
     build:
       context: ./docker/dex-contracts
-    image: dex-contracts:master
+    image: dex-contracts
     depends_on:
       - ganache
     environment:
