@@ -3,5 +3,5 @@ node_js:
   - lts/*
 cache: yarn
 script:
-  #- yarn ci && ./e2e/ci.sh
+  - yarn ci && ./e2e/ci.sh
   - yarn coverage && curl -F "json_file=@coverage/report.json"  https://coveralls.io/api/v1/jobs
