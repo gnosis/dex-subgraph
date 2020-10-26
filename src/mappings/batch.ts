@@ -17,7 +17,16 @@ export function createBatchIfNotCreated(batchId: BigInt, event: ethereum.Event):
   return batch!
 }
 
-export function _createBatch(batchId: BigInt, solutionId: string, event: ethereum.Event): Batch {
+export function getBatchById(batchId: BigInt): Batch {
+  let batch = Batch.load(batchId.toString())
+  if (batch === null) {
+    throw new Error(`[getBatchById] Batch ${batchId} not found`)
+  }
+
+  return batch!
+}
+
+function _createBatch(batchId: BigInt, solutionId: string, event: ethereum.Event): Batch {
   let id = batchId.toString()
   log.info('[createBatch] Create Batch {}', [id])
 
