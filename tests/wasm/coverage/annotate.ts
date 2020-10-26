@@ -64,13 +64,13 @@ function annotateNodeRecursively(node: Node, content: string, instrumentedLines:
     }
     case NodeKind.FUNCTIONDECLARATION: {
       const fn = node as FunctionDeclaration
-      fn.body ? annotateNodeRecursively(fn.body, content, instrumentedLines) : {}
+      fn.body && annotateNodeRecursively(fn.body, content, instrumentedLines)
       break
     }
     case NodeKind.IF: {
       const ifNode = node as IfStatement
-      ifNode.ifTrue ? annotateNodeRecursively(ifNode.ifTrue, content, instrumentedLines) : {}
-      ifNode.ifFalse ? annotateNodeRecursively(ifNode.ifFalse, content, instrumentedLines) : {}
+      ifNode.ifTrue && annotateNodeRecursively(ifNode.ifTrue, content, instrumentedLines)
+      ifNode.ifFalse && annotateNodeRecursively(ifNode.ifFalse, content, instrumentedLines)
       break
     }
     case NodeKind.DO:
