@@ -41,6 +41,7 @@ export class Report {
   }
 
   write(): void {
+    // We need to call this method from inside the WASM runtime and thus need synchronous I/O
     fs.mkdirSync(COVERAGE_FOLDER, { recursive: true })
     fs.writeFileSync(COVERAGE_FILE, JSON.stringify(this.data))
   }
