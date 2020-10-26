@@ -12,9 +12,10 @@ docker_compose() {
 }
 
 on_exit() {
+  set +e
   echo "## Shutting down local Graph node"
-  docker_compose logs graph-node
-  docker_compose down
+  docker_compose logs graph-node 
+  docker_compose rm --stop -f
 }
 trap on_exit EXIT
 
