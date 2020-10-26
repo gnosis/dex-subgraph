@@ -23,7 +23,7 @@ services:
   dex-contracts:
     build:
       context: ./docker/dex-contracts
-    image: dex-contracts
+    image: dex-contracts:dex-subgraph
     depends_on:
       - ganache
     environment:
