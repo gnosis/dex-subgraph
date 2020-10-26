@@ -105,7 +105,7 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
   return {
     env: {
       abort: (message: Pointer, fileName: Pointer, line: number, column: number) => {
-        host.abort(abi().readString(message), abi().readString(fileName), line, column)
+        host.abort(readStr(message), readStr(fileName), line, column)
       },
       trace: (fileNamePtr: Pointer, from_line: number, to_line: number) => {
         const fileName = abi().readString(fileNamePtr)
