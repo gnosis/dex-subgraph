@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/gnosis/dex-subgraph/badge.svg?branch=master)](https://coveralls.io/github/gnosis/dex-subgraph?branch=master)
+
 # Gnosis Protocol subgraph
 
 <img align="right" width="350" src="./docs/subgraph.png">
