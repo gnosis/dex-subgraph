@@ -105,13 +105,10 @@ function imports(abi: () => Abi, host: Host): WebAssembly.Imports {
   return {
     env: {
       abort: (message: Pointer, fileName: Pointer, line: number, column: number) => {
-        host.abort(readStr(message), readStr(fileName), line, column)
+        host.abort(abi().readString(message), abi().readString(fileName), line, column)
       },
-      trace: (fileNamePtr: Pointer, from_line: number, to_line: number) => {
-        const fileName = abi().readString(fileNamePtr)
-        if (fileName) {
-          recordCoverage(fileName, from_line, to_line)
-        }
+      trace: (fileName: Pointer, from_line: number, to_line: number) => {
+        recordCoverage(readStr(fileName), from_line, to_line)
       },
     },
     index: {
