@@ -13,7 +13,7 @@ describe('onWithdrawRequest', function () {
   const txHash = `0x${'01'.repeat(32)}`
   const withdrawRequestId = `${txHash}-${logIndex}`
 
-  beforeEach(async function( ) {
+  beforeEach(async function () {
     mappings = await Mappings.load()
     mappings.onWithdrawRequest(
       {
