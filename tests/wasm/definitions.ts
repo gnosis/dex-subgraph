@@ -10,6 +10,14 @@ const EventDefinitions = {
     amount: Ethereum.ValueKind.Uint,
     batchId: Ethereum.ValueKind.Uint,
   },
+  OrderCancellation: {
+    owner: Ethereum.ValueKind.Address,
+    index: Ethereum.ValueKind.Uint,
+  },
+  OrderDeletion: {
+    owner: Ethereum.ValueKind.Address,
+    index: Ethereum.ValueKind.Uint,
+  },
   OrderPlacement: {
     owner: Ethereum.ValueKind.Address,
     index: Ethereum.ValueKind.Uint,

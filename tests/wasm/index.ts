@@ -28,8 +28,16 @@ export class Mappings {
     this.runtime.eventHandler('onDeposit', toEvent('Deposit', deposit, meta))
   }
 
-  public onOrderPlacement(deposit: EventData<'OrderPlacement'>, meta?: EventMetadata): void {
-    this.runtime.eventHandler('onOrderPlacement', toEvent('OrderPlacement', deposit, meta))
+  public onOrderCancellation(order: EventData<'OrderCancellation'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onOrderCancellation', toEvent('OrderCancellation', order, meta))
+  }
+
+  public onOrderDeletion(order: EventData<'OrderDeletion'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onOrderDeletion', toEvent('OrderDeletion', order, meta))
+  }
+
+  public onOrderPlacement(order: EventData<'OrderPlacement'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onOrderPlacement', toEvent('OrderPlacement', order, meta))
   }
 
   public onTokenListing(tokenListing: EventData<'TokenListing'>, meta?: EventMetadata): void {
