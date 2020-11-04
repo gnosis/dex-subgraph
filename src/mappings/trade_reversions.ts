@@ -5,6 +5,7 @@ import { createSolution, getSolutionById } from './solution'
 import { updateOrderOnTradeReversion } from './orders'
 import { getBatchById } from './batch'
 import { getTradeById } from './trades'
+import { decrementSellVolume } from './tokens'
 
 export function onTradeReversion(event: TradeReversionEvent): void {
   let batchId = getBatchId(event).minus(BigInt.fromI32(1))
@@ -15,6 +16,9 @@ export function onTradeReversion(event: TradeReversionEvent): void {
   let priceId = toPriceId(event.params.sellToken, batchId)
   log.info('[onTradeReversion] Remove Price: {}', [priceId])
   store.remove('Price', priceId)
+
+  // Delete token volume associated with that trade
+  decrementSellVolume(event.params.sellToken, event.params.executedSellAmount)
 
   let trades = solution.trades
   if (trades.length === 0) {

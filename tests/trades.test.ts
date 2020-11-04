@@ -26,6 +26,7 @@ describe('onTrade', function () {
       symbol: 'OWL',
       decimals: 18n,
       name: 'Token OWL',
+      sellVolume: 0n,
       createEpoch: 0n,
       txHash: `0x${'00'.repeat(32)}`,
     })
@@ -162,5 +163,10 @@ describe('onTrade', function () {
       createEpoch: timestamp,
       txHash,
     })
+  })
+
+  it('updates total volume of sell token', async () => {
+    const token = mappings.getEntity('Token', sellToken)
+    expect(token!.sellVolume).to.equal(100000n * 10n ** 18n)
   })
 })

@@ -5,6 +5,7 @@ import { toOrderId, toEventId, batchIdToEndOfBatchEpoch, getBatchId } from '../u
 import { updateOrderOnNewTrade, getOrderById } from './orders'
 import { createSolutionOrAddTrade } from './solution'
 import { createOrUpdatePrice } from './prices'
+import { incrementSellVolume } from './tokens'
 
 export function getTradeById(tradeId: string): Trade {
   let tradeOpt = Trade.load(tradeId)
@@ -48,8 +49,11 @@ export function onTrade(event: TradeEvent): void {
   // Create trade
   let trade = _createTrade(orderId, event)
 
-  // Update traces
+  // Update prices
   createOrUpdatePrice(event.params.sellToken, trade, event)
+
+  // Update trading volume of token
+  incrementSellVolume(event.params.sellToken, event.params.executedSellAmount)
 
   // Update order (traded amounts totals)
   updateOrderOnNewTrade(orderId, trade)
