@@ -30,9 +30,9 @@ describe('onWithdrawRequest', function () {
     )
   })
   it('creates a new withdraw request entity', async () => {
-    const batch = mappings.getEntity('WithdrawRequest', withdrawRequestId)
-    expect(batch).to.exist
-    expect(batch).to.deep.equal({
+    const withdraw = mappings.getEntity('WithdrawRequest', withdrawRequestId)
+    expect(withdraw).to.exist
+    expect(withdraw).to.deep.equal({
       id: withdrawRequestId,
       user,
       tokenAddress: token,
@@ -45,9 +45,9 @@ describe('onWithdrawRequest', function () {
   })
 
   it('creates a new user entity', async () => {
-    const batch = mappings.getEntity('User', user)
-    expect(batch).to.exist
-    expect(batch).to.deep.equal({
+    const withdraw = mappings.getEntity('User', user)
+    expect(withdraw).to.exist
+    expect(withdraw).to.deep.equal({
       id: user,
       fromBatchId: timestamp / 300n,
       createEpoch: timestamp,
@@ -81,9 +81,9 @@ describe('onWithdraw', function () {
       },
     )
 
-    const batch = mappings.getEntity('Withdraw', withdrawId)
-    expect(batch).to.exist
-    expect(batch).to.deep.equal({
+    const withdraw = mappings.getEntity('Withdraw', withdrawId)
+    expect(withdraw).to.exist
+    expect(withdraw).to.deep.equal({
       id: withdrawId,
       user,
       tokenAddress: token,
