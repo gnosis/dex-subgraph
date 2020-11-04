@@ -40,6 +40,14 @@ export class Mappings {
     this.runtime.eventHandler('onTradeReversion', toEvent('TradeReversion', trade, meta))
   }
 
+  public onWithdraw(withdraw: EventData<'Withdraw'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onWithdraw', toEvent('Withdraw', withdraw, meta))
+  }
+
+  public onWithdrawRequest(withdraw: EventData<'WithdrawRequest'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onWithdrawRequest', toEvent('WithdrawRequest', withdraw, meta))
+  }
+
   public getEntity<T extends EntityNames>(name: T, id: string): EntityData<T> | null {
     const entity = this.runtime.getEntity(name, id)
     if (entity === null) {

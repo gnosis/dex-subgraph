@@ -39,6 +39,17 @@ const EventDefinitions = {
     executedSellAmount: Ethereum.ValueKind.Uint,
     executedBuyAmount: Ethereum.ValueKind.Uint,
   },
+  Withdraw: {
+    user: Ethereum.ValueKind.Address,
+    token: Ethereum.ValueKind.Address,
+    amount: Ethereum.ValueKind.Uint,
+  },
+  WithdrawRequest: {
+    user: Ethereum.ValueKind.Address,
+    token: Ethereum.ValueKind.Address,
+    amount: Ethereum.ValueKind.Uint,
+    batchId: Ethereum.ValueKind.Uint,
+  },
 } as const
 
 export type EventNames = keyof typeof EventDefinitions
@@ -142,6 +153,25 @@ const EntityDefinitions = {
     id: Store.ValueKind.String,
     fromBatchId: Store.ValueKind.BigInt,
     createEpoch: Store.ValueKind.BigInt,
+    txHash: Store.ValueKind.Bytes,
+  },
+  Withdraw: {
+    id: Store.ValueKind.String,
+    user: Store.ValueKind.String,
+    tokenAddress: Store.ValueKind.Bytes,
+    amount: Store.ValueKind.BigInt,
+    createEpoch: Store.ValueKind.BigInt,
+    createBatchId: Store.ValueKind.BigInt,
+    txHash: Store.ValueKind.Bytes,
+  },
+  WithdrawRequest: {
+    id: Store.ValueKind.String,
+    user: Store.ValueKind.String,
+    tokenAddress: Store.ValueKind.Bytes,
+    amount: Store.ValueKind.BigInt,
+    withdrawableFromBatchId: Store.ValueKind.BigInt!,
+    createEpoch: Store.ValueKind.BigInt,
+    createBatchId: Store.ValueKind.BigInt,
     txHash: Store.ValueKind.Bytes,
   },
 } as const
