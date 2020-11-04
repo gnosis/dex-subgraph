@@ -136,7 +136,7 @@ describe('Subgraph', function () {
 
   it('should contain tokens with cumulative sell volume', async () => {
     const { orders } = (await query(`{
-      orders {
+      orders(where: {soldVolume_gt: 0}) {
         soldVolume
         sellToken {
           sellVolume
