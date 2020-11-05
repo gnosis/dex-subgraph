@@ -3,6 +3,7 @@ import { Trade, Solution, Batch } from '../../generated/schema'
 import { createBatchIfNotCreated } from './batch'
 import { SolutionSubmission as SolutionEvent } from '../../generated/BatchExchange/BatchExchange'
 import { createUserIfNotCreated } from './users'
+import { addSolutionToStats } from './stats'
 import { getBatchById } from './batch'
 import { getBatchId } from '../utils'
 
@@ -11,6 +12,9 @@ export function onSolutionSubmission(event: SolutionEvent): void {
   let batch = getBatchById(getBatchId(event) - BigInt.fromI32(1))
   log.info('[onSolutionSubmission] Updating solution for batch {}', [batch.id])
   let solution = getSolutionById(batch.solution)
+
+  // Stats
+  addSolutionToStats(event.params.utility, event.params.burntFees, solution.trades.length)
 
   // Solution details
   solution.solver = event.transaction.from.toHex()

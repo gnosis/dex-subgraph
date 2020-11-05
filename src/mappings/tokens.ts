@@ -3,6 +3,7 @@ import { Token } from '../../generated/schema'
 import { TokenListing as TokenListingEvent } from '../../generated/BatchExchange/BatchExchange'
 import { Erc20 } from '../../generated/BatchExchange/Erc20'
 import { epochToBatchId } from '../utils'
+import { addTokenToStats } from './stats'
 
 export function onTokenListing(event: TokenListingEvent): void {
   let params = event.params
@@ -55,6 +56,8 @@ export function onTokenListing(event: TokenListingEvent): void {
   token.sellVolume = BigInt.fromI32(0)
 
   token.save()
+
+  addTokenToStats()
 }
 
 export function getTokenById(tokenId: i32): Token {

@@ -143,6 +143,15 @@ const EntityDefinitions = {
     txHash: Store.ValueKind.Bytes,
     txLogIndex: Store.ValueKind.BigInt,
   },
+  Stats: {
+    id: Store.ValueKind.String,
+    volumeInOwl: Store.ValueKind.BigInt,
+    utilityInOwl: Store.ValueKind.BigInt,
+    owlBurnt: Store.ValueKind.BigInt,
+    settledBatchCount: Store.ValueKind.BigInt,
+    settledTradeCount: Store.ValueKind.BigInt,
+    listedTokens: Store.ValueKind.BigInt,
+  },
   Token: {
     id: Store.ValueKind.String,
     address: Store.ValueKind.Bytes,
