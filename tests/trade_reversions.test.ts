@@ -1,6 +1,5 @@
 import { expect } from 'chai'
 import { Mappings } from './wasm'
-import { ValueKind } from './wasm/runtime/ethereum'
 
 describe('onTradeReversion', () => {
   const user = `0x${'1337'.repeat(10)}`
