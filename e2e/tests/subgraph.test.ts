@@ -155,4 +155,33 @@ describe('Subgraph', function () {
       expect(order.soldVolume).to.equal(order.sellToken.sellVolume)
     }
   })
+
+  it('should contain latest stats', async () => {
+    const { stats } = (await query(`{
+      stats(id: "latest") {
+        utilityInOwl
+        volumeInOwl
+        owlBurnt
+        settledBatchCount
+        settledTradeCount
+        listedTokens
+      }
+    }`)) as {
+      stats: {
+        volumeInOwl: string
+        utilityInOwl: string
+        owlBurnt: string
+        settledBatchCount: string
+        settledTradeCount: string
+        listedTokens: string
+      }
+    }
+
+    expect(stats.volumeInOwl).to.equal('40020020020020020000')
+    expect(stats.utilityInOwl).to.equal('1997000999999950199701198')
+    expect(stats.owlBurnt).to.equal('20010010010010010')
+    expect(stats.settledBatchCount).to.equal(1)
+    expect(stats.settledTradeCount).to.equal(2)
+    expect(stats.listedTokens).to.equal(2)
+  })
 })

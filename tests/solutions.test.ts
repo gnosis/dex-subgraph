@@ -27,11 +27,19 @@ describe('onSolutionSubmission', function () {
     mappings.setEntity('Solution', solutionId, {
       id: solutionId,
       batch: `${batchId}`,
+<<<<<<< HEAD
       solver: `0x${'ff'.repeat(20)}`,
       feeReward: 0n,
       objectiveValue: 0n,
       utility: 0n,
       trades: ["t1", "t2"],
+=======
+      solver: null,
+      feeReward: null,
+      objectiveValue: null,
+      utility: null,
+      trades: ['t1', 't2'],
+>>>>>>> e2e tests
       createEpoch: timestamp,
       revertEpoch: null,
       txHash,
@@ -69,7 +77,7 @@ describe('onSolutionSubmission', function () {
     expect(stats!.volumeInOwl).to.equal(burntFees * 2000n)
     expect(stats!.utilityInOwl).to.equal(utility)
     expect(stats!.owlBurnt).to.equal(burntFees)
-    expect(stats!.settledBatchCount).to.equal(1n)
-    expect(stats!.settledTradeCount).to.equal(2n)
+    expect(stats!.settledBatchCount).to.equal(1)
+    expect(stats!.settledTradeCount).to.equal(2)
   })
 })

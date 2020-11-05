@@ -3,7 +3,7 @@ import { Stats } from '../../generated/schema'
 
 export function addTokenToStats(): void {
   let stats = getOrCreateStats()
-  stats.listedTokens += BigInt.fromI32(1)
+  stats.listedTokens += 1
   stats.save()
 }
 
@@ -13,8 +13,8 @@ export function addSolutionToStats(utility: BigInt, owlBurnt: BigInt, tradeCount
   stats.volumeInOwl += BigInt.fromI32(2000).times(owlBurnt)
   stats.utilityInOwl += utility
   stats.owlBurnt += owlBurnt
-  stats.settledBatchCount += BigInt.fromI32(1)
-  stats.settledTradeCount += BigInt.fromI32(tradeCount)
+  stats.settledBatchCount += 1
+  stats.settledTradeCount += tradeCount
   stats.save()
 }
 
@@ -24,8 +24,8 @@ export function revertSolutionFromStats(utility: BigInt, owlBurnt: BigInt, trade
   stats.volumeInOwl -= BigInt.fromI32(2000).times(owlBurnt)
   stats.utilityInOwl -= utility
   stats.owlBurnt -= owlBurnt
-  stats.settledBatchCount -= BigInt.fromI32(1)
-  stats.settledTradeCount -= BigInt.fromI32(tradeCount)
+  stats.settledBatchCount -= 1
+  stats.settledTradeCount -= tradeCount
   stats.save()
 }
 
@@ -37,9 +37,9 @@ function getOrCreateStats(): Stats {
     stats.volumeInOwl = BigInt.fromI32(0)
     stats.utilityInOwl = BigInt.fromI32(0)
     stats.owlBurnt = BigInt.fromI32(0)
-    stats.settledBatchCount = BigInt.fromI32(0)
-    stats.settledTradeCount = BigInt.fromI32(0)
-    stats.listedTokens = BigInt.fromI32(0)
+    stats.settledBatchCount = 0
+    stats.settledTradeCount = 0
+    stats.listedTokens = 0
   }
   return stats!
 }

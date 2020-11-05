@@ -148,9 +148,9 @@ const EntityDefinitions = {
     volumeInOwl: Store.ValueKind.BigInt,
     utilityInOwl: Store.ValueKind.BigInt,
     owlBurnt: Store.ValueKind.BigInt,
-    settledBatchCount: Store.ValueKind.BigInt,
-    settledTradeCount: Store.ValueKind.BigInt,
-    listedTokens: Store.ValueKind.BigInt,
+    settledBatchCount: Store.ValueKind.Int,
+    settledTradeCount: Store.ValueKind.Int,
+    listedTokens: Store.ValueKind.Int,
   },
   Token: {
     id: Store.ValueKind.String,

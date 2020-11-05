@@ -105,9 +105,9 @@ describe('onTradeReversion', () => {
       volumeInOwl: 1337n * 2000n,
       utilityInOwl: 42n,
       owlBurnt: 1337n,
-      settledBatchCount: 1n,
-      settledTradeCount: 1n,
-      listedTokens: 2n,
+      settledBatchCount: 1,
+      settledTradeCount: 1,
+      listedTokens: 2,
     })
 
     mappings.onTradeReversion(
@@ -191,7 +191,7 @@ describe('onTradeReversion', () => {
     expect(stats!.volumeInOwl).to.equal(0n)
     expect(stats!.utilityInOwl).to.equal(0n)
     expect(stats!.owlBurnt).to.equal(0n)
-    expect(stats!.settledBatchCount).to.equal(0n)
-    expect(stats!.settledTradeCount).to.equal(0n)
+    expect(stats!.settledBatchCount).to.equal(0)
+    expect(stats!.settledTradeCount).to.equal(0)
   })
 })

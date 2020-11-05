@@ -64,7 +64,7 @@ describe('onTokenListing', function () {
     })
   })
 
-  it('updates global stats', async () => { 
+  it('updates global stats', async () => {
     const mappings = await Mappings.load()
     mappings.setCallHandler(() => null)
 
@@ -74,6 +74,6 @@ describe('onTokenListing', function () {
     })
 
     const stats = mappings.getEntity('Stats', 'latest')
-    expect(stats!.listedTokens).to.equal(1n)
+    expect(stats!.listedTokens).to.equal(1)
   })
 })
