@@ -68,3 +68,7 @@ dataSources:
           handler: onTrade
         - event: TradeReversion(indexed address,indexed uint16,indexed uint16,uint16,uint128,uint128)
           handler: onTradeReversion
+
+        # Solution Submission
+        - event: SolutionSubmission(indexed address,uint256,uint256,uint256,uint256,uint128[],uint16[])
+          handler: onSolutionSubmission

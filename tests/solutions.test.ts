@@ -10,7 +10,7 @@ describe('onSolutionSubmission', function () {
   const disregardedUtility = 3456n
   const solver = `0x${'face'.repeat(10)}`
 
-  const timestamp = batchId * 300n + 42n
+  const timestamp = batchId * 300n + 300n + 42n
   const txHash = `0x${'01'.repeat(32)}`
 
   before(async () => {

@@ -1,4 +1,4 @@
-import { log, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, log, ethereum } from '@graphprotocol/graph-ts'
 import { Trade, Solution, Batch } from '../../generated/schema'
 import { createBatchIfNotCreated } from './batch'
 import { SolutionSubmission as SolutionEvent } from '../../generated/BatchExchange/BatchExchange'
@@ -7,7 +7,10 @@ import { getBatchById } from './batch'
 import { getBatchId } from '../utils'
 
 export function onSolutionSubmission(event: SolutionEvent): void {
-  let batch = getBatchById(getBatchId(event))
+  // The solution is for the previous batch
+  let batch = getBatchById(getBatchId(event) - BigInt.fromI32(1))
+  log.info('[onSolutionSubmission] Updating solution for batch {}', [batch.id])
+  let solution = getSolutionById(batch.solution)
 
   // Solution details
   let solution = getSolutionById(batch.solution)
