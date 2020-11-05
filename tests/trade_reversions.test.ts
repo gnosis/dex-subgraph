@@ -84,6 +84,7 @@ describe('onTradeReversion', () => {
       solver: `0x${'00'.repeat(20)}`,
       feeReward: 1337n,
       objectiveValue: 42000n,
+      utility: 42n,
       trades: [tradeId],
       createEpoch: tradeTimestamp,
       revertEpoch: null,
@@ -99,21 +100,6 @@ describe('onTradeReversion', () => {
       volume: 100000n * 10n ** 18n,
       createEpoch: tradeTimestamp,
       txHash: tradeTxHash,
-    })
-
-    mappings.setCallHandler((call) => {
-      const callName = `${call.contractName}.${call.functionName}`
-      switch (callName) {
-        case 'BatchExchange.latestSolution':
-          return [
-            { kind: ValueKind.Uint, data: 9n }, // batch ID
-            { kind: ValueKind.Address, data: new Uint8Array(20) }, // submitter
-            { kind: ValueKind.Uint, data: 1337n }, // burnt fees
-            { kind: ValueKind.Uint, data: 42000n }, // objective value
-          ]
-      }
-
-      throw new Error(`unexpected contract call ${JSON.stringify(call)}`)
     })
 
     mappings.onTradeReversion(
@@ -179,9 +165,10 @@ describe('onTradeReversion', () => {
     expect(solution).to.deep.equal({
       id: solutionId,
       batch: '9',
-      solver: `0x${'00'.repeat(20)}`,
-      feeReward: 1337n,
-      objectiveValue: 42000n,
+      solver: null,
+      feeReward: null,
+      objectiveValue: null,
+      utility: null,
       trades: [],
       createEpoch: reversionTimestamp,
       revertEpoch: null,

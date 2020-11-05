@@ -224,6 +224,7 @@ type Solution @entity {
   solver: User
   feeReward: BigInt
   objectiveValue: BigInt
+  utility: BigInt
 
   # Trades
   trades: [Trade!]!

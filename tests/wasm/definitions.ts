@@ -136,6 +136,7 @@ const EntityDefinitions = {
     solver: { optional: Store.ValueKind.String },
     feeReward: { optional: Store.ValueKind.BigInt },
     objectiveValue: { optional: Store.ValueKind.BigInt },
+    utility: { optional: Store.ValueKind.BigInt },
     trades: [Store.ValueKind.String],
     createEpoch: Store.ValueKind.BigInt,
     revertEpoch: { optional: Store.ValueKind.BigInt },

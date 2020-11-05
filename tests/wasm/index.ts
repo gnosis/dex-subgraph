@@ -40,6 +40,10 @@ export class Mappings {
     this.runtime.eventHandler('onOrderPlacement', toEvent('OrderPlacement', order, meta))
   }
 
+  public onSolutionSubmission(solution: EventData<'SolutionSubmission'>, meta?: EventMetadata): void {
+    this.runtime.eventHandler('onSolutionSubmission', toEvent('SolutionSubmission', solution, meta))
+  }
+
   public onTokenListing(tokenListing: EventData<'TokenListing'>, meta?: EventMetadata): void {
     this.runtime.eventHandler('onTokenListing', toEvent('TokenListing', tokenListing, meta))
   }
