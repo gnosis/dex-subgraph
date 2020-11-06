@@ -31,7 +31,7 @@ describe('onSolutionSubmission', function () {
       feeReward: 0n,
       objectiveValue: 0n,
       utility: 0n,
-      trades: ["t1", "t2"],
+      trades: ['t1', 't2'],
       createEpoch: timestamp,
       revertEpoch: null,
       txHash,
