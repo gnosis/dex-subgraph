@@ -237,3 +237,28 @@ type Solution @entity {
   txHash: Bytes!
   txLogIndex: BigInt!
 }
+
+"""
+A type collecting global stats about this instance of Gnosis Protocol
+"""
+type Stats @entity {
+  id: ID!
+
+  "The total volume denominated in OWL (all sell amounts combined)"
+  volumeInOwl: BigInt!
+
+  "The total trader surplus in OWL"
+  utilityInOwl: BigInt!
+
+  "The total amount of OWL burnt (equivalent to fees rewarded to solvers)"
+  owlBurnt: BigInt!
+
+  "The total number of settled batches"
+  settledBatchCount: Int!
+
+  "The total number of settled trades"
+  settledTradeCount: Int!
+
+  "The number of listed tokens"
+  listedTokens: Int!
+}

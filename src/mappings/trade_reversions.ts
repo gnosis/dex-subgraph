@@ -6,6 +6,7 @@ import { updateOrderOnTradeReversion } from './orders'
 import { getBatchById } from './batch'
 import { getTradeById } from './trades'
 import { decrementSellVolume } from './tokens'
+import { revertSolutionFromStats } from './stats'
 
 export function onTradeReversion(event: TradeReversionEvent): void {
   let batchId = getBatchId(event).minus(BigInt.fromI32(1))
@@ -43,6 +44,9 @@ export function onTradeReversion(event: TradeReversionEvent): void {
   log.info('[onTradeReversion] Revert Solution: {}', [solution.id])
   solution.revertEpoch = event.block.timestamp
   solution.save()
+
+  // Revert global stats
+  revertSolutionFromStats(solution.utility!, solution.feeReward!, trades.length)
 
   // Replace solution on batch
   batch.lastRevertEpoch = event.block.timestamp

@@ -31,7 +31,7 @@ describe('onSolutionSubmission', function () {
       feeReward: 0n,
       objectiveValue: 0n,
       utility: 0n,
-      trades: [],
+      trades: ['t1', 't2'],
       createEpoch: timestamp,
       revertEpoch: null,
       txHash,
@@ -61,5 +61,15 @@ describe('onSolutionSubmission', function () {
     expect(solution!.utility).to.equal(utility)
     expect(solution!.feeReward).to.equal(burntFees)
     expect(solution!.objectiveValue).to.equal(utility + burntFees - disregardedUtility)
+  })
+
+  it('updates global stats', async function () {
+    const stats = mappings.getEntity('Stats', 'latest')
+    expect(stats).to.exist
+    expect(stats!.volumeInOwl).to.equal(burntFees * 2000n)
+    expect(stats!.utilityInOwl).to.equal(utility)
+    expect(stats!.owlBurnt).to.equal(burntFees)
+    expect(stats!.settledBatchCount).to.equal(1)
+    expect(stats!.settledTradeCount).to.equal(2)
   })
 })

@@ -100,6 +100,15 @@ describe('onTradeReversion', () => {
       createEpoch: tradeTimestamp,
       txHash: tradeTxHash,
     })
+    mappings.setEntity('Stats', 'latest', {
+      id: 'latest',
+      volumeInOwl: 1337n * 2000n,
+      utilityInOwl: 42n,
+      owlBurnt: 1337n,
+      settledBatchCount: 1,
+      settledTradeCount: 1,
+      listedTokens: 2,
+    })
 
     mappings.onTradeReversion(
       {
@@ -174,5 +183,15 @@ describe('onTradeReversion', () => {
       txHash: reversionTxHash,
       txLogIndex: logIndex,
     })
+  })
+
+  it('reverts global trading stats', async () => {
+    const state = await createFixturesAndMakeTrade()
+    const stats = state.getEntity('Stats', 'latest')
+    expect(stats!.volumeInOwl).to.equal(0n)
+    expect(stats!.utilityInOwl).to.equal(0n)
+    expect(stats!.owlBurnt).to.equal(0n)
+    expect(stats!.settledBatchCount).to.equal(0)
+    expect(stats!.settledTradeCount).to.equal(0)
   })
 })

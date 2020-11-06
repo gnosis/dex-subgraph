@@ -63,4 +63,17 @@ describe('onTokenListing', function () {
       decimals: null,
     })
   })
+
+  it('updates global stats', async () => {
+    const mappings = await Mappings.load()
+    mappings.setCallHandler(() => null)
+
+    mappings.onTokenListing({
+      id: 0,
+      token: `0x${'00'.repeat(20)}`,
+    })
+
+    const stats = mappings.getEntity('Stats', 'latest')
+    expect(stats!.listedTokens).to.equal(1)
+  })
 })
