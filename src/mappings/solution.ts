@@ -13,7 +13,6 @@ export function onSolutionSubmission(event: SolutionEvent): void {
   let solution = getSolutionById(batch.solution)
 
   // Solution details
-  let solution = getSolutionById(batch.solution)
   solution.solver = event.transaction.from.toHex()
   solution.feeReward = event.params.burntFees
   solution.utility = event.params.utility
@@ -62,10 +61,10 @@ export function createSolution(solutionId: string, batch: Batch, event: ethereum
   solution.trades = []
 
   // Details will be populated onSolutionSubmission
-  solution.solver = null
-  solution.feeReward = null
-  solution.utility = null
-  solution.objectiveValue = null
+  solution.solver = event.transaction.from.toHex()
+  solution.feeReward = BigInt.fromI32(0)
+  solution.utility = BigInt.fromI32(0)
+  solution.objectiveValue = BigInt.fromI32(0)
 
   // Audit dates
   solution.createEpoch = event.block.timestamp

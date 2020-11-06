@@ -10,7 +10,7 @@ describe('onSolutionSubmission', function () {
   const disregardedUtility = 3456n
   const solver = `0x${'face'.repeat(10)}`
 
-  const timestamp = batchId * 300n + 300n + 42n
+  const timestamp = (batchId + 1n) * 300n + 42n
   const txHash = `0x${'01'.repeat(32)}`
 
   before(async () => {
@@ -27,10 +27,10 @@ describe('onSolutionSubmission', function () {
     mappings.setEntity('Solution', solutionId, {
       id: solutionId,
       batch: `${batchId}`,
-      solver: null,
-      feeReward: null,
-      objectiveValue: null,
-      utility: null,
+      solver: `0x${'ff'.repeat(20)}`,
+      feeReward: 0n,
+      objectiveValue: 0n,
+      utility: 0n,
       trades: [],
       createEpoch: timestamp,
       revertEpoch: null,
