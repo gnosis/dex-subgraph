@@ -1,6 +1,5 @@
 import { expect } from 'chai'
 import { Mappings } from './wasm'
-import { ValueKind } from './wasm/runtime/ethereum'
 
 describe('onTradeReversion', () => {
   const user = `0x${'1337'.repeat(10)}`
@@ -84,6 +83,7 @@ describe('onTradeReversion', () => {
       solver: `0x${'00'.repeat(20)}`,
       feeReward: 1337n,
       objectiveValue: 42000n,
+      utility: 42n,
       trades: [tradeId],
       createEpoch: tradeTimestamp,
       revertEpoch: null,
@@ -99,21 +99,6 @@ describe('onTradeReversion', () => {
       volume: 100000n * 10n ** 18n,
       createEpoch: tradeTimestamp,
       txHash: tradeTxHash,
-    })
-
-    mappings.setCallHandler((call) => {
-      const callName = `${call.contractName}.${call.functionName}`
-      switch (callName) {
-        case 'BatchExchange.latestSolution':
-          return [
-            { kind: ValueKind.Uint, data: 9n }, // batch ID
-            { kind: ValueKind.Address, data: new Uint8Array(20) }, // submitter
-            { kind: ValueKind.Uint, data: 1337n }, // burnt fees
-            { kind: ValueKind.Uint, data: 42000n }, // objective value
-          ]
-      }
-
-      throw new Error(`unexpected contract call ${JSON.stringify(call)}`)
     })
 
     mappings.onTradeReversion(
@@ -180,8 +165,9 @@ describe('onTradeReversion', () => {
       id: solutionId,
       batch: '9',
       solver: `0x${'00'.repeat(20)}`,
-      feeReward: 1337n,
-      objectiveValue: 42000n,
+      feeReward: 0n,
+      objectiveValue: 0n,
+      utility: 0n,
       trades: [],
       createEpoch: reversionTimestamp,
       revertEpoch: null,

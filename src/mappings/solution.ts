@@ -1,8 +1,24 @@
-import { log, ethereum } from '@graphprotocol/graph-ts'
+import { BigInt, log, ethereum } from '@graphprotocol/graph-ts'
 import { Trade, Solution, Batch } from '../../generated/schema'
 import { createBatchIfNotCreated } from './batch'
-import { BatchExchange } from '../../generated/BatchExchange/BatchExchange'
+import { SolutionSubmission as SolutionEvent } from '../../generated/BatchExchange/BatchExchange'
 import { createUserIfNotCreated } from './users'
+import { getBatchById } from './batch'
+import { getBatchId } from '../utils'
+
+export function onSolutionSubmission(event: SolutionEvent): void {
+  // The solution is for the previous batch
+  let batch = getBatchById(getBatchId(event) - BigInt.fromI32(1))
+  log.info('[onSolutionSubmission] Updating solution for batch {}', [batch.id])
+  let solution = getSolutionById(batch.solution)
+
+  // Solution details
+  solution.solver = event.transaction.from.toHex()
+  solution.feeReward = event.params.burntFees
+  solution.utility = event.params.utility
+  solution.objectiveValue = event.params.utility + event.params.burntFees - event.params.disregardedUtility
+  solution.save()
+}
 
 export function createSolutionOrAddTrade(trade: Trade, event: ethereum.Event): Solution {
   let batchId = trade.tradeBatchId
@@ -34,15 +50,8 @@ function _createSolutionIfNotCreated(batch: Batch, event: ethereum.Event): Solut
 export function createSolution(solutionId: string, batch: Batch, event: ethereum.Event): Solution {
   log.info('[createSolution] Create Solution {} for batch {}', [solutionId, batch.id])
 
-  // Get latest solution
-  let batchExchange = BatchExchange.bind(event.address)
-  let latestSolution = batchExchange.latestSolution()
-  let solver = latestSolution.value1
-  let feeReward = latestSolution.value2
-  let objectiveValue = latestSolution.value3
-
   // Create user for solver, if not created
-  createUserIfNotCreated(solver, event)
+  createUserIfNotCreated(event.transaction.from, event)
 
   // Create Solution
   let solution = new Solution(solutionId)
@@ -51,10 +60,11 @@ export function createSolution(solutionId: string, batch: Batch, event: ethereum
   solution.batch = batch.id
   solution.trades = []
 
-  // Solution details
-  solution.solver = solver.toHex()
-  solution.feeReward = feeReward
-  solution.objectiveValue = objectiveValue
+  // Details will be populated onSolutionSubmission
+  solution.solver = event.transaction.from.toHex()
+  solution.feeReward = BigInt.fromI32(0)
+  solution.utility = BigInt.fromI32(0)
+  solution.objectiveValue = BigInt.fromI32(0)
 
   // Audit dates
   solution.createEpoch = event.block.timestamp

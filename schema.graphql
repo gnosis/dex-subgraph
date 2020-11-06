@@ -221,9 +221,10 @@ type Solution @entity {
 
   # Optional for 2 reasons:
   #   - Events are handled before calls, so the Trade event will be indexed before the submitSolution
-  solver: User
-  feeReward: BigInt
-  objectiveValue: BigInt
+  solver: User!
+  feeReward: BigInt!
+  objectiveValue: BigInt!
+  utility: BigInt!
 
   # Trades
   trades: [Trade!]!

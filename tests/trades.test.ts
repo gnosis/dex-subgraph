@@ -63,13 +63,6 @@ describe('onTrade', function () {
               return [{ kind: ValueKind.Uint, data: 200n * 10n ** 18n }]
           }
           break
-        case 'BatchExchange.latestSolution':
-          return [
-            { kind: ValueKind.Uint, data: 9n }, // batch ID
-            { kind: ValueKind.Address, data: new Uint8Array(20) }, // submitter
-            { kind: ValueKind.Uint, data: 1337n }, // burnt fees
-            { kind: ValueKind.Uint, data: 42000n }, // objective value
-          ]
       }
 
       throw new Error(`unexpected contract call ${JSON.stringify(call)}`)
@@ -133,8 +126,9 @@ describe('onTrade', function () {
       id: tradeId,
       batch: '9',
       solver: `0x${'00'.repeat(20)}`,
-      feeReward: 1337n,
-      objectiveValue: 42000n,
+      feeReward: 0n,
+      objectiveValue: 0n,
+      utility: 0n,
       trades: [tradeId],
       createEpoch: timestamp,
       revertEpoch: null,
