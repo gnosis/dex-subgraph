@@ -27,19 +27,11 @@ describe('onSolutionSubmission', function () {
     mappings.setEntity('Solution', solutionId, {
       id: solutionId,
       batch: `${batchId}`,
-<<<<<<< HEAD
       solver: `0x${'ff'.repeat(20)}`,
       feeReward: 0n,
       objectiveValue: 0n,
       utility: 0n,
       trades: ["t1", "t2"],
-=======
-      solver: null,
-      feeReward: null,
-      objectiveValue: null,
-      utility: null,
-      trades: ['t1', 't2'],
->>>>>>> e2e tests
       createEpoch: timestamp,
       revertEpoch: null,
       txHash,
