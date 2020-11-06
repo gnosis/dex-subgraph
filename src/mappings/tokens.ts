@@ -51,6 +51,9 @@ export function onTokenListing(event: TokenListingEvent): void {
   // Transaction
   token.txHash = event.transaction.hash
 
+  //Volume
+  token.sellVolume = BigInt.fromI32(0)
+
   token.save()
 }
 
@@ -61,4 +64,16 @@ export function getTokenById(tokenId: i32): Token {
     throw new Error("Token doesn't exist: " + id)
   }
   return tokenOpt!
+}
+
+export function incrementSellVolume(tokenId: i32, amount: BigInt): void {
+  let token = getTokenById(tokenId)
+  token.sellVolume += amount
+  token.save()
+}
+
+export function decrementSellVolume(tokenId: i32, amount: BigInt): void {
+  let token = getTokenById(tokenId)
+  token.sellVolume -= amount
+  token.save()
 }

@@ -41,6 +41,7 @@ describe('onTokenListing', function () {
       symbol: 'TEST',
       decimals: 18n,
       name: 'Test Token',
+      sellVolume: 0n,
       createEpoch: 42n * 300n,
       txHash: `0x${'42'.repeat(32)}`,
     })

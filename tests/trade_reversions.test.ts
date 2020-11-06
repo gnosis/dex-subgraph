@@ -28,6 +28,7 @@ describe('onTradeReversion', () => {
       symbol: 'OWL',
       decimals: 18n,
       name: 'Token OWL',
+      sellVolume,
       createEpoch: 0n,
       txHash: tradeTxHash,
     })
@@ -138,6 +139,12 @@ describe('onTradeReversion', () => {
     const state = await createFixturesAndMakeTrade()
     const price = state.getEntity('Price', priceId)
     expect(price).to.not.exist
+  })
+
+  it('reduces the total sellAmount of the token', async () => {
+    const state = await createFixturesAndMakeTrade()
+    const token = state.getEntity('Token', sellToken)
+    expect(token!.sellVolume).to.equal(0n)
   })
 
   it('reverts the trade', async () => {

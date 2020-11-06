@@ -27,6 +27,7 @@ describe('onOrderPlacement', function () {
       symbol: 'OWL',
       decimals: 18n,
       name: 'Token OWL',
+      sellVolume: 0n,
       createEpoch: 0n,
       txHash: `0x${'00'.repeat(32)}`,
     })
@@ -37,6 +38,7 @@ describe('onOrderPlacement', function () {
       symbol: 'GNO',
       decimals: 18n,
       name: 'GNO Token',
+      sellVolume: 0n,
       createEpoch: 0n,
       txHash: `0x${'01'.repeat(32)}`,
     })

@@ -22,6 +22,9 @@ type Token @entity {
   # balances: [Balance!]! @derivedFrom(field: "token") // TODO: Pending mapping
   # deposits: [Deposit!]! @derivedFrom(field: "token") // TODO: Disabled for now, until we sort out how to relate it better
 
+  "Cumulative sell volume"
+  sellVolume: BigInt!
+
   # Audit Dates
   createEpoch: BigInt!
 

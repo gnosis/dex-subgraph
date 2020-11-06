@@ -149,6 +149,7 @@ const EntityDefinitions = {
     symbol: { optional: Store.ValueKind.String },
     decimals: { optional: Store.ValueKind.BigInt },
     name: { optional: Store.ValueKind.String },
+    sellVolume: Store.ValueKind.BigInt,
     createEpoch: Store.ValueKind.BigInt,
     txHash: Store.ValueKind.Bytes,
   },
