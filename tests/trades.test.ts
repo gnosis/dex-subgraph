@@ -6,7 +6,7 @@ describe('onTrade', function () {
   let mappings: Mappings
 
   const user = `0x${'1337'.repeat(10)}`
-  const orderId = 1337n
+  const orderId = 1337
   const orderUid = `${user}-${orderId}`
   const txHash = `0x${'01'.repeat(32)}`
   const logIndex = 1n

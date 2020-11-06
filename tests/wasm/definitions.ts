@@ -10,6 +10,24 @@ const EventDefinitions = {
     amount: Ethereum.ValueKind.Uint,
     batchId: Ethereum.ValueKind.Uint,
   },
+  OrderCancellation: {
+    owner: Ethereum.ValueKind.Address,
+    index: Ethereum.ValueKind.Uint,
+  },
+  OrderDeletion: {
+    owner: Ethereum.ValueKind.Address,
+    index: Ethereum.ValueKind.Uint,
+  },
+  OrderPlacement: {
+    owner: Ethereum.ValueKind.Address,
+    index: Ethereum.ValueKind.Uint,
+    buyToken: Ethereum.ValueKind.Uint,
+    sellToken: Ethereum.ValueKind.Uint,
+    validFrom: Ethereum.ValueKind.Uint,
+    validUntil: Ethereum.ValueKind.Uint,
+    priceNumerator: Ethereum.ValueKind.Uint,
+    priceDenominator: Ethereum.ValueKind.Uint,
+  },
   SolutionSubmission: {
     submitter: Ethereum.ValueKind.Address,
     utility: Ethereum.ValueKind.Uint,
@@ -83,7 +101,7 @@ const EntityDefinitions = {
   Order: {
     id: Store.ValueKind.String,
     owner: Store.ValueKind.String,
-    orderId: Store.ValueKind.BigInt,
+    orderId: Store.ValueKind.Int,
     fromBatchId: Store.ValueKind.BigInt,
     fromEpoch: Store.ValueKind.BigInt,
     untilBatchId: Store.ValueKind.BigInt,

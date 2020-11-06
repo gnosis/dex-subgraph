@@ -4,7 +4,7 @@ import { ValueKind } from './wasm/runtime/ethereum'
 
 describe('onTradeReversion', () => {
   const user = `0x${'1337'.repeat(10)}`
-  const orderId = 1337n
+  const orderId = 1337
   const orderUid = `${user}-${orderId}`
   const tradeTxHash = `0x${'01'.repeat(32)}`
   const reversionTxHash = `0x${'02'.repeat(32)}`
