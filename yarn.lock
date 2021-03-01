@@ -431,12 +431,12 @@ asn1@~0.2.3:
   dependencies:
     safer-buffer "~2.1.0"
 
-assemblyscript@^0.16.1:
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.16.1.tgz#85caa1b427b4b27f7e9fcc8b08cff70262332c3e"
-  integrity sha512-btb/Q2cs42O7NaVRLDpUIb4fF+o4H4id0kjOOOzS25KCOx0voiyGBeWYqfnrOeufMQacvDNqGkjJuGkdTJIrQQ==
+assemblyscript@^0.18.11:
+  version "0.18.11"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.18.11.tgz#14c10bbca46f754b2f60167f139623973e150f34"
+  integrity sha512-QIIPeHRq+0uw7A2xWzmJM1I8Ca7AGuNpp2JFFkdTBMfVrQULtWieqOBIZG+VDRbYEbjbCdonEWcnGCi2ujzz6Q==
   dependencies:
-    binaryen "97.0.0-nightly.20201008"
+    binaryen "98.0.0-nightly.20210106"
     long "^4.0.0"
 
 "assemblyscript@https://github.com/AssemblyScript/assemblyscript#36040d5b5312f19a025782b5e36663823494c2f3":
@@ -538,10 +538,10 @@ binaryen@77.0.0-nightly.20190407:
   resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-77.0.0-nightly.20190407.tgz#fbe4f8ba0d6bd0809a84eb519d2d5b5ddff3a7d1"
   integrity sha512-1mxYNvQ0xywMe582K7V6Vo2zzhZZxMTeGHH8aE/+/AND8f64D8Q1GThVY3RVRwGY/4p+p95ccw9Xbw2ovFXRIg==
 
-binaryen@97.0.0-nightly.20201008:
-  version "97.0.0-nightly.20201008"
-  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-97.0.0-nightly.20201008.tgz#b9dc6fa3b92b764b66956d079190b48d2e22065f"
-  integrity sha512-GWV30FOQqz+vBIZRbc7GSasLNhh8BNLKH+2u2j5BjqM0WOEqqaP5iSj0mq72We2aVYqpBajJPI/CORY6o2RBxA==
+binaryen@98.0.0-nightly.20210106:
+  version "98.0.0-nightly.20210106"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-98.0.0-nightly.20210106.tgz#c7bc637e2223a83bf3cae9d98969f569efab4062"
+  integrity sha512-iunAgesqT9PXVYCc72FA4h0sCCKLifruT6NuUH63xqlFJGpChhZLgOtyIb/fIgTibN5Pd692cxfBViyCWFsJ9Q==
 
 bindings@^1.5.0:
   version "1.5.0"
