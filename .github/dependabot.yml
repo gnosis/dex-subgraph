@@ -1,0 +1,46 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "02:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: "@types/node"
+    versions:
+    - ">= 14.a, < 15"
+  - dependency-name: assemblyscript
+    versions:
+    - 0.17.12
+    - 0.18.3
+  - dependency-name: eslint-config-prettier
+    versions:
+    - 7.1.0
+    - 7.2.0
+  - dependency-name: "@typescript-eslint/parser"
+    versions:
+    - 4.11.1
+    - 4.14.1
+  - dependency-name: "@typescript-eslint/eslint-plugin"
+    versions:
+    - 4.11.1
+    - 4.14.1
+  - dependency-name: eslint
+    versions:
+    - 7.16.0
+    - 7.19.0
+  - dependency-name: "@types/node"
+    versions:
+    - 13.13.38
+    - 13.13.40
+  - dependency-name: typescript
+    versions:
+    - 4.1.3
+  - dependency-name: mocha
+    versions:
+    - 8.2.1
+  - dependency-name: "@types/chai"
+    versions:
+    - 4.2.14
+  rebase-strategy: disabled
