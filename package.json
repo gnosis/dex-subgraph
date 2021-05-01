@@ -44,7 +44,7 @@
     "cli-confirm": "^1.0.1",
     "debug": "^4.2.0",
     "eslint": "^7.10.0",
-    "eslint-config-prettier": "^6.12.0",
+    "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-prettier": "^3.1.4",
     "md5-file": "^5.0.0",
     "mocha": "^8.1.3",
