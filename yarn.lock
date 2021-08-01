@@ -431,12 +431,12 @@ asn1@~0.2.3:
   dependencies:
     safer-buffer "~2.1.0"
 
-assemblyscript@^0.16.1:
-  version "0.16.1"
-  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.16.1.tgz#85caa1b427b4b27f7e9fcc8b08cff70262332c3e"
-  integrity sha512-btb/Q2cs42O7NaVRLDpUIb4fF+o4H4id0kjOOOzS25KCOx0voiyGBeWYqfnrOeufMQacvDNqGkjJuGkdTJIrQQ==
+assemblyscript@^0.19.9:
+  version "0.19.9"
+  resolved "https://registry.yarnpkg.com/assemblyscript/-/assemblyscript-0.19.9.tgz#c86abab27fd6639fc2de92261334ba2c899f64ae"
+  integrity sha512-nVEg1bbGBegJp+UO9okNHgjCX6sri4OrIkl/LCaNWLIvioN2IjFeYt3R6ppZ6L813VYJxKhf0hr6lhXOXw3dvA==
   dependencies:
-    binaryen "97.0.0-nightly.20201008"
+    binaryen "101.0.0-nightly.20210723"
     long "^4.0.0"
 
 "assemblyscript@https://github.com/AssemblyScript/assemblyscript#36040d5b5312f19a025782b5e36663823494c2f3":
@@ -533,15 +533,15 @@ binary-extensions@^2.0.0:
   resolved "https://registry.yarnpkg.com/binary-extensions/-/binary-extensions-2.1.0.tgz#30fa40c9e7fe07dbc895678cd287024dea241dd9"
   integrity sha512-1Yj8h9Q+QDF5FzhMs/c9+6UntbD5MkRfRwac8DoEm9ZfUBZ7tZ55YcGVAzEe4bXsdQHEk+s9S5wsOKVdZrw0tQ==
 
+binaryen@101.0.0-nightly.20210723:
+  version "101.0.0-nightly.20210723"
+  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-101.0.0-nightly.20210723.tgz#b6bb7f3501341727681a03866c0856500eec3740"
+  integrity sha512-eioJNqhHlkguVSbblHOtLqlhtC882SOEPKmNFZaDuz1hzQjolxZ+eu3/kaS10n3sGPONsIZsO7R9fR00UyhEUA==
+
 binaryen@77.0.0-nightly.20190407:
   version "77.0.0-nightly.20190407"
   resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-77.0.0-nightly.20190407.tgz#fbe4f8ba0d6bd0809a84eb519d2d5b5ddff3a7d1"
   integrity sha512-1mxYNvQ0xywMe582K7V6Vo2zzhZZxMTeGHH8aE/+/AND8f64D8Q1GThVY3RVRwGY/4p+p95ccw9Xbw2ovFXRIg==
-
-binaryen@97.0.0-nightly.20201008:
-  version "97.0.0-nightly.20201008"
-  resolved "https://registry.yarnpkg.com/binaryen/-/binaryen-97.0.0-nightly.20201008.tgz#b9dc6fa3b92b764b66956d079190b48d2e22065f"
-  integrity sha512-GWV30FOQqz+vBIZRbc7GSasLNhh8BNLKH+2u2j5BjqM0WOEqqaP5iSj0mq72We2aVYqpBajJPI/CORY6o2RBxA==
 
 bindings@^1.5.0:
   version "1.5.0"
