@@ -39,7 +39,7 @@
     "@types/node-fetch": "^2.5.7",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
-    "assemblyscript": "^0.16.1",
+    "assemblyscript": "^0.19.9",
     "chai": "^4.2.0",
     "cli-confirm": "^1.0.1",
     "debug": "^4.2.0",
