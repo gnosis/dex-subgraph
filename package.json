@@ -35,7 +35,7 @@
     "@types/chai": "^4.2.12",
     "@types/debug": "^4.1.5",
     "@types/mocha": "^8.0.3",
-    "@types/node": "^12.12.62",
+    "@types/node": "^16.4.9",
     "@types/node-fetch": "^2.5.7",
     "@typescript-eslint/eslint-plugin": "^4.3.0",
     "@typescript-eslint/parser": "^4.3.0",
